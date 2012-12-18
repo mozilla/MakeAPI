@@ -17,16 +17,16 @@
     "redis-url": "0.1.x",
     "express-persona": "0.0.x",
     "ejs-locals": "~1.0.2",
-    "sequelize": "~1.6.0-beta4",
-    "pg": "0.9.x",
-    "node-uuid": "~1.4.0",
-    "validator": "~0.4.19"
+    "node-uuid": "1.4.x",
+    "validator": "0.4.x",
+    "mysql": "latest"
   },
   "devDependencies": {
-    "mocha": "*"
+    "mocha": "*",
+    "should": "1.2.x"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "foreman run mocha --globals str,_errors,msg test/unit/make.test.js"
   },
   "optionalDependencies": {},
   "engines": {
