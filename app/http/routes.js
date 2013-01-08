@@ -5,13 +5,16 @@
 routes = {
   site: require('./controllers/site'),
   api: {
-    make: require('./controllers/api/make')
+    make: require('./controllers/api/make'),
+    status: require('./controllers/api/status')
   }
 };
 
 
 module.exports = function(http){
   http.get('/', routes.site.index),
+
+  http.get(   '/api',           routes.api.status.basic);
 
   http.post(  '/api/make',      routes.api.make.create);
   http.get(   '/api/makes',     routes.api.make.find);

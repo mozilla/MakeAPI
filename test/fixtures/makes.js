@@ -8,9 +8,29 @@ module.exports = {
     contentType: "text/html",
     locale: "en_us",
     title: "Soapbox - Let your voice be heard",
-    description: "Make Your Own Rant Page",
+    body: "<h1>Make Your Own Rant Page</h1><p>blah blah blah, this is your pulpit.</p>",
+    difficulty: 'Beginner',
     author: "simon@simonwex.com",
+    contentAuthor: 'swex@mozilla.com',
     published: true
+  },
+  aReallyCrapBrokenMake: {
+    url: "notaurl",
+    contentType: null,
+    locale: "en_us",
+    title: "",
+    description: "",
+    author: "notanemail",
+    published: true
+  },
+  aMakeWithGoodIntentionsButStillNoGood: {
+    url: "ftp://blahblah.com/",
+    contentType: 'text/json',
+    locale: "en_us",
+    title: null,
+    description: "",
+    author: "notanemail",
+    published: false
   }
 };
 
