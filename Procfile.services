@@ -1,0 +1,3 @@
+redis: redis-server
+mongodb: mongod
+elasticsearch: ${ELASTIC_SEARCH_PATH}/bin/elasticsearch -f
