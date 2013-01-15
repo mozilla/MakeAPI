@@ -2,7 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-module.exports = {
+require('../../lib/extensions/object');
+
+var makes = {
   aFineMake: {
     url: "http://thimble.webmaker.org/p/fj6v",
     contentType: "text/html",
@@ -31,9 +33,25 @@ module.exports = {
     description: "",
     author: "notanemail",
     published: false
-  }
+  },
+  aMakeWithInvalidRemix: {
+    remixedFrom: 'garbage',
+
+    url: "http://thimble.webmaker.org/p/fj6v",
+    contentType: "text/html",
+    locale: "en_us",
+    title: "Soapbox - Let your voice be heard",
+    body: "<h1>Make Your Own Rant Page</h1><p>blah blah blah, this is your pulpit.</p>",
+    difficulty: 'Beginner',
+    author: "simon@simonwex.com",
+    contentAuthor: 'swex@mozilla.com',
+
+    published: true
+  },
 };
 
+
+module.exports = makes;
 /*
 
 {

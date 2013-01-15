@@ -4,6 +4,7 @@
 
 var 
 mongoose = require('../../lib/mongoose'),
+Validators = require('./validators'),
 validate = require('mongoose-validator').validate;
 
 var Timestamp = {
@@ -17,58 +18,60 @@ var Email = {
 }
 // Schema
 var schema = new mongoose.Schema({
-  url:            {
-                    type: String,
-                    required: true,
-                    validate: validate('isUrl')
-                  },
-  contentType:    {
-                    type: String,
-                    required: true,
-                    validate: [validate('isIn', ['text/html', 'application/butter'])]
-                  },
-  body:           {
-                    type: String,
-                    required: true
-                  },
-  difficulty:     {
-                    type: String,
-                    required: true,
-                    validate: validate('isIn', ['Beginner', 'Intermediate', 'Advanced'])
-                  },
-  locale:         {
-                    type: String,
-                    required: true,
-                    default: 'en_us'
-                  },
-  title:          {
-                    type: String,
-                    required: true,
-                  },
-  author:         Email,
-  contentAuthor:  Email,
-  published:      {
-                    type: Boolean,
-                    default: true
-                  },
-  tags:           [String],
-  privateTags:    [String],
-  topics:         [String],
-  createdAt:      Timestamp,
-  updatedAt:      Timestamp,
-  deletedAt:      {
-                    type: Number,
-                    default: null
-                  },
+  url: {
+    type: String,
+    required: true,
+    validate: validate('isUrl')
+  },
+  contentType: {
+    type: String,
+    required: true,
+    validate: [validate('isIn', ['text/html', 'application/butter'])]
+  },
+  body: {
+    type: String,
+    required: true
+  },
+  difficulty: {
+    type: String,
+    required: true,
+    validate: validate('isIn', ['Beginner', 'Intermediate', 'Advanced'])
+  },
+  locale: {
+    type: String,
+    required: true,
+    default: 'en_us'
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  author: Email,
+  contentAuthor: Email,
+  published: {
+    type: Boolean,
+    default: true
+  },
+  tags: [String],
+  privateTags: [String],
+  topics: [String],
+  remixedFrom: {
+    type: mongoose.Schema.ObjectId,
+    validate: Validators.isObjectIdOrNull
+  },
+  createdAt: Timestamp,
+  updatedAt: Timestamp,
+  deletedAt: {
+    type: Number,
+    default: null
+  }
 });
-
 
 // Hooks
 schema.pre('save', function (next) {
   this.updatedAt = (new Date()).getTime();
   next();
 });
-
 
 var Make = mongoose.model('Make', schema);
 

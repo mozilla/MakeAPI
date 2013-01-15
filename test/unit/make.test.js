@@ -38,8 +38,17 @@ describe("Makes", function(){
         for(var i in failedFields){
           brokenFields[i].should.equal(failedFields[i]);
         }
+        done();
       });
-      done();
+    });
+
+    it("won't create a broken make when remixedFrom is an invalid ObjectId", function(done){
+      var make = new Make(makeFixtures.aMakeWithInvalidRemix);
+      make.save(function(err, make){
+        should.exist(err);
+        err.path.should.equal('remixedFrom');
+        done();
+      });
     });
 
     it("creates a fine make", function(done){
