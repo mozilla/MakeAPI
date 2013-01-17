@@ -50,31 +50,76 @@ By default the server will run at http://localhost:5000. You can change this by 
 $ npm test
 ```
 
-## Usage:
+## API:
+
+<table>
+  <tr>
+    <th>HTTP Method</th>
+    <th>Path</th>
+    <th>Action</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <th>POST</th>
+    <td>api/make</td>
+    <td>Create Make</td>
+    <td>If Post Data is a valid Make, it creates one and returns it with the _id and __v populated.</td>
+  </tr>
+  <tr>
+    <th>GET</th>
+    <td>/api/make/:id</td>
+    <td>Find a single Make</td>
+    <td>Expects the last path element to be a valid ObjectId</td>
+  </tr>
+  <tr>
+    <th>PUT</th>
+    <td>/api/make/:id</td>
+    <td>Update a Make</td>
+    <td>The Make must already exist and the __v must be the same as the current version on the server. This is an implementation of optimistic locking.</td>
+  </tr>
+  <tr>
+    <th>DELETE</th>
+    <td>/api/make/:id</td>
+    <td>Deletes a Make</td>
+    <td>The effect is that of a delete operation, though the Make is actually only marked as deleted using the deletedAt timestamp.</td>
+  </tr>
+  <tr>
+    <th>GET</th>
+    <td>/api/makes</td>
+    <td>Find All</td>
+    <td><p>Finds all makes by default, can be used to filter and search.</p><p>TODO: Explain Search</p></td>
+  </tr>
+</table>
+
+
+### Example Usage
 
 ```
-jQuery.ajax({
-  type: "POST",
-  url: "/api/make",
-  data: {
-    url: "http://thimble.webmaker.org/p/fj6v",
-    contentType: "text/html",
-    locale: "en_us",
-    title: "Soapbox - Let your voice be heard",
-    body: "<h1>Make Your Own Rant Page</h1><p>blah blah blah, this is your pulpit.</p>",
-    difficulty: 'Beginner',
-    author: "simon@simonwex.com",
-    contentAuthor: 'swex@mozilla.com',
-    published: true
-  },
-  success: function(data, textStatus, jqXHR){
-    console.log("Post resposne:"); 
-    console.dir(data); 
-    console.log(textStatus); 
-    console.dir(jqXHR);
-  },
-  error: function(jqXHR, textStatus, errorThrown){
-    console.log(jqXHR.responseText);
-  }
-});
+  jQuery.ajax({
+    type: "POST",
+    url: "/api/make",
+    data: {
+      "url": "http://thimble.webmadecontent.org/abcd.html",
+      "content-type": "text/html",
+      "goal": "The goal of this lesson is to learn about img, p and blah tags...",
+      "title": "Animal something-or-other",
+      "locale": "en_us",
+      "tags": ["awesome"],
+      "privateTags": ["webmaker.org:project", "skill:css"],
+      "description": "This handy HTML template makes it easy to quickly create your own text and image mashup, then publish it for sharing via Facebook, Tumblr or any web page. Your 15 seconds of internet fame await!"
+      "author": "swex@mozilla.com",
+      "contentAuthor": "swex@mozilla.com",
+      "remixedFrom": null,
+      "published": true
+    },
+    success: function(data, textStatus, jqXHR){
+      console.log("Post resposne:");
+      console.dir(data);
+      console.log(textStatus);
+      console.dir(jqXHR);
+    },
+    error: function(jqXHR, textStatus, errorThrown){
+      console.log(jqXHR.responseText);
+    }
+  });
 ```
