@@ -123,3 +123,8 @@ $ npm test
     }
   });
 ```
+
+
+### A Playground
+
+If you load http://localhost:5000/playground.html, you can use the loaded jQuery to interact with the API.
