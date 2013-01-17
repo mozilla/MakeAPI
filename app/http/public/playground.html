@@ -28,6 +28,11 @@
         });
       }
       
+      function createFromTextArea(){
+        var data = JSON.parse($('#data_area').val());
+        create(data);
+      }
+
       var sampleData = {
         url: "http://thimble.webmaker.org/p/fj6v",
         contentType: "text/html",
@@ -40,6 +45,10 @@
         published: true
       };
 
+      $(function(){
+        $('#data_area').val(JSON.stringify(sampleData, null, "\t"));
+      });
+
     </script>
     
     <style>
@@ -49,6 +58,13 @@
   <body>
     <h1>MakeAPI</h1>
     <p>Open your favourite JavaScript console and play away. See <a href="https://github.com/mozilla/MakeAPI">https://github.com/mozilla/MakeAPI</a> for sample usage.</p>
+
+    <h2>Access TextArea with JSON.parse($('#data_area').val());</h2>
+    <textarea id="data_area" style="width: 100%; height: 200px;"></textarea>
+
+    <h2>Frame loading all Makes:</h2>
+    <iframe src="/api/makes" style="width: 100%; height: 400px;"></iframe>
+    <p>(Refresh frame for new results)</p>
   </body>
 </html>
 
