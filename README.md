@@ -27,13 +27,7 @@ cp .env.sample .env
 
 #### Running the Services
 
-There's a handy file named Procfile.services you can use to run Redis, ElasticSearch and MongoDB. To start all three services run:
-
-```
-foreman start -f Procfile.services
-```
-
-While either that is running, or the services are running independently, you can start the web server:
+Before you start your Node.js server, you'll need to run Redis, MongoDB and ElasticSearch
 
 #### Running the Web Process
 
@@ -42,7 +36,6 @@ foreman start
 ```
 
 By default the server will run at http://localhost:5000. You can change this by adding PORT=<port> to your .env file.
-
 
 ## Running the Tests
 
