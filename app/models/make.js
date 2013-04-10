@@ -32,7 +32,8 @@ var schema = new mongoose.Schema({
   },
   body: {
     type: String,
-    required: true
+    required: true,
+    es_indexed: true
   },
   difficulty: {
     type: String,

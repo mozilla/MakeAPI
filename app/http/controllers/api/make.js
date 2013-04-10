@@ -56,22 +56,39 @@ exports.findById = function(req, resp){
   });
 };
 
-exports.findByEmail = function(req, resp){
+exports.searchByEmail = function(req, resp){
   Make.search({
     query:{
-      match: {
+      term:{
         author: req.params.email
       }
     }
-  }, function( err, makes ) {
+  }, function(err, results){
     if ( err ) {
       console.log( err.name );
-      return handleError( resp, err, 500 );
+      return handleError(resp, err, 500);
     }
     else{
-      return resp.send( makes );
+      return resp.send(results);
     }
   })
+};
+
+exports.searchByBody = function(req, resp){
+  Make.search({
+    query:{
+      term:{
+        body: req.params.body
+      }
+    }
+  }, function(err, results) {
+    if (err){
+      return handleError(resp, err, 500);
+    }
+    else{
+      return resp.send(results);
+    }
+  });
 };
 
 exports.create = function(req, resp){
