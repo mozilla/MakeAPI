@@ -14,11 +14,12 @@ routes = {
 module.exports = function(http){
   http.get('/', routes.site.index),
 
-  http.get(   '/api',           routes.api.status.basic);
+  http.get(   '/api',             routes.api.status.basic);
 
-  http.post(  '/api/make',      routes.api.make.create);
-  http.get(   '/api/makes',     routes.api.make.find);
-  http.get(   '/api/make/:id',  routes.api.make.findById);
-  http.put(   '/api/make/:id',  routes.api.make.update);
-  http.delete('/api/make/:id',  routes.api.make.delete);
+  http.post(  '/api/make',        routes.api.make.create);
+  http.get(   '/api/makes',       routes.api.make.find);
+  http.get(   '/api/make/:id',    routes.api.make.findById);
+  http.get(   '/api/make/email/:email', routes.api.make.findByEmail);
+  http.put(   '/api/make/:id',    routes.api.make.update);
+  http.delete('/api/make/:id',    routes.api.make.delete);
 }

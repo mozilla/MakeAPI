@@ -1,0 +1,21 @@
+var Faker = require( "/usr/local/lib/node_modules/Faker" );
+
+function randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+}
+
+module.exports = function() {
+  return {
+    "title": Faker.Lorem.words( Faker.Helpers.randomNumber( 10 ) + 1 ),
+    "email": Faker.Internet.email(),
+    "contentType": Faker.Helpers.randomize( ["text/html", "application/butter" ] ),
+    "body": Faker.Lorem.paragraph(),
+    "difficulty": Faker.Helpers.randomize(["Beginner","Intermediate","Advanced"]),
+    "locale": Faker.Helpers.randomize(["en_us","en_ca","en_gb"]),
+    "updatedAt": randomDate(new Date(2011,1,1), new Date ).toString(),
+    "url": "www.webmadecontent.org/" + Faker.random.number( 9999999999999 ),
+    "remixedFrom": null,
+    "contentAuthor": Faker.Internet.email(),
+    "author": Faker.Internet.email()
+  };
+};

@@ -2,15 +2,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var 
+var
 mongoose = require('../../lib/mongoose'),
 mongoosastic = require('mongoosastic'),
 Validators = require('./validators'),
 validate = require('mongoose-validator').validate;
 
 var Timestamp = {
-  type: Number, 
-  default: (new Date()).getTime() 
+  type: Number,
+  default: (new Date()).getTime()
 };
 var Email = {
   type: String,
@@ -75,9 +75,10 @@ schema.pre('save', function (next) {
   next();
 });
 
+schema.plugin(mongoosastic);
+
 var Make = mongoose.model('Make', schema);
 
-// Make.plugin(mongoosastic);
 
 Make.publicFields = ["url", "contentType", "locale", "title", "body", "difficulty", "author", "contentAuthor", "published"];
 

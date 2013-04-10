@@ -56,6 +56,24 @@ exports.findById = function(req, resp){
   });
 };
 
+exports.findByEmail = function(req, resp){
+  Make.search({
+    query:{
+      match: {
+        author: req.params.email
+      }
+    }
+  }, function( err, makes ) {
+    if ( err ) {
+      console.log( err.name );
+      return handleError( resp, err, 500 );
+    }
+    else{
+      return resp.send( makes );
+    }
+  })
+};
+
 exports.create = function(req, resp){
   var make = new Make();
 
