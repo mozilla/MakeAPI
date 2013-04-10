@@ -4,6 +4,7 @@
 
 var 
 mongoose = require('../../lib/mongoose'),
+mongoosastic = require('mongoosastic'),
 Validators = require('./validators'),
 validate = require('mongoose-validator').validate;
 
@@ -14,7 +15,8 @@ var Timestamp = {
 var Email = {
   type: String,
   required: true,
-  validate: validate('isEmail')
+  validate: validate('isEmail'),
+  es_indexed: true
 }
 // Schema
 var schema = new mongoose.Schema({
@@ -74,6 +76,8 @@ schema.pre('save', function (next) {
 });
 
 var Make = mongoose.model('Make', schema);
+
+// Make.plugin(mongoosastic);
 
 Make.publicFields = ["url", "contentType", "locale", "title", "body", "difficulty", "author", "contentAuthor", "published"];
 

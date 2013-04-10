@@ -18,7 +18,8 @@
     "ejs-locals": "~1.0.2",
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
-    "node-uuid": "~1.4.0"
+    "node-uuid": "~1.4.0",
+    "mongoosastic": "0.0.11"
   },
   "devDependencies": {
     "mocha": "*",
