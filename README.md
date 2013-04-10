@@ -93,13 +93,13 @@ $ npm test
     url: "/api/make",
     data: {
       "url": "http://thimble.webmadecontent.org/abcd.html",
-      "content-type": "text/html",
+      "contentType": "text/html",
       "goal": "The goal of this lesson is to learn about img, p and blah tags...",
       "title": "Animal something-or-other",
       "locale": "en_us",
       "tags": ["awesome"],
       "privateTags": ["webmaker.org:project", "skill:css"],
-      "description": "This handy HTML template makes it easy to quickly create your own text and image mashup, then publish it for sharing via Facebook, Tumblr or any web page. Your 15 seconds of internet fame await!"
+      "description": "This handy HTML template makes it easy to quickly create your own text and image mashup, then publish it for sharing via Facebook, Tumblr or any web page. Your 15 seconds of internet fame await!",
       "author": "swex@mozilla.com",
       "contentAuthor": "swex@mozilla.com",
       "remixedFrom": null,
