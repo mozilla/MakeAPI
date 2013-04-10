@@ -5,8 +5,11 @@
 ### Prerequisites
 
 - [Redis](http://redis.io/)
+  - Once installed, run this with `redis-server`
 - [MongoDB](http://www.mongodb.org/)
+  - Run this with `mongod`
 - [ElasticSearch](http://www.elasticsearch.org/)
+  - Run this with `elasticsearch -f`
 
 ### Dependencies
 
