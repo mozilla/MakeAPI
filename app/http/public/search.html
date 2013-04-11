@@ -12,27 +12,42 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript">
 
-      function grabFields() {
-        MakeAPI.search(
-          MakeAPI.format({
-            tags: document.getElementById( "tags" ).value.split( "," )
-          })
-        );
+      function grabTags() {
+        MakeAPI.search({
+          "query": {
+            "terms": {
+              "tags": document.getElementById( "tags-single" ).value.split( "," ),
+              "minimum_match": 1
+            }
+          },
+          size: 100
+        });
+      }
+
+      function myProjects() {
+        MakeAPI.search({
+          "query": {
+            "filtered": {
+              "query": {
+                "terms": {
+                  "tags": document.getElementById( "tags-multiple" ).value.split( "," ),
+                  "minimum_match": 1
+                }
+              },
+              "filter": {
+                "and": [
+                  {
+                    "term": { "author": document.getElementById( "author" ).value }
+                  }
+                ]
+              }
+            }
+          }
+        });
       }
 
       var MakeAPI = {
-        search: function( data ) {console.log(data);
-          // jQuery.ajax({
-          //   type: "GET",
-          //   url: "/api/makes/search",
-          //   data: data,
-          //   success: function( data, text, jqxhr ) {
-          //     console.log(arguments);
-          //   },
-          //   error: function( jqxhr, text, error ) {
-          //     console.log(text);
-          //   }
-          // });
+        search: function( data ) {console.log(data)
           var xhr = new XMLHttpRequest();
 
           xhr.open( "POST", "/api/makes/search", true );
@@ -44,17 +59,6 @@
           };
           xhr.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
           xhr.send( JSON.stringify( data ) );
-        },
-        format: function( queries ) {
-          return {
-            "query":{
-              "terms" : {
-                "tags" : queries.tags,
-                "minimum_match": 1
-              }
-            },
-            "size": 100
-          };
         }
       };
 
@@ -64,10 +68,15 @@
 
   <body>
     All inputs accept CSV for multiple search terms<br><br>
-    Tags<input type="text" id="tags"/><br>
-    Author<input type="text" id="authors"/><br><br>
+    Tags<input type="text" id="tags-single"/><br><br>
 
-    <input type="button" onclick="grabFields();" value="Submit Data"/>
+    <input type="button" onclick="grabTags();" value="Search Tags"/>
+
+    <br><br><br>
+    Tags<input type="text" id="tags-multiple"/><br><br>
+    Author (not CSV)<input type="text" id="author"/><br><br>
+
+    <input type="button" onclick="myProjects();" value="Search My Projects"/>
   </body>
 </html>
 

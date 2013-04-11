@@ -21,6 +21,10 @@ module.exports = function() {
         Faker.Helpers.randomize( ["thimble.wm.org","popcorn.wm.org", Faker.Name.firstName()] ) +
         ":" + Faker.Helpers.randomize( ["project","featured","favourite"])
     ],
-    "author": Faker.Internet.email()
+    "author": Faker.Helpers.randomize([
+        "matts@mozillafoundation.org", "kate@mozillafoundation.org", "jbuck@mozillafoundation.org",
+        "scott@mozillafoundation.org", "surman@mozillafoundation.org", "pomax@mozillafoundation.org",
+        Faker.Internet.email()
+    ])
   };
 };
