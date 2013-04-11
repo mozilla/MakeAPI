@@ -24,25 +24,26 @@
         });
       }
 
-      function myProjects() {
+      function myProjects() {console.log(document.querySelector( "input[name='execution']:checked" ).value)
         MakeAPI.search({
           "query": {
             "filtered": {
               "query": {
-                "terms": {
-                  "tags": document.getElementById( "tags-multiple" ).value.split( "," ),
-                  "minimum_match": 1
-                }
+                "field": { "author": document.getElementById( "author" ).value }
               },
               "filter": {
                 "and": [
                   {
-                    "term": { "author": document.getElementById( "author" ).value }
+                    "terms": {
+                      "tags": document.getElementById( "tags-multiple" ).value.split( "," ),
+                      "execution": document.querySelector( "input[name='execution']:checked" ).value
+                    }
                   }
                 ]
               }
             }
-          }
+          },
+          size: document.getElementById( "size" ).value
         });
       }
 
@@ -75,6 +76,10 @@
     <br><br><br>
     Tags<input type="text" id="tags-multiple"/><br><br>
     Author (not CSV)<input type="text" id="author"/><br><br>
+    Num<input type="number" id="size" /><br>
+    Execution:<br>
+    And<input type="radio" name="execution" value="and" checked/>
+    Or<input type="radio" name="execution" value="bool" />
 
     <input type="button" onclick="myProjects();" value="Search My Projects"/>
   </body>
