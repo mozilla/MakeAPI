@@ -19,7 +19,8 @@
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
     "node-uuid": "~1.4.0",
-    "mongoosastic": "0.0.11"
+    "mongoosastic": "0.0.11",
+    "Faker": "0.5.8"
   },
   "devDependencies": {
     "mocha": "*",

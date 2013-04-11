@@ -85,6 +85,12 @@ $ npm test
     <td>Find All</td>
     <td><p>Finds all makes by default, can be used to filter and search.</p><p>TODO: Explain Search</p></td>
   </tr>
+    <tr>
+    <th>GET</th>
+    <td>/api/makes/search</td>
+    <td>Find makes by search criteria</td>
+    <td><p>Searches for makes using <a href="http://www.elasticsearch.org">elasticsearch</a>. The body of your request must use <a href="http://www.elasticsearch.org/guide/reference/query-dsl/">elastic search's Query DSL</a> and <code>Content-Type</code> must be <code>application/json</code></p></td>
+  </tr>
 </table>
 
 

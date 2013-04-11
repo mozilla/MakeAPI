@@ -1,4 +1,4 @@
-var Faker = require( "/usr/local/lib/node_modules/Faker" );
+var Faker = require( "Faker" );
 
 function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
