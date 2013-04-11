@@ -50,12 +50,14 @@ var schema = new mongoose.Schema({
     required: true,
   },
   author: Email,
-  contentAuthor: Email,
   published: {
     type: Boolean,
     default: true
   },
-  tags: [String],
+  tags: {
+    type: [String],
+    es_indexed: true
+  },
   privateTags: [String],
   topics: [String],
   remixedFrom: {
@@ -81,6 +83,6 @@ schema.plugin(mongoosastic);
 var Make = mongoose.model('Make', schema);
 
 
-Make.publicFields = ["url", "contentType", "locale", "title", "body", "difficulty", "author", "contentAuthor", "published"];
+Make.publicFields = ["url", "contentType", "locale", "title", "body", "difficulty", "author", "published", "tags"];
 
 module.exports = Make;

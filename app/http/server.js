@@ -7,7 +7,7 @@
 
 require('../../lib/extensions/number');
 
-const 
+const
 env         = require('../../lib/environment'),
 express     = require('express'),
 logger      = require('../../lib/logger'),
@@ -39,7 +39,7 @@ http.configure(function(){
   http.use(express.cookieParser());
   http.use(express.bodyParser());
   http.use(express.methodOverride());
-  
+
   http.use(connect.session({
     secret: env.get("SESSION_SECRET"),
     store: sessionStore,

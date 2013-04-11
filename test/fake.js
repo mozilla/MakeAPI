@@ -15,7 +15,12 @@ module.exports = function() {
     "updatedAt": randomDate(new Date(2011,1,1), new Date ).toString(),
     "url": "www.webmadecontent.org/" + Faker.random.number( 9999999999999 ),
     "remixedFrom": null,
-    "contentAuthor": Faker.Internet.email(),
+    "tags": [
+        Faker.Helpers.randomize( ["thimble.wm.org","popcorn.wm.org", Faker.Name.firstName()] ) +
+        ":" + Faker.Helpers.randomize( ["project","featured","favourite"]),
+        Faker.Helpers.randomize( ["thimble.wm.org","popcorn.wm.org", Faker.Name.firstName()] ) +
+        ":" + Faker.Helpers.randomize( ["project","featured","favourite"])
+    ],
     "author": Faker.Internet.email()
   };
 };
