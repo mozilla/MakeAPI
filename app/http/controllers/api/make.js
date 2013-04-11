@@ -57,9 +57,8 @@ exports.findById = function(req, resp){
 };
 
 exports.search = function(req, resp){
-  Make.search(req.body, {hydrate: true}, function(err, results){
+  Make.search(req.body, function(err, results){
     if ( err ) {
-      console.log( err.name );
       return handleError(resp, err, 500);
     }
     else{

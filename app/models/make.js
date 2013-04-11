@@ -78,7 +78,9 @@ schema.pre('save', function (next) {
   next();
 });
 
-schema.plugin(mongoosastic);
+schema.plugin(mongoosastic, {
+  hydrate: true
+});
 
 var Make = mongoose.model('Make', schema);
 
