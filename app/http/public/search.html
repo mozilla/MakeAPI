@@ -17,24 +17,20 @@
         });
 
         window.grabTags = function() {
-          make.getByTags({
-            tags: document.getElementById( "tags-single" ).value.split( "," ),
-            "minimum_match": 1
-          }).run(function( data ) {
+          make.all
+          .withTags( document.getElementById( "tags" ).value.split( "," ), document.querySelector( "input[name='execution']:checked" ).value )
+          .withLimit( document.getElementById( "size" ).value )
+          .then(function( data ) {
             console.log(data);
           });
         };
 
         window.myProjects = function() {
-          make.getAuthorsMakes({
-            author: document.getElementById( "author" ).value
-          })
-          .withTags({
-            tags: document.getElementById( "tags-multiple" ).value.split( "," ),
-            execution: document.querySelector( "input[name='execution']:checked" ).value
-          })
-          .size( document.getElementById( "size" ).value )
-          .run(function( data ) {
+          make.all
+          .withTags( document.getElementById( "tags" ).value.split( "," ), document.querySelector( "input[name='execution']:checked" ).value )
+          .withLimit( document.getElementById( "size" ).value )
+          .withAuthor( document.getElementById( "author" ).value )
+          .then(function( data ) {
             console.log(data);
           });
         };
@@ -85,20 +81,15 @@
   </head>
 
   <body>
-    All inputs accept CSV for multiple search terms<br /><br />
-    Tags<input type="text" id="tags-single"/><br /><br />
-
-    <input type="button" onclick="grabTags();" value="Search Tags"/>
-
-    <br /><br /><br />
-    Tags<input type="text" id="tags-multiple"/><br /><br />
-    Author (not CSV)<input type="text" id="author"/><br /><br />
-    Num<input type="number" id="size" /><br />
-    Execution:<br />
+    All inputs accept CSV for multiple search terms<br><br>
+    Tags<input type="text" id="tags"/><br><br>
+    Author (not CSV)<input type="text" id="author"/><br><br>
+    Num<input type="number" id="size" /><br>
+    Execution:<br>
     And<input type="radio" name="execution" value="and" checked/>
-    Or<input type="radio" name="execution" value="bool" />
-
-    <input type="button" onclick="myProjects();" value="Search My Projects"/>
+    Or<input type="radio" name="execution" value="bool" /><br><br>
+    <input type="button" onclick="grabTags();" value="Search Projects By Tags"/><br>
+    <input type="button" onclick="myProjects();" value="Search Projects By Author "/>
     <hr/>
 
     <h2>Create / Update</h2>
