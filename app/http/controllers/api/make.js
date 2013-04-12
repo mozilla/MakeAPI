@@ -84,7 +84,7 @@ exports.update = function(req, resp){
   Make.findById(req.params.id).where('deletedAt', null).exec(function(err, make){
     for (var i in Make.publicFields){
       var field = Make.publicFields[i];
-      if (req.body.indexOf(field)){
+      if (req.body[field]){
         make[field] = req.body[field];
       }
     }

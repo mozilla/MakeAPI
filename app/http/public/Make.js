@@ -8,10 +8,30 @@
   // For Versioning
   var apiVersion = "@VERSION",
 
+      makeAPI,
+
   // Shorthand for creating a Make Object
   Make = function Make( options ) {
     return new Make.fn.init( options );
   };
+
+  function doXHR( type, path, data, callback ) {
+    var request = new XMLHttpRequest();
+
+    if ( typeof data === "function" ) {
+      callback = data;
+      data = {};
+    }
+
+    request.open( type, makeAPI + path, true );
+    request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
+    request.onreadystatechange = function() {
+      if ( this.readyState === 4 && this.status === 200 ) {
+        callback( JSON.parse( this.responseText ) );
+      }
+    };
+    request.send( JSON.stringify( data ) );
+  }
 
   Make.fn = Make.prototype = {
     make: apiVersion,
@@ -25,6 +45,25 @@
      */
     init: function init( options ) {
 
+      if ( options.makeAPI ) {
+        makeAPI = options.makeAPI;
+      }
+
+      return this;
+    },
+
+    createMake: function createMake( makeOptions, callback ) {
+      doXHR( "POST", "/api/make", makeOptions, callback );
+      return this;
+    },
+
+    updateMake: function updateMake( id, makeOptions, callback ) {
+      doXHR( "PUT", "/api/make/" + id, makeOptions, callback );
+      return this;
+    },
+
+    deleteMake: function deleteMake( id, callback ) {
+      doXHR( "DELETE", "/api/make/" + id, callback );
       return this;
     },
 

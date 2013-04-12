@@ -10,59 +10,38 @@
     <meta name="author" content="">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" type="text/javascript"></script>
+    <script src="./Make.js"></script>
     <script type="text/javascript">
+      document.addEventListener( "DOMContentLoaded", function() {
+        var make = Make({
+          makeAPI: "http://localhost:5000"
+        }),
 
-      function grabTags() {
-        MakeAPI.search({
-          "query": {
-            "terms": {
-              "tags": document.getElementById( "tags-single" ).value.split( "," ),
-              "minimum_match": 1
-            }
-          },
-          size: 100
+        id;
+
+        make.createMake({
+          "title": "Really awesome make",
+          "email": "matts@mozillafoundation.org",
+          "contentType": "text/html",
+          "body": "This is some random body Data. This is some random body Data. This is some random body Data. This is some random body Data. This is some random body Data.",
+          "difficulty": "Intermediate",
+          "locale": "en_us",
+          "updatedAt": Date.now(),
+          "url": "www.webmadecontent.org/sdf23r23we",
+          "remixedFrom": null,
+          "tags": [ "thimble.wm.org:project", "thimble.wm.org:featured" ],
+          "author": "matts@mozillafoundation.org"
+        }, function( response ){
+          console.log( response );
+          id = response._id;
+          make.updateMake( id, { title: "NEW IMPROVED TITLE" }, function( response ) {
+            console.log( response );
+            make.deleteMake( id, function( response ) {
+              console.log( response );
+            });
+          })
         });
-      }
-
-      function myProjects() {console.log(document.querySelector( "input[name='execution']:checked" ).value)
-        MakeAPI.search({
-          "query": {
-            "filtered": {
-              "query": {
-                "field": { "author": document.getElementById( "author" ).value }
-              },
-              "filter": {
-                "and": [
-                  {
-                    "terms": {
-                      "tags": document.getElementById( "tags-multiple" ).value.split( "," ),
-                      "execution": document.querySelector( "input[name='execution']:checked" ).value
-                    }
-                  }
-                ]
-              }
-            }
-          },
-          size: document.getElementById( "size" ).value
-        });
-      }
-
-      var MakeAPI = {
-        search: function( data ) {console.log(data)
-          var xhr = new XMLHttpRequest();
-
-          xhr.open( "POST", "/api/makes/search", true );
-          xhr.onreadystatechange = function() {
-            if ( this.readyState === 4 ) {
-              var data = JSON.parse( this.responseText );
-              console.log(data.hits)
-            }
-          };
-          xhr.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
-          xhr.send( JSON.stringify( data ) );
-        }
-      };
-
+      }, false );
     </script>
 
   </head>

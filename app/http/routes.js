@@ -18,7 +18,7 @@ module.exports = function(http){
 
   http.post(  '/api/make',        routes.api.make.create);
   http.get(   '/api/makes',       routes.api.make.find);
-  http.post(  '/api/makes/search', routes.api.make.search );
+  http.post(  '/api/makes/search', routes.api.make.search);
   http.get(   '/api/make/:id',    routes.api.make.findById);
   http.put(   '/api/make/:id',    routes.api.make.update);
   http.delete('/api/make/:id',    routes.api.make.delete);
