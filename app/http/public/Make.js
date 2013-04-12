@@ -1,6 +1,6 @@
 "use strict";
 
-(function(global){
+(function( global ){
 
   // Search Constants
   const DEFAULT_SIZE = 10;
@@ -9,6 +9,8 @@
   var apiVersion = "@VERSION",
 
       makeAPI,
+      searchOptions = [],
+      querySet = false,
 
   // Shorthand for creating a Make Object
   Make = function Make( options ) {
@@ -37,13 +39,17 @@
     make: apiVersion,
     constructor: Make,
 
-
     /**
      * [init - initial setup of Make Object]
      * @param  {[type]} options - Configuration settings for querying the API
      * @return {[type]}
      */
     init: function init( options ) {
+      options = options || {};
+
+      if ( options.makeAPI ) {
+        makeAPI = options.makeAPI;
+      }
 
       if ( options.makeAPI ) {
         makeAPI = options.makeAPI;
@@ -73,7 +79,11 @@
      * @return {[Make]}
      */
     getLatestMakes: function getLatestMakes( options ) {
-
+      if ( !querySet ) {
+        options = options || {};
+        searchOptions.push( { query: options, type: "match_all" } );
+        querySet = true;
+      }
       return this;
     },
 
@@ -83,7 +93,11 @@
      * @return {[Make]}
      */
     getAuthorsMakes: function getAuthorsMakes( options ) {
-
+      if ( !querySet ) {
+        options = options || {};
+        searchOptions.push( { query: options, type: "field" } );
+        querySet = true;
+      }
       return this;
     },
 
@@ -93,7 +107,11 @@
      * @return {[Make]}
      */
     getByTags: function getByTags( options ) {
-
+      if ( !querySet ) {
+        options = options || {};
+        searchOptions.push( { query: options, type: "terms" } );
+        querySet = true;
+      }
       return this;
     },
 
@@ -103,7 +121,10 @@
      * @return {[Make]}
      */
     withTags: function withTags( options ) {
-
+      if ( querySet ) {
+        options = options || {};
+        searchOptions.push( { filter: options, type: "terms" } );
+      }
       return this;
     },
 
@@ -113,7 +134,10 @@
      * @return {[Make]}
      */
     size: function size( num ){
-
+      if ( querySet ) {
+        num = parseInt( num ) || DEFAULT_SIZE;
+        searchOptions.push( { size: num } );
+      }
       return this;
     },
 
@@ -123,6 +147,47 @@
      * @return {[type]}
      */
     run: function run( callback ) {
+      var searchQuery = { query: {} },
+          initialQuery, options, type, filterObj;
+
+      callback = callback || function(){};
+
+      if ( querySet ) {
+        querySet = false;
+        for ( var i = 0; i < searchOptions.length; i++ ) {
+          options = searchOptions[ i ];
+
+          if ( options.hasOwnProperty( "query" ) ) {
+            searchQuery.query[ options.type ] = options.query;
+            initialQuery = options;
+          } else if ( options.hasOwnProperty( "filter" ) ) {
+            type = options.type;
+
+            if ( !searchQuery.filtered ) {
+              searchQuery.query = {};
+              searchQuery.query.filtered = {};
+              searchQuery.query.filtered.query = {};
+              searchQuery.query.filtered.query[ initialQuery.type ] = initialQuery.query;
+              searchQuery.query.filtered.filter = { and: [] };
+              filterObj = {};
+              filterObj[ type ] = options.filter;
+              searchQuery.query.filtered.filter.and.push( filterObj );
+            } else {
+              filterObj = {};
+              filterObj[ type ] = options.filter;
+              searchQuery.query.filtered.filter.and.push( filterObj );
+            }
+          } else if ( options.hasOwnProperty( "size" ) ) {
+            searchQuery.size = options.size;
+          }
+        }
+
+        searchOptions = [];
+
+        doXHR( "POST", "/api/makes/search", searchQuery, callback );
+      } else {
+        callback( { error: "No base query was set" } );
+      }
 
       return this;
     }
@@ -140,4 +205,4 @@
   } else {
     global.Make = Make;
   }
-})(this);
+})( this );
