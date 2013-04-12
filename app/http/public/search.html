@@ -16,12 +16,25 @@
           makeAPI: "http://localhost:5000"
         });
 
+        var makeTitle = document.getElementById( "make-title" ),
+            makeAuthor = document.getElementById( "make-author" ),
+            makeBody = document.getElementById( "make-body" ),
+            makeContentType = document.getElementById( "make-content-type" ),
+            makeDifficulty = document.getElementById( "make-difficulty" ),
+            makeLocale = document.getElementById( "make-locale" ),
+            makeUrl = document.getElementById( "make-url" ),
+            makeTags = document.getElementById( "make-tags" ),
+            makeId = document.getElementById( "make-id" ),
+            makeResult = document.getElementById( "make-result" ),
+            searchResult = document.getElementById( "search-result" );
+
         window.grabTags = function() {
           make.all
           .withTags( document.getElementById( "tags" ).value.split( "," ), document.querySelector( "input[name='execution']:checked" ).value )
           .withLimit( document.getElementById( "size" ).value )
           .then(function( data ) {
             console.log(data);
+            searchResult.value = JSON.stringify( data.hits, null, 2 );
           });
         };
 
@@ -32,19 +45,9 @@
           .withAuthor( document.getElementById( "author" ).value )
           .then(function( data ) {
             console.log(data);
+            searchResult.value = JSON.stringify( data.hits, null, 2 );
           });
         };
-
-        var makeTitle = document.getElementById( "make-title" ),
-            makeAuthor = document.getElementById( "make-author" ),
-            makeBody = document.getElementById( "make-body" ),
-            makeContentType = document.getElementById( "make-content-type" ),
-            makeDifficulty = document.getElementById( "make-difficulty" ),
-            makeLocale = document.getElementById( "make-locale" ),
-            makeUrl = document.getElementById( "make-url" ),
-            makeTags = document.getElementById( "make-tags" ),
-            makeId = document.getElementById( "make-id" ),
-            makeResult = document.getElementById( "make-result" );
 
         function getData() {
           return {
@@ -89,7 +92,8 @@
     And<input type="radio" name="execution" value="and" checked/>
     Or<input type="radio" name="execution" value="bool" /><br><br>
     <input type="button" onclick="grabTags();" value="Search Projects By Tags"/><br>
-    <input type="button" onclick="myProjects();" value="Search Projects By Author "/>
+    <input type="button" onclick="myProjects();" value="Search Projects By Author and Tags"/><br>
+    <textarea id="search-result" readonly="true" rows="20" cols="140"></textarea>
     <hr/>
 
     <h2>Create / Update</h2>
@@ -115,7 +119,7 @@
     <input type="button" onclick="createMake();" value="Create a Make" /><br />
     <input type="button" onclick="updateMake();" value="Update a Make" /><br />
     <input type="button" onclick="deleteMake();" value="Delete a Make" /></br />
-    <textarea id="make-result" readonly="true" rows="20" cols="80"></textarea>
+    <textarea id="make-result" readonly="true" rows="20" cols="140"></textarea>
     <hr />
   </body>
 </html>
