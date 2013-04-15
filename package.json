@@ -1,7 +1,31 @@
 {
-  "author": " <swex@mozilla.com>",
-  "name": "MakeAPI",
-  "version": "0.0.0",
+  "name": "makeapi",
+  "version": "0.0.1",
+  "description": "MakeAPI for Webmaker",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jbuck/miu.git"
+  },
+  "author": "Webmaker Product Team <webmaker-staff@mozillafoundation.org>",
+  "contributors": [
+    {
+      "name": "Matthew Schranz",
+      "email": "schranz.m@gmail.com"
+    },
+    {
+      "name": "Simon Wex",
+      "email": "swex@mozilla.com"
+    },
+    {
+      "name": "Christopher De Cairos",
+      "email": "chris@chrisdecairos.ca"
+    }
+  ],
+  "license": "Apache-2.0",
   "dependencies": {
     "express": "~3.0.6",
     "redis": "~0.8.2",
@@ -19,18 +43,14 @@
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
     "node-uuid": "~1.4.0",
-    "mongoosastic": "0.0.11"
+    "mongoosastic": "0.0.11",
+    "nunjucks": "~0.1.8a",
+    "Faker": "0.5.8"
   },
   "devDependencies": {
-    "mocha": "*",
-    "should": "1.2.x"
-  },
-  "scripts": {
-    "test": "foreman run mocha --globals str,_errors,msg test/unit/make.test.js"
-  },
-  "optionalDependencies": {},
-  "engines": {
-    "node": ">=0.8",
-    "npm": "1.1.x"
+    "grunt": "~0.4.1",
+    "grunt-cli": "~0.1.7",
+    "grunt-contrib-csslint": "~0.1.2",
+    "grunt-contrib-jshint": "~0.4.3"
   }
 }
