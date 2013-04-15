@@ -54,6 +54,15 @@
       return this;
     },
 
+    one: {
+      withId: function( id, callback ) {
+        callback = callback || {};
+
+        doXHR( "GET", "/api/make/" + id, callback );
+        return this;
+      }
+    },
+
     all: {
       searchFilters: [],
       size: DEFAULT_SIZE,

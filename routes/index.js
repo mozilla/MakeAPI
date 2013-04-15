@@ -16,6 +16,7 @@ module.exports = function routesCtor() {
     api_search: makeRoutes.search,
     api_create: makeRoutes.create,
     api_update: makeRoutes.update,
-    api_remove: makeRoutes.remove
+    api_remove: makeRoutes.remove,
+    api_find_one: makeRoutes.findById
   };
 };

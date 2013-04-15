@@ -54,6 +54,7 @@ app.delete( "/api/make/:id", routes.api_remove );
 app.post( "/api/make", routes.api_create );
 app.put( "/api/make/:id", routes.api_update );
 app.post( "/api/makes/search", routes.api_search );
+app.get( "/api/make/:id", routes.api_find_one );
 
 app.listen( env.get( "PORT", 3000 ), function() {
   console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 3000 ));

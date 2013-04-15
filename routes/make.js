@@ -77,6 +77,20 @@ module.exports = function() {
           return res.send( results );
         }
       });
+    },
+    findById: function( req, res ) {
+      return Make.findById( req.params.id ).exec(function( err, make ) {
+        if ( err ) {
+          if ( err.name === "CastError" ) {
+            err.message = "The supplied value does not look like a Make ID.";
+            return handleError( res, err, 400 );
+          } else {
+            return handleError( res, err, 500 );
+          }
+        }
+
+        return res.send( make );
+      });
     }
   };
 };
