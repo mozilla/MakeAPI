@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <script src="/js/make-client.js"></script>
+    <script type="text/javascript">
+      document.addEventListener( "DOMContentLoaded", function() {
+        var make = Make({
+          makeAPI: "http://localhost:5000"
+        });
+
+        var makeTitle = document.getElementById( "make-title" ),
+            makeAuthor = document.getElementById( "make-author" ),
+            makeBody = document.getElementById( "make-body" ),
+            makeContentType = document.getElementById( "make-content-type" ),
+            makeDifficulty = document.getElementById( "make-difficulty" ),
+            makeLocale = document.getElementById( "make-locale" ),
+            makeUrl = document.getElementById( "make-url" ),
+            makeTags = document.getElementById( "make-tags" ),
+            makeId = document.getElementById( "make-id" ),
+            makeResult = document.getElementById( "make-result" ),
+            searchResult = document.getElementById( "search-result" );
+
+        window.grabTags = function() {
+          make.all
+          .withTags( document.getElementById( "tags" ).value.split( "," ), document.querySelector( "input[name='execution']:checked" ).value )
+          .withLimit( document.getElementById( "size" ).value )
+          .then(function( data ) {
+            console.log(data);
+            searchResult.value = JSON.stringify( data.hits, null, 2 );
+          });
+        };
+
+        window.myProjects = function() {
+          make.all
+          .withTags( document.getElementById( "tags" ).value.split( "," ), document.querySelector( "input[name='execution']:checked" ).value )
+          .withLimit( document.getElementById( "size" ).value )
+          .withAuthor( document.getElementById( "author" ).value )
+          .then(function( data ) {
+            console.log(data);
+            searchResult.value = JSON.stringify( data.hits, null, 2 );
+          });
+        };
+
+        function getData() {
+          return {
+            title: makeTitle.value,
+            author: makeAuthor.value,
+            body: makeBody.value,
+            contentType: makeContentType.value,
+            difficulty: makeDifficulty.value,
+            locale: makeLocale.value,
+            url: makeUrl.value,
+            tags: makeTags.value.split( "," )
+          };
+        }
+
+        function handleResponse( resp ) {
+          makeId.value = resp._id;
+          makeResult.value = JSON.stringify( resp, null, 2 );
+        }
+
+        window.createMake = function() {
+          make.createMake( getData(), handleResponse );
+        };
+
+        window.updateMake = function() {
+          make.updateMake( makeId.value, getData(), handleResponse )
+        };
+
+        window.deleteMake = function() {
+          make.deleteMake( makeId.value, handleResponse );
+        }
+      }, false );
+    </script>
+
+  </head>
+
+  <body>
+    All inputs accept CSV for multiple search terms<br><br>
+    Tags<input type="text" id="tags"/><br><br>
+    Author (not CSV)<input type="text" id="author"/><br><br>
+    Num<input type="number" id="size" /><br>
+    Execution:<br>
+    And<input type="radio" name="execution" value="and" checked/>
+    Or<input type="radio" name="execution" value="bool" /><br><br>
+    <input type="button" onclick="grabTags();" value="Search Projects By Tags"/><br>
+    <input type="button" onclick="myProjects();" value="Search Projects By Author and Tags"/><br>
+    <textarea id="search-result" readonly="true" rows="20" cols="140"></textarea>
+    <hr/>
+
+    <h2>Create / Update</h2>
+    ID <input type="text" id="make-id" value="" placeholder="ID HERE"><br /><br />
+    Title <input type="text" id="make-title" value="" placeholder="title"><br/>
+    Author <input type="text" id="make-author" value="" placeholder="Author"><br/>
+    Body <input type="text" id="make-body" value="" placeholder="body content"><br/>
+    ContentType
+    <select id="make-content-type">
+      <option text="text/html" value="text/html">text/html</option>
+      <option value="application/butter">application/butter</option>
+    </select><br />
+    Difficulty
+    <select id="make-difficulty">
+      <option value="Beginner">Beginner</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advanced">Advanced</option>
+    </select><br />
+    Locale <input type="text" id="make-locale" value="" placeholder="locale"><br />
+    Url <input type="text" id="make-url" value="" placeholder="URL"><br />
+    Tags(comma separated) <input type="text" id="make-tags" value="" placeholder="tags">
+    <br /></br />
+    <input type="button" onclick="createMake();" value="Create a Make" /><br />
+    <input type="button" onclick="updateMake();" value="Update a Make" /><br />
+    <input type="button" onclick="deleteMake();" value="Delete a Make" /></br />
+    <textarea id="make-result" readonly="true" rows="20" cols="140"></textarea>
+    <hr />
+  </body>
+</html>
