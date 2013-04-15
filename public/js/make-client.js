@@ -65,6 +65,7 @@
 
     all: {
       searchFilters: [],
+      sortBy: [],
       size: DEFAULT_SIZE,
       withAuthor: function( name ) {
         this.searchFilters.push({
@@ -85,12 +86,31 @@
         });
         return this;
       },
+      withTagPrefix: function( prefix ) {
+        this.searchFilters.push({
+          prefix: {
+            "tags": prefix
+          }
+        });
+        return this;
+      },
       withFields: function( fields ) {
         return this;
       },
       withLimit: function( num ) {
         this.size = parseInt( num ) || DEFAULT_SIZE;
         return this;
+      },
+      sortByField: function( field, direction ) {
+        var sortObj;
+        if ( direction ) {
+          sortObj = {};
+          sortObj[ field ] = direction;
+          this.sortBy.push( sortObj );
+        } else {
+          this.sortBy.push( field );
+        }
+        return this
       },
       then: function( callback ) {
         var searchQuery = {
@@ -105,15 +125,20 @@
                 }
               },
               size: this.size
-            },
-            searchFilters = this.searchFilters;
+            };
 
-        for ( var i = 0; i < searchFilters.length; i++ ) {
-          searchQuery.query.filtered.filter.and.push( searchFilters[ i ] );
+        if ( this.searchFilters.length ) {
+          searchQuery.query.filtered.filter = {};
+          searchQuery.query.filtered.filter.and = this.searchFilters;
+        }
+
+        if ( this.sortBy.length ) {
+          searchQuery.sort = this.sortBy;
         }
 
         this.size = DEFAULT_SIZE;
         this.searchFilters = [];
+        this.sortBy = [];
 
         doXHR( "POST", "/api/makes/search", searchQuery, callback );
       }
