@@ -18,9 +18,7 @@ Execute `npm install` in the application directory:
 
 ### Running in Development mode
 
-It's recommended that you use Foreman to run your development server. "Why?", you ask. Here's a great intro: [Introducing Foreman](http://blog.daviddollar.org/2011/05/06/introducing-foreman.html).
-
-#### Configuration for Foreman
+#### Configuration for Node w/ Habitat
 
 Copy and edit your .env file. -- This should never be committed to the repo.
 
@@ -32,19 +30,12 @@ cp .env.sample .env
 
 Before you start your Node.js server, you'll need to run Redis, MongoDB and ElasticSearch
 
-#### Running the Web Process
+#### Running the Node Server
 
-```
-foreman start
-```
+Assuming Redis, MongoDB and ElasticSearch are running at the specified places in your `.env` file simply running `node server.js` from the root should start the server.
+
 
 By default the server will run at http://localhost:5000. You can change this by adding PORT=<port> to your .env file.
-
-## Running the Tests
-
-```
-$ npm test
-```
 
 ## API:
 
@@ -57,7 +48,7 @@ $ npm test
   </tr>
   <tr>
     <th>POST</th>
-    <td>api/make</td>
+    <td>/api/make</td>
     <td>Create Make</td>
     <td>If Post Data is a valid Make, it creates one and returns it with the _id and __v populated.</td>
   </tr>
@@ -80,13 +71,7 @@ $ npm test
     <td>The effect is that of a delete operation, though the Make is actually only marked as deleted using the deletedAt timestamp.</td>
   </tr>
   <tr>
-    <th>GET</th>
-    <td>/api/makes</td>
-    <td>Find All</td>
-    <td><p>Finds all makes by default, can be used to filter and search.</p><p>TODO: Explain Search</p></td>
-  </tr>
-    <tr>
-    <th>GET</th>
+    <th>POST</th>
     <td>/api/makes/search</td>
     <td>Find makes by search criteria</td>
     <td><p>Searches for makes using <a href="http://www.elasticsearch.org">elasticsearch</a>. The body of your request must use <a href="http://www.elasticsearch.org/guide/reference/query-dsl/">elastic search's Query DSL</a> and <code>Content-Type</code> must be <code>application/json</code></p></td>
@@ -127,6 +112,6 @@ $ npm test
 ```
 
 
-### A Playground
+### Searching Test Ground
 
-If you load http://localhost:5000/playground.html, you can use the loaded jQuery to interact with the API.
+If you load http://localhost:5000/search, you can use the basic set of form fields to create/update/delete makes and search based on a few b
