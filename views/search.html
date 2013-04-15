@@ -49,6 +49,13 @@
           });
         };
 
+        window.findProject = function() {
+          make.one.withId( document.getElementById( "search-make-id" ).value, function( data ) {
+            console.log(data);
+            searchResult.value = JSON.stringify( data, null, 2 );
+          });
+        };
+
         function getData() {
           return {
             title: makeTitle.value,
@@ -93,6 +100,8 @@
     Or<input type="radio" name="execution" value="bool" /><br><br>
     <input type="button" onclick="grabTags();" value="Search Projects By Tags"/><br>
     <input type="button" onclick="myProjects();" value="Search Projects By Author and Tags"/><br>
+    ID <input type="text" id="search-make-id" value="" placeholder="ID HERE"><br />
+    <input type="button" onclick="findProject();" value="Find By Id" /><br/>
     <textarea id="search-result" readonly="true" rows="20" cols="140"></textarea>
     <hr/>
 
