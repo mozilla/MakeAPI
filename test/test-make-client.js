@@ -28,8 +28,10 @@ app.get( "/", function( req, res ) {
       "test:project",
       "test:featured"
     ]
-  }, function() {
-    res.send(JSON.stringify( arguments, null, 2 ));
+  }, function( result ) {
+    if ( !result.error ) {
+      res.send(JSON.stringify( arguments, null, 2 ) );
+    }
   })
 });
 

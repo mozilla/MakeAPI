@@ -21,8 +21,14 @@ function doXHRServer( type, path, data, callback ) {
       uri: path,
       json: data
     }, function( err, res, body ) {
+
+      if ( err ) {
+        callback( { error: err } );
+        return;
+      }
+
       if ( res.statusCode === 200 ) {
-        callback( err, body );
+        callback( body );
       }
     });
   }
