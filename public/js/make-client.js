@@ -65,6 +65,7 @@
 
     all: {
       searchFilters: [],
+      sortBy: [],
       size: DEFAULT_SIZE,
       withAuthor: function( name ) {
         this.searchFilters.push({
@@ -85,12 +86,37 @@
         });
         return this;
       },
+      withTagPrefix: function( prefix ) {
+        if ( !prefix || typeof prefix !== "string" ) {
+          return this;
+        }
+        this.searchFilters.push({
+          prefix: {
+            "tags": prefix
+          }
+        });
+        return this;
+      },
       withFields: function( fields ) {
         return this;
       },
-      withLimit: function( num ) {
+      limit: function( num ) {
         this.size = parseInt( num ) || DEFAULT_SIZE;
         return this;
+      },
+      sortByField: function( field, direction ) {
+        if ( !field || typeof field !== "string" ) {
+          return this;
+        }
+        var sortObj;
+        if ( direction ) {
+          sortObj = {};
+          sortObj[ field ] = direction;
+          this.sortBy.push( sortObj );
+        } else {
+          this.sortBy.push( field );
+        }
+        return this
       },
       then: function( callback ) {
         var searchQuery = {
@@ -98,38 +124,40 @@
                 filtered: {
                   query: {
                     match_all: {}
-                  },
-                  filter: {
-                    and: []
                   }
                 }
               },
               size: this.size
-            },
-            searchFilters = this.searchFilters;
+            };
 
-        for ( var i = 0; i < searchFilters.length; i++ ) {
-          searchQuery.query.filtered.filter.and.push( searchFilters[ i ] );
+        if ( this.searchFilters.length ) {
+          searchQuery.query.filtered.filter = {};
+          searchQuery.query.filtered.filter.and = this.searchFilters;
+        }
+
+        if ( this.sortBy.length ) {
+          searchQuery.sort = this.sortBy;
         }
 
         this.size = DEFAULT_SIZE;
         this.searchFilters = [];
+        this.sortBy = [];
 
         doXHR( "POST", "/api/makes/search", searchQuery, callback );
       }
     },
 
-    createMake: function createMake( makeOptions, callback ) {
-      doXHR( "POST", "/api/make", makeOptions, callback );
+    create: function create( options, callback ) {
+      doXHR( "POST", "/api/make", options, callback );
       return this;
     },
 
-    updateMake: function updateMake( id, makeOptions, callback ) {
-      doXHR( "PUT", "/api/make/" + id, makeOptions, callback );
+    update: function update( id, options, callback ) {
+      doXHR( "PUT", "/api/make/" + id, options, callback );
       return this;
     },
 
-    deleteMake: function deleteMake( id, callback ) {
+    remove: function remove( id, callback ) {
       doXHR( "DELETE", "/api/make/" + id, callback );
       return this;
     }
