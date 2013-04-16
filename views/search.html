@@ -75,15 +75,15 @@
         }
 
         window.createMake = function() {
-          make.createMake( getData(), handleResponse );
+          make.create( getData(), handleResponse );
         };
 
         window.updateMake = function() {
-          make.updateMake( makeId.value, getData(), handleResponse )
+          make.update( makeId.value, getData(), handleResponse )
         };
 
         window.deleteMake = function() {
-          make.deleteMake( makeId.value, handleResponse );
+          make.delete( makeId.value, handleResponse );
         }
       }, false );
     </script>

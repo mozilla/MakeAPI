@@ -144,17 +144,17 @@
       }
     },
 
-    createMake: function createMake( makeOptions, callback ) {
-      doXHR( "POST", "/api/make", makeOptions, callback );
+    create: function create( options, callback ) {
+      doXHR( "POST", "/api/make", options, callback );
       return this;
     },
 
-    updateMake: function updateMake( id, makeOptions, callback ) {
-      doXHR( "PUT", "/api/make/" + id, makeOptions, callback );
+    update: function update( id, options, callback ) {
+      doXHR( "PUT", "/api/make/" + id, options, callback );
       return this;
     },
 
-    deleteMake: function deleteMake( id, callback ) {
+    delete: function delete( id, callback ) {
       doXHR( "DELETE", "/api/make/" + id, callback );
       return this;
     }
