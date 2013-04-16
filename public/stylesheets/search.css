@@ -1,0 +1,24 @@
+.input-wrapper {
+  width: 315px;
+  height: 25px;
+  margin-top: 2.5px;
+  font-weight: bold;
+}
+.input-wrapper input,
+.input-wrapper select {
+  float: right;
+}
+
+.input-wrapper select {
+  width: 150px;
+}
+
+.input-wrapper div {
+  height: 25px;
+  float: right;
+  width: 100px;
+}
+
+.input-wrapper div * {
+  float: none;
+}

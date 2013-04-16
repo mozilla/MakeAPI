@@ -87,6 +87,9 @@
         return this;
       },
       withTagPrefix: function( prefix ) {
+        if ( !prefix || typeof prefix !== "string" ) {
+          return this;
+        }
         this.searchFilters.push({
           prefix: {
             "tags": prefix
@@ -97,11 +100,14 @@
       withFields: function( fields ) {
         return this;
       },
-      withLimit: function( num ) {
+      limit: function( num ) {
         this.size = parseInt( num ) || DEFAULT_SIZE;
         return this;
       },
       sortByField: function( field, direction ) {
+        if ( !field || typeof field !== "string" ) {
+          return this;
+        }
         var sortObj;
         if ( direction ) {
           sortObj = {};
@@ -118,9 +124,6 @@
                 filtered: {
                   query: {
                     match_all: {}
-                  },
-                  filter: {
-                    and: []
                   }
                 }
               },
@@ -154,7 +157,7 @@
       return this;
     },
 
-    delete: function delete( id, callback ) {
+    remove: function remove( id, callback ) {
       doXHR( "DELETE", "/api/make/" + id, callback );
       return this;
     }
