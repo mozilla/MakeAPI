@@ -111,7 +111,6 @@ By default the server will run at http://localhost:5000. You can change this by 
   });
 ```
 
-
 ### Searching Test Ground
 
-If you load http://localhost:5000/search, you can use the basic set of form fields to create/update/delete makes and search based on a few b
+If you load http://localhost:5000/search, you can use the basic set of form fields to create/update/delete makes and search based on several fields.
