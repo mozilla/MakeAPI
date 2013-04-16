@@ -16,7 +16,7 @@ app.use( express.bodyParser() );
 app.use( express.cookieParser() );
 
 app.get( "/", function( req, res ) {
-  makeClient.createMake({
+  makeClient.create({
     title: "Test Title",
     author: "test@email.com",
     body: "This is a test body",
