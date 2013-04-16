@@ -2,13 +2,13 @@
   "name": "makeapi",
   "version": "0.0.1",
   "description": "MakeAPI for Webmaker",
-  "main": "index.js",
+  "main": "public/js/make-api.js",
   "scripts": {
     "test": "grunt"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/jbuck/miu.git"
+    "url": "git://github.com/mozilla/MakeAPI.git"
   },
   "author": "Webmaker Product Team <webmaker-staff@mozillafoundation.org>",
   "contributors": [
@@ -38,6 +38,7 @@
     "mongoose-validator": "~0.2.1",
     "mongoosastic": "0.0.11",
     "nunjucks": "~0.1.8a",
+    "request": "~2.11.4",
     "Faker": "0.5.8"
   },
   "devDependencies": {

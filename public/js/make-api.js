@@ -1,31 +1,46 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this file,
+ * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 "use strict";
 
-(function( global ){
+// Search Constants
+var DEFAULT_SIZE = 10;
 
-  // Search Constants
-  const DEFAULT_SIZE = 10;
+// For Versioning
+var apiVersion = "@VERSION",
+    makeAPI, Make, module, request;
 
-  // For Versioning
-  var apiVersion = "@VERSION",
+// Shim module so we can safely check what environment this is being included in.
+module = module || undefined;
 
-      makeAPI,
-      searchOptions = [],
-      querySet = false,
+function doXHRServer( type, path, data, callback ) {
+  if ( module ) {
+    request({
+      method: type,
+      uri: path,
+      json: data
+    }, function( err, res, body ) {
+      if ( res.statusCode === 200 ) {
+        callback( err, body );
+      }
+    });
+  }
+}
 
-  // Shorthand for creating a Make Object
-  Make = function Make( options ) {
-    return new Make.fn.init( options );
-  };
+function doXHR( type, path, data, callback ) {
 
-  function doXHR( type, path, data, callback ) {
+  if ( typeof data === "function" ) {
+    callback = data;
+    data = {};
+  }
+
+  path = makeAPI + path;
+
+  if ( !module ) {
     var request = new XMLHttpRequest();
 
-    if ( typeof data === "function" ) {
-      callback = data;
-      data = {};
-    }
-
-    request.open( type, makeAPI + path, true );
+    request.open( type, path, true );
     request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
     request.onreadystatechange = function() {
       if ( this.readyState === 4 && this.status === 200 ) {
@@ -33,27 +48,16 @@
       }
     };
     request.send( JSON.stringify( data ) );
+  } else {
+    doXHRServer( type, path, data, callback );
   }
+}
 
-  Make.fn = Make.prototype = {
-    make: apiVersion,
-    constructor: Make,
+// Shorthand for creating a Make Object
+Make = function Make( options ) {
+  makeAPI = options.makeAPI;
 
-    /**
-     * [init - initial setup of Make Object]
-     * @param  {[type]} options - Configuration settings for querying the API
-     * @return {[type]}
-     */
-    init: function init( options ) {
-      options = options || {};
-
-      if ( options.makeAPI ) {
-        makeAPI = options.makeAPI;
-      }
-
-      return this;
-    },
-
+  return {
     one: {
       withId: function( id, callback ) {
         callback = callback || {};
@@ -161,18 +165,20 @@
       doXHR( "DELETE", "/api/make/" + id, callback );
       return this;
     }
-
   };
+};
 
-  // Make functions chainable
-  Make.fn.init.prototype = Make.fn;
-
-  // support for requireJS
-  if ( typeof define === "function" && define.amd ) {
-    define(function() {
-      return Make;
-    });
-  } else {
-    global.Make = Make;
-  }
-})( this );
+// Depending on the environment we need to export our "Make" object differently.
+if ( module ) {
+  request = require( "request" );
+  // npm install makeapi support
+  module.exports = Make;
+} else if ( typeof define === "function" && define.amd ) {
+  // Support for requirejs
+  define(function() {
+    return Make;
+  });
+} else {
+  // Support for include on individual pages.
+  window.Make = Make;
+}
