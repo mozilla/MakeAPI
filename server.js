@@ -10,9 +10,10 @@ habitat.load();
 // Generate app variables
 var app = express(),
     env = new habitat(),
-    middleware = require( "./lib/middleware" ),
+    Mongo = require( "./lib/mongoose" )( env ),
+    Make = require( "./lib/models/make" )( Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) );
-    routes = require( "./routes" )( env );
+    routes = require( "./routes" )( Make );
 
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
@@ -37,10 +38,10 @@ require( "express-persona" )( app, {
 });
 
 app.get( "/", routes.index );
-app.delete( "/api/make/:id", routes.remove );
-app.post( "/api/make", routes.create );
-app.put( "/api/make/:id", routes.update );
-app.get( "/api/makes/search", function( req, res, next ) {
+app.delete( "/api/make/:id", Mongo.isDbOnline, routes.remove );
+app.post( "/api/make", Mongo.isDbOnline, routes.create );
+app.put( "/api/make/:id", Mongo.isDbOnline, routes.update );
+app.get( "/api/makes/search", function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();
 }, routes.search );

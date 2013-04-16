@@ -1,14 +1,11 @@
 
 
-module.exports = function routesCtor() {
-  var makeRoutes = require( "./make" )();
+module.exports = function routesCtor( MakeCtor ) {
+  var makeRoutes = require( "./make" )( MakeCtor );
 
   return {
     index: function( req, res ) {
       res.render( "index.html" );
-    },
-    upload: function( req, res ) {
-      res.send( 200 );
     },
     search: makeRoutes.search,
     create: makeRoutes.create,
