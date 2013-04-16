@@ -66,7 +66,7 @@ module.exports = function() {
             }
           });
         }
-        return resp.send( make );
+        return res.send( make );
       });
     },
     search: function( req, res ) {
