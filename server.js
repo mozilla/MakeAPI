@@ -53,7 +53,15 @@ app.get( "/search", routes.search );
 app.delete( "/api/make/:id", routes.api_remove );
 app.post( "/api/make", routes.api_create );
 app.put( "/api/make/:id", routes.api_update );
-app.post( "/api/makes/search", routes.api_search );
+app.post( "/api/makes/search", function( req, res, next ) {
+  res.headers( "Access-Control-Allow-Origin", "*" );
+  next();
+}, routes.api_search );
+app.options( "/api/makes/search", function( req, res ) {
+  res.headers( "Access-Control-Allow-Origin", "*" );
+  res.headers( "Access-Control-Allow-Headers", "Content-Type" );
+  res.send( 200 );
+});
 app.get( "/api/make/:id", routes.api_find_one );
 
 app.listen( env.get( "PORT", 3000 ), function() {
