@@ -5,9 +5,6 @@ var Make = require( "../lib/models/make" );
 module.exports = function() {
 
   function handleError( resp, err, code ){
-    // if ( code >= 500 ){
-    //   logger.error( err );
-    // }
     resp.writeHead( code, { "Content-Type": "application/json" } );
     resp.write( JSON.stringify( err ) );
     return resp.end();
@@ -42,6 +39,8 @@ module.exports = function() {
             make[ field ] = req.body[ field ];
           }
         }
+        make.updatedAt = ( new Date() ).getTime();
+
         make.save(function( err, make ){
           return handleSave( res, err, make );
         });
