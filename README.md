@@ -37,6 +37,10 @@ Assuming Redis, MongoDB and ElasticSearch are running at the specified places in
 
 By default the server will run at http://localhost:5000. You can change this by adding PORT=<port> to your .env file.
 
+#### Testing the API
+
+Right now there is a small node app in `test/test-make-client.js` that will require in the API and make a sample create request. This is reliant upon the the entire repo being included down and not being pulled in through **NPM**. Eventually there will be tests not reliant on this.
+
 ## API:
 
 <table>
