@@ -33,8 +33,9 @@ function makeFake() {
     fakeData.title = Faker.random.catch_phrase_adjective() + " " + Faker.random.bs_adjective() + " " + Faker.random.bs_noun();
     fakeData.email = Faker.Internet.email();
     fakeData.contentType = Faker.Helpers.randomize( ["text/html", "application/butter"] );
-    // A thumbnail, for now
-    fakeData.body = "http://www.lorempixel.com/640/350/" + Faker.Helpers.randomize( IMG_CATEGORIES ) + "/" + Faker.random.number( 10 );
+    fakeData.body = Faker.Lorem.paragraph();
+    fakeData.description = Faker.Lorem.paragraph();
+    fakeData.thumbnail = "http://www.lorempixel.com/640/350/" + Faker.Helpers.randomize( IMG_CATEGORIES ) + "/" + Faker.random.number( 10 );
     fakeData.difficulty = Faker.Helpers.randomize(["Beginner","Intermediate","Advanced"]);
     fakeData.locale = Faker.Helpers.randomize(["en_us","en_ca","en_gb"]);
     fakeData.updatedAt = randomDate(new Date(2011,1,1), new Date ).toString();
