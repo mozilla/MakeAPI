@@ -113,4 +113,14 @@ By default the server will run at http://localhost:5000. You can change this by 
 
 ### Searching Test Ground
 
-If you load http://localhost:5000/search, you can use the basic set of form fields to create/update/delete makes and search based on several fields.
+If you load http://localhost:5000/search, you can use the basic set of form fields to create/update/delete makes and search based on several fields.'
+
+### Deleting all fake data
+
+Clear elastic search:
+
+`curl -XDELETE "http://localhost:9200"`
+
+Find your mongo files and clear them. For example, if your `makeapi.1`, etc. are in `/data/db/`, run:
+
+`rm /data/db/makeapi.*`

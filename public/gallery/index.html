@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Prototype</title>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+  <div class="gallery">
+  </div>
+  <script src="/js/make-api.js"></script>
+  <script>
+    var LIMIT = 30;
+
+    var make = Make({
+      makeAPI: "http://localhost:5000"
+    });
+
+    var _gallery = document.querySelector( ".gallery" );
+
+    function getFeatured( callback ) {
+      make.all
+        .withTags( [ "featured" ] )
+        .limit( LIMIT )
+        .then( callback );
+    }
+
+    function getRemixes( callback ) {
+      make.all
+        .withTags( [ "makeType:popcorn", "makeType:thimble" ] )
+        .limit( LIMIT )
+        .then( callback );
+    }
+
+    function getTemplates( callback ) {
+      make.all
+        .withTags( [ "tutorial" ] )
+        .limit( LIMIT )
+        .then( callback );
+    }
+
+    function setup( data ) {
+      var makes = data.hits;
+
+      var make,
+          el,
+          thumbEl,
+          titleEl;
+
+      for ( var i = 0; i < makes.length; i++ ) {
+        make = makes[ i ];
+        el = document.createElement( "div" );
+        titleEl = document.createElement( "h3" );
+        thumbEl = document.createElement( "img" );
+
+        titleEl.classList.add( "title" );
+        titleEl.innerHTML = make.title + " created by " + make.author;
+        thumbEl.src = make.body;
+
+        el.classList.add( "gallery-item" );
+        el.appendChild( titleEl );
+        el.appendChild( thumbEl );
+        _gallery.appendChild( el );
+      }
+    }
+
+    getFeatured( setup );
+
+  </script>
+</body>
+</html>
+

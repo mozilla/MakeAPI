@@ -1,30 +1,66 @@
-var Faker = require( "Faker" );
+var Faker = require( "Faker" ),
+    IMG_CATEGORIES = [
+        "abstract",
+        "animals",
+        "business",
+        "cats",
+        "city",
+        "foodnight",
+        "life",
+        "fashion",
+        "people",
+        "nature",
+        "sports",
+        "technics",
+        "transport"
+    ];
 
 function randomDate(start, end) {
     return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
 }
 
-module.exports = function() {
-  return {
-    "title": Faker.Lorem.words( Faker.Helpers.randomNumber( 10 ) + 1 ),
-    "email": Faker.Internet.email(),
-    "contentType": Faker.Helpers.randomize( ["text/html", "application/butter" ] ),
-    "body": Faker.Lorem.paragraph(),
-    "difficulty": Faker.Helpers.randomize(["Beginner","Intermediate","Advanced"]),
-    "locale": Faker.Helpers.randomize(["en_us","en_ca","en_gb"]),
-    "updatedAt": randomDate(new Date(2011,1,1), new Date ).toString(),
-    "url": "www.webmadecontent.org/" + Faker.random.number( 9999999999999 ),
-    "remixedFrom": null,
-    "tags": [
-        Faker.Helpers.randomize( ["thimble.wm.org","popcorn.wm.org", Faker.Name.firstName()] ) +
-        ":" + Faker.Helpers.randomize( ["project","featured","favourite"]),
-        Faker.Helpers.randomize( ["thimble.wm.org","popcorn.wm.org", Faker.Name.firstName()] ) +
-        ":" + Faker.Helpers.randomize( ["project","featured","favourite"])
-    ],
-    "author": Faker.Helpers.randomize([
+function maybe( chance, fn ) {
+    var n = ( Faker.random.number( chance ) );
+    if ( n === 0 ) { fn(); } else {
+        return false;
+    }
+}
+
+
+function makeFake() {
+    var fakeData = {};
+
+    fakeData.title = Faker.random.catch_phrase_adjective() + " " + Faker.random.bs_adjective() + " " + Faker.random.bs_noun();
+    fakeData.email = Faker.Internet.email();
+    fakeData.contentType = Faker.Helpers.randomize( ["text/html", "application/butter"] );
+    // A thumbnail, for now
+    fakeData.body = "http://www.lorempixel.com/640/350/" + Faker.Helpers.randomize( IMG_CATEGORIES ) + "/" + Faker.random.number( 10 );
+    fakeData.difficulty = Faker.Helpers.randomize(["Beginner","Intermediate","Advanced"]);
+    fakeData.locale = Faker.Helpers.randomize(["en_us","en_ca","en_gb"]);
+    fakeData.updatedAt = randomDate(new Date(2011,1,1), new Date ).toString();
+    fakeData.url = "http://www.webmaker.org/" + Faker.random.number( 99999999999 );
+    fakeData.remixedFrom = null;
+    fakeData.tags = [];
+    fakeData.author = Faker.Helpers.randomize([
         "matts@mozillafoundation.org", "kate@mozillafoundation.org", "jbuck@mozillafoundation.org",
         "scott@mozillafoundation.org", "surman@mozillafoundation.org", "pomax@mozillafoundation.org",
         Faker.Internet.email()
-    ])
-  };
-};
+    ]);
+
+    // Type
+    fakeData.tags.push( "makeType:" + Faker.Helpers.randomize( [ "thimble", "popcorn", "challenge", "event", "kit", "demo" ] ) );
+    // Featured?
+    maybe( 5, function() {
+        fakeData.tags.push( "featured" );
+    });
+    // Has tutorial?
+    if ( fakeData.contentType !== "external " ) {
+        maybe( 10, function() {
+            fakeData.tags.push( "tutorial" );
+        });
+    }
+    return fakeData;
+}
+
+module.exports = makeFake;
+
