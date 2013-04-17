@@ -4,6 +4,7 @@
   });
 
   var makeTitle = document.getElementById( "make-title" ),
+      makeDescription = document.getElementById( "make-description" ),
       makeAuthor = document.getElementById( "make-author" ),
       makeBody = document.getElementById( "make-body" ),
       makeContentType = document.getElementById( "make-content-type" ),
@@ -63,6 +64,7 @@
   function getData() {
     return {
       title: makeTitle.value,
+      description: makeDescription.value,
       author: makeAuthor.value,
       body: makeBody.value,
       contentType: makeContentType.value,
