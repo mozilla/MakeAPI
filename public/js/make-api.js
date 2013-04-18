@@ -153,7 +153,7 @@ Make = function Make( options ) {
         this.searchFilters = [];
         this.sortBy = [];
 
-        doXHR( "POST", "/api/makes/search", searchQuery, callback );
+        doXHR( "GET", "/api/makes/search", searchQuery, callback );
       }
     },
 

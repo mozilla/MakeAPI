@@ -10,13 +10,10 @@ module.exports = function routesCtor() {
     upload: function( req, res ) {
       res.send( 200 );
     },
-    search: function( req, res ) {
-      res.render( "search.html" );
-    },
-    api_search: makeRoutes.search,
-    api_create: makeRoutes.create,
-    api_update: makeRoutes.update,
-    api_remove: makeRoutes.remove,
-    api_find_one: makeRoutes.findById
+    search: makeRoutes.search,
+    create: makeRoutes.create,
+    update: makeRoutes.update,
+    remove: makeRoutes.remove,
+    findOne: makeRoutes.findById
   };
 };

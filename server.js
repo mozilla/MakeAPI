@@ -35,7 +35,7 @@ app.use( express.cookieParser() );
 
 // Express Configuration
 app.configure(function(){
-  
+
   app.use( connect.session({
     secret: env.get( "SESSION_SECRET" ),
     store: sessionStore,
@@ -49,20 +49,19 @@ app.configure(function(){
 });
 
 app.get( "/", routes.index );
-app.get( "/search", routes.search );
-app.delete( "/api/make/:id", routes.api_remove );
-app.post( "/api/make", routes.api_create );
-app.put( "/api/make/:id", routes.api_update );
-app.post( "/api/makes/search", function( req, res, next ) {
+app.delete( "/api/make/:id", routes.remove );
+app.post( "/api/make", routes.create );
+app.put( "/api/make/:id", routes.update );
+app.get( "/api/makes/search", function( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();
-}, routes.api_search );
+}, routes.search );
 app.options( "/api/makes/search", function( req, res ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   res.header( "Access-Control-Allow-Headers", "Content-Type" );
   res.send( 200 );
 });
-app.get( "/api/make/:id", routes.api_find_one );
+app.get( "/api/make/:id", routes.findOne );
 
 app.listen( env.get( "PORT", 3000 ), function() {
   console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 3000 ));
