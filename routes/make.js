@@ -4,10 +4,8 @@ var Make = require( "../lib/models/make" );
 
 module.exports = function() {
 
-  function handleError( resp, err, code ){
-    resp.writeHead( code, { "Content-Type": "application/json" } );
-    resp.write( JSON.stringify( err ) );
-    return resp.end();
+  function handleError( res, err, code ){
+    return res.json( { error: err }, code );
   }
 
   function handleSave( resp, err, make ){

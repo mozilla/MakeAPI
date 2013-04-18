@@ -49,7 +49,7 @@ function doXHR( type, path, data, callback ) {
     request.open( type, path, true );
     request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
     request.onreadystatechange = function() {
-      if ( this.readyState === 4 && this.status === 200 ) {
+      if ( this.readyState === 4 ) {
         callback( JSON.parse( this.responseText ) );
       }
     };
