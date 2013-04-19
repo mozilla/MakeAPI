@@ -67,7 +67,15 @@ module.exports = function() {
       });
     },
     search: function( req, res ) {
-      Make.search(req.body, function( err, results ){
+      var searchData;
+
+      if ( !req.query[ "s" ] ) {
+        return handleError( res, "Malformed Request", 400 );
+      }
+
+      searchData = JSON.parse( req.query[ "s" ] );
+
+      Make.search(searchData, function( err, results ){
         if ( err ) {
           return handleError( res, err, 500 );
         } else {

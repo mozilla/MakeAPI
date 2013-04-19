@@ -39,6 +39,9 @@ function doXHR( type, path, data, callback ) {
   if ( typeof data === "function" ) {
     callback = data;
     data = {};
+  } else if ( typeof data === "string" ) {
+    path += "?s=" + data;
+    data = {};
   }
 
   path = makeAPI + path;
@@ -153,7 +156,7 @@ Make = function Make( options ) {
         this.searchFilters = [];
         this.sortBy = [];
 
-        doXHR( "GET", "/api/makes/search", searchQuery, callback );
+        doXHR( "GET", "/api/makes/search", escape( JSON.stringify( searchQuery ) ), callback );
       }
     },
 
