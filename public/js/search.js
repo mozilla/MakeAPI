@@ -1,6 +1,6 @@
  document.addEventListener( "DOMContentLoaded", function() {
   var make = Make({
-    makeAPI: "http://localhost:5000"
+    makeAPI: ""
   });
 
   var makeTitle = document.getElementById( "make-title" ),
@@ -11,6 +11,7 @@
       makeDifficulty = document.getElementById( "make-difficulty" ),
       makeLocale = document.getElementById( "make-locale" ),
       makeUrl = document.getElementById( "make-url" ),
+      makeThumbnail = document.getElementById( "make-thumbnail" ),
       makeTags = document.getElementById( "make-tags" ),
       searchTags = document.getElementById( "tags" ),
       searchAuthor = document.getElementById( "author" ),
@@ -71,6 +72,7 @@
       difficulty: makeDifficulty.value,
       locale: makeLocale.value,
       url: makeUrl.value,
+      thumbnail: makeThumbnail.value,
       tags: makeTags.value.split( "," )
     };
   }
