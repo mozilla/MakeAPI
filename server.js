@@ -62,6 +62,7 @@ app.options( "/api/makes/search", function( req, res ) {
   res.send( 200 );
 });
 app.get( "/api/make/:id", routes.findOne );
+app.get( "/healthcheck", routes.healthcheck );
 
 app.listen( env.get( "PORT", 3000 ), function() {
   console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 3000 ));
