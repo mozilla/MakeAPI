@@ -39,6 +39,7 @@
     "mongoosastic": "0.0.11",
     "nunjucks": "~0.1.8a",
     "request": "~2.11.4",
+    "querystring": "0.2.0",
     "Faker": "0.5.8"
   },
   "devDependencies": {

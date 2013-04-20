@@ -9,7 +9,8 @@ var DEFAULT_SIZE = 10;
 
 // For Versioning
 var apiVersion = "@VERSION",
-    makeAPI, Make, module, request;
+    makeAPI, Make, module, request,
+    escape;
 
 // Shim module so we can safely check what environment this is being included in.
 module = module || undefined;
@@ -66,98 +67,157 @@ function doXHR( type, path, data, callback ) {
 Make = function Make( options ) {
   makeAPI = options.makeAPI;
 
-  return {
-    one: {
-      withId: function( id, callback ) {
-        callback = callback || {};
-
-        doXHR( "GET", "/api/make/" + id, callback );
-        return this;
-      }
-    },
-
-    all: {
-      searchFilters: [],
-      sortBy: [],
-      size: DEFAULT_SIZE,
-      withAuthor: function( name ) {
-        this.searchFilters.push({
+  var MakeMap = {
+      author: function( name ) {
+        return {
           query: {
             field: {
               author: name
             }
           }
-        });
-        return this;
+        };
       },
-      withTags: function( tags, execution ) {
-        this.searchFilters.push({
-          terms: {
-            tags: tags,
-            execution: execution
-          }
-        });
-        return this;
-      },
-      withTagPrefix: function( prefix ) {
-        if ( !prefix || typeof prefix !== "string" ) {
-          return this;
+      tags: function( tagOptions ) {
+        if ( typeof tagOptions.tags === "string" ) {
+          tagOptions.tags = [ tagOptions.tags ];
         }
-        this.searchFilters.push({
-          prefix: {
-            "tags": prefix
-          }
-        });
-        return this;
+
+        return {
+          terms: tagOptions
+        };
       },
-      withFields: function( fields ) {
-        return this;
-      },
-      limit: function( num ) {
-        this.size = parseInt( num ) || DEFAULT_SIZE;
-        return this;
-      },
-      sortByField: function( field, direction ) {
-        if ( !field || typeof field !== "string" ) {
-          return this;
-        }
+      field: function( field, direction ) {
         var sortObj;
         if ( direction ) {
           sortObj = {};
           sortObj[ field ] = direction;
-          this.sortBy.push( sortObj );
-        } else {
-          this.sortBy.push( field );
+          return sortObj;
         }
-        return this
+
+        return field;
       },
-      then: function( callback ) {
-        var searchQuery = {
-              query: {
-                filtered: {
-                  query: {
-                    match_all: {}
-                  }
-                }
-              },
-              size: this.size
-            };
-
-        if ( this.searchFilters.length ) {
-          searchQuery.query.filtered.filter = {};
-          searchQuery.query.filtered.filter.and = this.searchFilters;
-        }
-
-        if ( this.sortBy.length ) {
-          searchQuery.sort = this.sortBy;
-        }
-
-        this.size = DEFAULT_SIZE;
-        this.searchFilters = [];
-        this.sortBy = [];
-
-        doXHR( "GET", "/api/makes/search", escape( JSON.stringify( searchQuery ) ), callback );
+      limit: function ( num ) {
+        return parseInt( num ) || DEFAULT_SIZE;
+      },
+      id: function( id ) {
+        return {
+          query: {
+            field: {
+              "_id": id
+            }
+          }
+        };
+      },
+      tagPrefix: function( prefix ) {
+        return {
+          prefix: {
+            "tags": prefix
+          }
+        };
+      },
+      url: function( makeUrl ) {
+        return {
+          term: {
+            url: escape( makeUrl )
+          }
+        };
       }
+    },
+    BASE_QUERY = {
+      query: {
+        filtered: {
+          query: {
+            match_all: {}
+          }
+        }
+      }
+    };
+
+  return {
+    searchFilters: [],
+    sortBy: [],
+    size: DEFAULT_SIZE,
+
+    find: function( options ) {
+      options = options || {};
+
+      for ( var key in options ) {
+        if ( options.hasOwnProperty( key ) && MakeMap[ key ] ) {
+          if ( key === "field" ) {
+            this.sortedBy.push( MakeMap[ key ]( options[ key ] ) );
+          } else {
+            this.searchFilters.push( MakeMap[ key ]( options[ key ] ) );
+          }
+        }
+      }
+
+      return this;
+    },
+
+    author: function( name ) {
+      this.searchFilters.push( MakeMap.author( name ) );
+      return this;
+    },
+
+    tags: function( tagOptions ) {
+      this.searchFilters.push( MakeMap.tags( tagOptions ) );
+      return this;
+    },
+
+    tagPrefix: function( prefix ) {
+      if ( !prefix || typeof prefix !== "string" ) {
+        return this;
+      }
+
+      this.searchFilters.push( MakeMap.tagPrefix( prefix ) );
+
+      return this;
+    },
+
+    limit: function( num ) {
+      this.size = MakeMap.limit( num );
+      return this;
+    },
+
+    field: function( field, direction ) {
+      if ( !field || typeof field !== "string" ) {
+        return this;
+      }
+
+      this.sortBy.push( MakeMap.field( field, direction ) );
+
+      return this;
+    },
+
+    url: function( makeUrl ) {
+      this.searchFilters.push( MakeMap.url( makeUrl ) );
+      return this;
+    },
+
+    id: function( id ) {
+      this.searchFilters.push( MakeMap.id( id ) );
+      return this;
+    },
+
+    then: function( callback ) {
+      var searchQuery = BASE_QUERY;
+
+      searchQuery.size = this.size;
+
+      if ( this.searchFilters.length ) {
+        searchQuery.query.filtered.filter = {};
+        searchQuery.query.filtered.filter.and = this.searchFilters;
+      }
+
+      if ( this.sortBy.length ) {
+        searchQuery.sort = this.sortBy;
+      }
+
+      this.size = DEFAULT_SIZE;
+      this.searchFilters = [];
+      this.sortBy = [];
+
+      doXHR( "GET", "/api/makes/search", escape( JSON.stringify( searchQuery ) ), callback );
     },
 
     create: function create( options, callback ) {
@@ -180,14 +240,17 @@ Make = function Make( options ) {
 // Depending on the environment we need to export our "Make" object differently.
 if ( module ) {
   request = require( "request" );
+  escape = require( "querystring" ).escape;
   // npm install makeapi support
   module.exports = Make;
 } else if ( typeof define === "function" && define.amd ) {
+  escape = window.encodeURIComponent;
   // Support for requirejs
   define(function() {
     return Make;
   });
 } else {
+  escape = window.encodeURIComponent;
   // Support for include on individual pages.
   window.Make = Make;
 }

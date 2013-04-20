@@ -61,7 +61,6 @@ app.options( "/api/makes/search", function( req, res ) {
   res.header( "Access-Control-Allow-Headers", "Content-Type" );
   res.send( 200 );
 });
-app.get( "/api/make/:id", routes.findOne );
 app.get( "/healthcheck", routes.healthcheck );
 
 app.listen( env.get( "PORT", 3000 ), function() {

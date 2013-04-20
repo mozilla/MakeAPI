@@ -23,9 +23,12 @@
       searchResult = document.getElementById( "search-result" );
 
   window.grabTags = function() {
-    make.all
-    .withTags( searchTags.value.split( "," ), document.querySelector( "input[name='execution']:checked" ).value )
-    .sortByField( sortBy.value )
+    make
+    .tags({
+      tags: searchTags.value.split( "," ),
+      execution: document.querySelector( "input[name='execution']:checked" ).value
+    })
+    .field( sortBy.value )
     .limit( size.value )
     .then(function( data ) {
       console.log(data);
@@ -34,11 +37,14 @@
   };
 
   window.myProjects = function() {
-    make.all
-    .withTags( searchTags.value.split( "," ), document.querySelector( "input[name='execution']:checked" ).value )
+    make
+    .tags({
+      tags: searchTags.value.split( "," ),
+      execution: document.querySelector( "input[name='execution']:checked" ).value
+    })
     .limit( size.value )
-    .withAuthor( searchAuthor.value )
-    .sortByField( sortBy.value )
+    .author( searchAuthor.value )
+    .field( sortBy.value )
     .then(function( data ) {
       console.log(data);
       searchResult.value = JSON.stringify( data.hits, null, 2 );
@@ -46,16 +52,18 @@
   };
 
   window.findProject = function() {
-    make.one.withId( document.getElementById( "search-make-id" ).value, function( data ) {
+    make
+    .find( { id: document.getElementById( "search-make-id" ).value } )
+    .then(function( data ) {
       searchResult.value = JSON.stringify( data, null, 2 );
     });
   };
 
   window.prefixSearch = function() {
-    make.all
-    .withTagPrefix( makeTagPrefix.value )
+    make
+    .tagPrefix( makeTagPrefix.value )
     .limit( size.value )
-    .sortByField( sortBy.value )
+    .field( sortBy.value )
     .then(function( data ) {
       console.log( data );
       searchResult.value = JSON.stringify( data.hits, null, 2 );
