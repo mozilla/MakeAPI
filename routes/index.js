@@ -14,6 +14,7 @@ module.exports = function routesCtor() {
     create: makeRoutes.create,
     update: makeRoutes.update,
     remove: makeRoutes.remove,
-    findOne: makeRoutes.findById
+    findOne: makeRoutes.findById,
+    healthcheck: makeRoutes.healthcheck
   };
 };

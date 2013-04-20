@@ -96,6 +96,9 @@ module.exports = function() {
 
         return res.send( make );
       });
+    },
+    healthcheck: function( req, res ) {
+      res.json({ http: "okay" });
     }
   };
 };
