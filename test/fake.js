@@ -31,7 +31,7 @@ function makeFake() {
     var fakeData = {};
 
     fakeData.title = Faker.random.catch_phrase_adjective() + " " + Faker.random.bs_adjective() + " " + Faker.random.bs_noun();
-    fakeData.email = Faker.Internet.email();
+    fakeData.author = Faker.Name.findName();
     fakeData.description = Faker.Lorem.paragraph();
     fakeData.thumbnail = "http://www.lorempixel.com/640/350/" + Faker.Helpers.randomize( IMG_CATEGORIES ) + "/" + Faker.random.number( 10 );
     fakeData.contentType = Faker.Helpers.randomize( [ "application/x-butter", "application/x-thimble", "text/html" ] );
@@ -40,7 +40,7 @@ function makeFake() {
     fakeData.url = "http://www.webmaker.org/" + Faker.random.number( 99999999999 );
     fakeData.remixedFrom = null;
     fakeData.tags = [];
-    fakeData.author = Faker.Helpers.randomize([
+    fakeData.email = Faker.Helpers.randomize([
         "matts@mozillafoundation.org", "kate@mozillafoundation.org", "jbuck@mozillafoundation.org",
         "scott@mozillafoundation.org", "surman@mozillafoundation.org", "pomax@mozillafoundation.org",
         Faker.Internet.email()

@@ -27,7 +27,7 @@ nunjucksEnv.express( app );
 // Don't send the "X-Powered-By: Express" header
 app.disable( "x-powered-by" );
 
-app.use( express.logger() );
+app.use( express.logger( env.get( "NODE_ENV" ) === "production" ? "" : "dev" ) );
 app.use( express.compress() );
 app.use( express.static( path.join( __dirname + "/public" ) ) );
 app.use( express.bodyParser() );
