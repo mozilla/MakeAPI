@@ -92,7 +92,6 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
     data: {
       "url": "http://thimble.webmadecontent.org/abcd.html",
       "contentType": "text/html",
-      "goal": "The goal of this lesson is to learn about img, p and blah tags...",
       "title": "Animal something-or-other",
       "locale": "en_us",
       "tags": ["awesome"],
