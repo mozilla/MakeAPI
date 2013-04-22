@@ -19,9 +19,7 @@ app.get( "/", function( req, res ) {
   makeClient.create({
     title: "Test Title",
     author: "test@email.com",
-    body: "This is a test body",
     contentType: "application/butter",
-    difficulty: "Beginner",
     locale: "en_us",
     url: "www.test.com",
     tags: [
