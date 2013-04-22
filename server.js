@@ -12,6 +12,7 @@ var app = express(),
     env = new habitat(),
     Mongo = require( "./lib/mongoose" )( env ),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
+    middleware = require( "./lib/middleware" )( env ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) ),
     routes = require( "./routes" )( Make );
 
@@ -38,9 +39,9 @@ require( "express-persona" )( app, {
 });
 
 app.get( "/", routes.index );
-app.del( "/api/make/:id", Mongo.isDbOnline, routes.remove );
-app.post( "/api/make", Mongo.isDbOnline, routes.create );
-app.put( "/api/make/:id", Mongo.isDbOnline, routes.update );
+app.post( "/api/make", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.create );
+app.put( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.update );
+app.del( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.remove );
 app.get( "/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();

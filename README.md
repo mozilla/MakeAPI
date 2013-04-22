@@ -18,7 +18,7 @@ Execute `npm install` in the application directory:
 
 #### Configuration for Node w/ Habitat
 
-Copy and edit your .env file. -- This should never be committed to the repo.
+Copy and edit your .env file. -- This should never be committed to the repo. Ensure that you fill in the ALLOWED_USERS variable.
 
 ```
 cp .env.sample .env
@@ -60,36 +60,35 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
     <th>Path</th>
     <th>Action</th>
     <th>Notes</th>
+    <th>Auth Required</th>
   </tr>
   <tr>
     <th>POST</th>
     <td>/api/make</td>
     <td>Create Make</td>
-    <td>If Post Data is a valid Make, it creates one and returns it with the _id and __v populated.</td>
-  </tr>
-  <tr>
-    <th>GET</th>
-    <td>/api/make/:id</td>
-    <td>Find a single Make</td>
-    <td>Expects the last path element to be a valid ObjectId</td>
+    <td> If Post Data is a valid Make, it creates one and returns it with the _id and __v populated.</td>
+    <td><strong>Yes</strong></td>
   </tr>
   <tr>
     <th>PUT</th>
     <td>/api/make/:id</td>
     <td>Update a Make</td>
     <td>The Make must already exist and the __v must be the same as the current version on the server. This is an implementation of optimistic locking.</td>
+    <td><strong>Yes</strong></td>
   </tr>
   <tr>
     <th>DELETE</th>
     <td>/api/make/:id</td>
     <td>Deletes a Make</td>
     <td>The effect is that of a delete operation, though the Make is actually only marked as deleted using the deletedAt timestamp.</td>
+    <td><strong>Yes</strong></td>
   </tr>
   <tr>
     <th>GET</th>
     <td>/api/makes/search</td>
     <td>Find makes by search criteria</td>
     <td><p>Searches for makes using <a href="http://www.elasticsearch.org">elasticsearch</a>. The Query String of your request must be stringified and escaped JSON, and must use <a href="http://www.elasticsearch.org/guide/reference/query-dsl/">elastic search's Query DSL</a>. e.g. <code>/api/makes/search/?s=URLENCODEDSEARCHSTRING</code></p></td>
+    <td><strong>No</strong></td>
   </tr>
 </table>
 
@@ -128,6 +127,10 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
 ### Searching Test Ground
 
 If you load http://localhost:5000/search.html, you can use the basic set of form fields to create/update/delete makes and search based on several fields.'
+
+### Generating fake data
+
+Running `AUTH=<username>:<password node test/post.js` from the root of the repository will generate one thousand fake records in your database. Be sure to include a valid username and password as an environment variable.
 
 ### Deleting all fake data
 
