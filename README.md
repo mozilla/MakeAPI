@@ -4,8 +4,6 @@
 
 ### Prerequisites
 
-- [Redis](http://redis.io/)
-  - Once installed, run this with `redis-server`
 - [MongoDB](http://www.mongodb.org/)
   - Run this with `mongod`
 - [ElasticSearch](http://www.elasticsearch.org/)
@@ -28,11 +26,11 @@ cp .env.sample .env
 
 #### Running the Services
 
-Before you start your Node.js server, you'll need to run Redis, MongoDB and ElasticSearch
+Before you start your Node.js server, you'll need to run MongoDB and ElasticSearch
 
 #### Running the Node Server
 
-Assuming Redis, MongoDB and ElasticSearch are running at the specified places in your `.env` file simply running `node server.js` from the root should start the server.
+Assuming MongoDB and ElasticSearch are running at the specified places in your `.env` file simply running `node server.js` from the root should start the server.
 
 
 By default the server will run at http://localhost:5000. You can change this by adding PORT=<port> to your .env file.

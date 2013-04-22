@@ -2,10 +2,7 @@
 var express = require( "express" ),
     habitat = require( "habitat" ),
     nunjucks = require( "nunjucks" ),
-    path = require( "path" ),
-    redisUrl = require( "redis-url" ),
-    connect = require( "connect" ),
-    RedisStore = require( "connect-redis" )( connect );
+    path = require( "path" );
 
 // Load config from ".env"
 habitat.load();
@@ -17,11 +14,6 @@ var app = express(),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) );
     routes = require( "./routes" )( env );
 
-var sessionStore = new RedisStore({
-      client: redisUrl.connect(),
-      maxAge: ( 30 ).days
-    });
-
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
 // Don't send the "X-Powered-By: Express" header
@@ -32,20 +24,16 @@ app.use( express.compress() );
 app.use( express.static( path.join( __dirname + "/public" ) ) );
 app.use( express.bodyParser() );
 app.use( express.cookieParser() );
+app.use( express.cookieSession({
+  secret: env.get( "SESSION_SECRET" ),
+  cookie: {
+    maxAge: 2678400000 // 31 days. Persona saves session data for 1 month
+  },
+  proxy: true
+}));
 
-// Express Configuration
-app.configure(function(){
-
-  app.use( connect.session({
-    secret: env.get( "SESSION_SECRET" ),
-    store: sessionStore,
-    cookie: { maxAge: ( 365 ).days }
-  }));
-
-  require( "express-persona" )( app, {
-    audience: env.get( "PERSONA_AUDIENCE" )
-  });
-
+require( "express-persona" )( app, {
+  audience: env.get( "PERSONA_AUDIENCE" )
 });
 
 app.get( "/", routes.index );
