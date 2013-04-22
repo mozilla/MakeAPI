@@ -93,10 +93,10 @@
   };
 
   window.updateMake = function() {
-    make.update( makeId.value, getData(), handleResponse )
+    make.update( makeId.value, getData(), handleResponse );
   };
 
   window.deleteMake = function() {
     make.remove( makeId.value, handleResponse );
-  }
+  };
 }, false );
