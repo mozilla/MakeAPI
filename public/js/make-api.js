@@ -77,6 +77,13 @@ Make = function Make( options ) {
           }
         };
       },
+      email: function( name ) {
+        return {
+          term: {
+            email: name
+          }
+        };
+      },
       tags: function( tagOptions ) {
         if ( typeof tagOptions.tags === "string" ) {
           tagOptions.tags = [ tagOptions.tags ];
@@ -156,6 +163,11 @@ Make = function Make( options ) {
 
     author: function( name ) {
       this.searchFilters.push( MakeMap.author( name ) );
+      return this;
+    },
+
+    email: function( name ) {
+      this.searchFilters.push( MakeMap.email( name ) );
       return this;
     },
 
