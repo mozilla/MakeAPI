@@ -114,7 +114,7 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
 
 ### Searching Test Ground
 
-If you load http://localhost:5000/search, you can use the basic set of form fields to create/update/delete makes and search based on several fields.'
+If you load http://localhost:5000/search.html, you can use the basic set of form fields to create/update/delete makes and search based on several fields.'
 
 ### Deleting all fake data
 
