@@ -70,10 +70,8 @@ Make = function Make( options ) {
   var MakeMap = {
       author: function( name ) {
         return {
-          query: {
-            field: {
-              author: name
-            }
+          term: {
+            author: name
           }
         };
       },
