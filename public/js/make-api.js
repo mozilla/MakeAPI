@@ -79,10 +79,9 @@ Make = function Make( options ) {
       },
       email: function( name ) {
         return {
-          query: {
-            field: {
-              email: name
-            }
+          term: {
+            email: name
+          }
           }
         };
       },
