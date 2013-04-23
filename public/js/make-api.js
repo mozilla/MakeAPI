@@ -82,7 +82,6 @@ Make = function Make( options ) {
           term: {
             email: name
           }
-          }
         };
       },
       tags: function( tagOptions ) {
