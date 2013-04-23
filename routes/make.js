@@ -1,3 +1,5 @@
+/*jslint node: true */
+
 "use strict";
 
 var Make;
@@ -71,11 +73,11 @@ module.exports = function( makeCtor ) {
     search: function( req, res ) {
       var searchData, filters, filter;
 
-      if ( !req.query[ "s" ] ) {
+      if ( !req.query.s ) {
         return handleError( res, "Malformed Request", 400 );
       }
 
-      searchData = JSON.parse( req.query[ "s" ] );
+      searchData = JSON.parse( req.query.s );
       filters = searchData.query.filtered.filter.and;
 
       // We have to unescape any URLs that were present in the data

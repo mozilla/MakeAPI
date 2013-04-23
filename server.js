@@ -38,7 +38,7 @@ require( "express-persona" )( app, {
 });
 
 app.get( "/", routes.index );
-app.delete( "/api/make/:id", Mongo.isDbOnline, routes.remove );
+app.del( "/api/make/:id", Mongo.isDbOnline, routes.remove );
 app.post( "/api/make", Mongo.isDbOnline, routes.create );
 app.put( "/api/make/:id", Mongo.isDbOnline, routes.update );
 app.get( "/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
