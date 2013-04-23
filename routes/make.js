@@ -1,8 +1,10 @@
 "use strict";
 
-var Make = require( "../lib/models/make" );
+var Make;
 
-module.exports = function() {
+module.exports = function( makeCtor ) {
+
+  Make = makeCtor;
 
   function handleError( res, err, code ){
     return res.json( { error: err }, code );
