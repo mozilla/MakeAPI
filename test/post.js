@@ -3,15 +3,24 @@ var querystring = require('querystring'),
     fs = require('fs'),
     fakeIt = require('./fake'),
 
+    auth = process.env.AUTH,
+
     postData, postOptions, postReq,
 
     numberOfRecords = 1000;
+
+if ( !auth ) {
+  console.error( "ERROR: You need credentials to write to the database. " +
+    "Specify the AUTH environment variable" );
+  return;
+}
 
 for ( var i = 0; i < numberOfRecords; i++ ) {
 
   var postData = querystring.stringify( fakeIt() );
 
   postOptions = {
+    auth: auth,
     host: 'localhost',
     port: '5000',
     path: '/api/make',
