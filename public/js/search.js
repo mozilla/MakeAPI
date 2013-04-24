@@ -29,8 +29,11 @@
     })
     .field( sortBy.value )
     .limit( size.value )
-    .then(function( data ) {
-      console.log(data);
+    .then(function( error, data ) {
+      if ( error ) {
+        searchResult.value = JSON.stringify( error, null, 2 );
+        return;
+      }
       searchResult.value = JSON.stringify( data.hits, null, 2 );
     });
   };
@@ -44,8 +47,11 @@
     .limit( size.value )
     .author( searchAuthor.value )
     .field( sortBy.value )
-    .then(function( data ) {
-      console.log(data);
+    .then(function( error, data ) {
+      if ( error ) {
+        searchResult.value = JSON.stringify( error, null, 2 );
+        return;
+      }
       searchResult.value = JSON.stringify( data.hits, null, 2 );
     });
   };
@@ -53,7 +59,11 @@
   window.findProject = function() {
     make
     .find( { id: document.getElementById( "search-make-id" ).value } )
-    .then(function( data ) {
+    .then(function( error, data ) {
+      if ( error ) {
+        searchResult.value = JSON.stringify( error, null, 2 );
+        return;
+      }
       searchResult.value = JSON.stringify( data, null, 2 );
     });
   };
@@ -63,8 +73,11 @@
     .tagPrefix( makeTagPrefix.value )
     .limit( size.value )
     .field( sortBy.value )
-    .then(function( data ) {
-      console.log( data );
+    .then(function( error, data ) {
+      if ( error ) {
+        searchResult.value = JSON.stringify( error, null, 2 );
+        return;
+      }
       searchResult.value = JSON.stringify( data.hits, null, 2 );
     });
   };
@@ -83,7 +96,11 @@
     };
   }
 
-  function handleResponse( resp ) {
+  function handleResponse( error, resp ) {
+    if ( error ) {
+      makeResult.value = JSON.stringify( error, null, 2 );
+      return;
+    }
     makeId.value = resp._id;
     makeResult.value = JSON.stringify( resp, null, 2 );
   }
