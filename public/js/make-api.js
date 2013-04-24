@@ -23,12 +23,12 @@
       }, function( err, res, body ) {
 
         if ( err ) {
-          callback( { error: err } );
+          callback( err );
           return;
         }
 
         if ( res.statusCode === 200 ) {
-          callback( body );
+          callback( err, body );
         }
       });
     }
