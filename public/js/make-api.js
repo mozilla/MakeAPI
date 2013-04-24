@@ -52,8 +52,16 @@
       request.open( type, path, true );
       request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
       request.onreadystatechange = function() {
+        var response,
+            error;
         if ( this.readyState === 4 ) {
-          callback( JSON.parse( this.responseText ) );
+          response = JSON.parse( this.responseText ),
+          error = response.error;
+          if ( error ) {
+            callback( error );
+          } else {
+            callback( error, response );
+          }
         }
       };
       request.send( JSON.stringify( data ) );

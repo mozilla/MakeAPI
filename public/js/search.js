@@ -83,7 +83,11 @@
     };
   }
 
-  function handleResponse( resp ) {
+  function handleResponse( error, resp ) {
+    if ( error ) {
+      makeResult.value = JSON.stringify( error, null, 2 );
+      return;
+    }
     makeId.value = resp._id;
     makeResult.value = JSON.stringify( resp, null, 2 );
   }
