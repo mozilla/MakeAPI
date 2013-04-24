@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
-(function () {
+(function ( module ) {
   "use strict";
 
   // Search Constants
@@ -9,7 +9,7 @@
 
   // For Versioning
   var apiVersion = "@VERSION",
-      makeAPI, Make, module, request;
+      makeAPI, Make, request;
 
   // Shim module so we can safely check what environment this is being included in.
   module = module || undefined;
@@ -154,7 +154,7 @@
         if ( direction ) {
           sortObj = {};
           sortObj[ field ] = direction;
-          field = sortObj
+          field = sortObj;
         }
 
         this.sortBy.push( field );
@@ -234,4 +234,4 @@
     // Support for include on individual pages.
     window.Make = Make;
   }
-}());
+}( module ));
