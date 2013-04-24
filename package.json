@@ -42,5 +42,9 @@
     "grunt": "~0.4.1",
     "grunt-contrib-csslint": "~0.1.2",
     "grunt-contrib-jshint": "~0.4.3"
+  },
+  "engines": {
+    "node": ">=0.8.23",
+    "npm":  ">=1.2.10"
   }
 }

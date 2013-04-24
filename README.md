@@ -35,6 +35,19 @@ Assuming MongoDB and ElasticSearch are running at the specified places in your `
 
 By default the server will run at http://localhost:5000. You can change this by adding PORT=<port> to your .env file.
 
+#### Deploying to Heroku
+
+If you don't have **Heroku Toolbelt** get it here https://toolbelt.heroku.com/.
+
+You will need an account with heroku. If you don't have one, sign up for one at http://heroku.com.
+
+1. Ensure you are logged in first by running `heroku login`
+2. Go to the root of the repo.
+3. `heroku create`
+4. Add the necessary plugins using `heroku addons:add <plugin name>`. Supported MongoDB plugins are: MongoHQ and MongoLab. Supported Elastic Search plugins are: FoundElasticSearch and Bonsai. Installing a plugin should automatically set up the required environment variables.
+5. You should be ready to push up to heroku! `git push heroku featureBranchName:master`. If all goes well, your app should deploy. You can see logs by running `heroku logs` and you can open the MakeAPI in a browser by running `heroku open`.
+
+
 #### Testing the API
 
 Right now there is a small node app in `test/test-make-client.js` that will require in the API and make a sample create request. This is reliant upon the the entire repo being included down and not being pulled in through **NPM**. Eventually there will be tests not reliant on this.
@@ -73,10 +86,10 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
     <td>The effect is that of a delete operation, though the Make is actually only marked as deleted using the deletedAt timestamp.</td>
   </tr>
   <tr>
-    <th>POST</th>
+    <th>GET</th>
     <td>/api/makes/search</td>
     <td>Find makes by search criteria</td>
-    <td><p>Searches for makes using <a href="http://www.elasticsearch.org">elasticsearch</a>. The body of your request must use <a href="http://www.elasticsearch.org/guide/reference/query-dsl/">elastic search's Query DSL</a> and <code>Content-Type</code> must be <code>application/json</code></p></td>
+    <td><p>Searches for makes using <a href="http://www.elasticsearch.org">elasticsearch</a>. The Query String of your request must be stringified and escaped JSON, and must use <a href="http://www.elasticsearch.org/guide/reference/query-dsl/">elastic search's Query DSL</a>. e.g. <code>/api/makes/search/?s=URLENCODEDSEARCHSTRING</code></p></td>
   </tr>
 </table>
 

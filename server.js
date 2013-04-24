@@ -11,8 +11,8 @@ habitat.load();
 var app = express(),
     env = new habitat(),
     Mongo = require( "./lib/mongoose" )( env ),
-    Make = require( "./lib/models/make" )( Mongo.mongoInstance() ),
-    nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) );
+    Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
+    nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) ),
     routes = require( "./routes" )( Make );
 
 // Enable template rendering with nunjucks
