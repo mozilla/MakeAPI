@@ -1,6 +1,6 @@
 {
   "name": "makeapi",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "MakeAPI for Webmaker",
   "main": "public/js/make-api.js",
   "scripts": {
@@ -45,6 +45,6 @@
   },
   "engines": {
     "node": ">=0.8.23",
-    "npm":  ">=1.2.10"
+    "npm": ">=1.2.10"
   }
 }
