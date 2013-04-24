@@ -81,7 +81,11 @@
             }
           };
         },
-        tags: function( tagOptions ) {
+        tags: function( options ) {
+          var tagOptions = {
+            tags: options.tags || options,
+            execution: options.execution || "and"
+          };
           if ( typeof tagOptions.tags === "string" ) {
             tagOptions.tags = [ tagOptions.tags ];
           }
