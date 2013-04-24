@@ -29,7 +29,6 @@
   "dependencies": {
     "express": "~3.0.6",
     "habitat": "0.4.1",
-    "express-persona": "~0.0.7",
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
     "mongoosastic": "0.0.11",
