@@ -66,80 +66,15 @@
   Make = function Make( options ) {
     makeAPI = options.makeAPI;
 
-    var MakeMap = {
-        author: function( name ) {
-          return {
-            term: {
-              author: name
-            }
-          };
-        },
-        email: function( name ) {
-          return {
-            term: {
-              email: name
-            }
-          };
-        },
-        tags: function( options ) {
-          var tagOptions = {
-            tags: options.tags || options,
-            execution: options.execution || "and"
-          };
-          if ( typeof tagOptions.tags === "string" ) {
-            tagOptions.tags = [ tagOptions.tags ];
-          }
-
-          return {
-            terms: tagOptions
-          };
-        },
-        field: function( field, direction ) {
-          var sortObj;
-          if ( direction ) {
-            sortObj = {};
-            sortObj[ field ] = direction;
-            return sortObj;
-          }
-
-          return field;
-        },
-        limit: function ( num ) {
-          return parseInt( num, 10 ) || DEFAULT_SIZE;
-        },
-        id: function( id ) {
-          return {
-            query: {
-              field: {
-                "_id": id
+    var BASE_QUERY = {
+          query: {
+            filtered: {
+              query: {
+                match_all: {}
               }
             }
-          };
-        },
-        tagPrefix: function( prefix ) {
-          return {
-            prefix: {
-              "tags": prefix
-            }
-          };
-        },
-        url: function( makeUrl ) {
-          return {
-            term: {
-              url: escape( makeUrl )
-            }
-          };
-        }
-      },
-      BASE_QUERY = {
-        query: {
-          filtered: {
-            query: {
-              match_all: {}
-            }
           }
-        }
-      };
+        };
 
     return {
       searchFilters: [],
@@ -150,12 +85,8 @@
         options = options || {};
 
         for ( var key in options ) {
-          if ( options.hasOwnProperty( key ) && MakeMap[ key ] ) {
-            if ( key === "field" ) {
-              this.sortedBy.push( MakeMap[ key ]( options[ key ] ) );
-            } else {
-              this.searchFilters.push( MakeMap[ key ]( options[ key ] ) );
-            }
+          if ( options.hasOwnProperty( key ) && this[ key ] ) {
+            this[ key ]( options[ key ] );
           }
         }
 
@@ -163,17 +94,35 @@
       },
 
       author: function( name ) {
-        this.searchFilters.push( MakeMap.author( name ) );
+        this.searchFilters.push({
+          term: {
+            author: name
+          }
+        });
         return this;
       },
 
       email: function( name ) {
-        this.searchFilters.push( MakeMap.email( name ) );
+        this.searchFilters.push({
+          term: {
+            email: name
+          }
+        });
         return this;
       },
 
-      tags: function( tagOptions ) {
-        this.searchFilters.push( MakeMap.tags( tagOptions ) );
+      tags: function( options ) {
+        var tagOptions = {
+              tags: options.tags || options,
+              execution: options.execution || "and"
+            };
+        if ( typeof tagOptions.tags === "string" ) {
+          tagOptions.tags = [ tagOptions.tags ];
+        }
+
+        this.searchFilters.push({
+          terms: tagOptions
+        });
         return this;
       },
 
@@ -182,13 +131,17 @@
           return this;
         }
 
-        this.searchFilters.push( MakeMap.tagPrefix( prefix ) );
+        this.searchFilters.push({
+          prefix: {
+            "tags": prefix
+          }
+        });
 
         return this;
       },
 
       limit: function( num ) {
-        this.size = MakeMap.limit( num );
+        this.size = parseInt( num, 10 ) || DEFAULT_SIZE;
         return this;
       },
 
@@ -197,18 +150,35 @@
           return this;
         }
 
-        this.sortBy.push( MakeMap.field( field, direction ) );
+        var sortObj;
+        if ( direction ) {
+          sortObj = {};
+          sortObj[ field ] = direction;
+          field = sortObj
+        }
+
+        this.sortBy.push( field );
 
         return this;
       },
 
       url: function( makeUrl ) {
-        this.searchFilters.push( MakeMap.url( makeUrl ) );
+        this.searchFilters.push({
+          term: {
+            url: escape( makeUrl )
+          }
+        });
         return this;
       },
 
       id: function( id ) {
-        this.searchFilters.push( MakeMap.id( id ) );
+        this.searchFilters.push({
+          query: {
+            field: {
+              "_id": id
+            }
+          }
+        });
         return this;
       },
 
