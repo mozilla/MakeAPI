@@ -1,6 +1,10 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+// Shim module so we can safely check what environment this is being included in.
+var module = module || undefined;
+
 (function ( module ) {
   "use strict";
 
@@ -10,9 +14,6 @@
   // For Versioning
   var apiVersion = "@VERSION",
       makeAPI, Make, request;
-
-  // Shim module so we can safely check what environment this is being included in.
-  module = module || undefined;
 
   function doXHRServer( type, path, data, callback ) {
     if ( module ) {
