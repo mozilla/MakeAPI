@@ -1,3 +1,9 @@
+
+// New Relic Server monitoring support
+if ( process.env.NEW_RELIC_ENABLED ) {
+  require( "newrelic" );
+}
+
 // Bring in all your require modules
 var express = require( "express" ),
     habitat = require( "habitat" ),
