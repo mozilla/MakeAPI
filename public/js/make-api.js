@@ -12,35 +12,64 @@ var module = module || undefined;
   var DEFAULT_SIZE = 10;
 
   var Make,
+      xhrStrategy,
       apiURL,
       auth,
       user,
       pass,
       request;
 
-  function doXHRServer( type, path, data, callback ) {
-    if ( module ) {
-      request({
-        auth: {
-          username: user,
-          password: pass,
-          sendImmediately: true
-        },
-        method: type,
-        uri: path,
-        json: data
-      }, function( err, res, body ) {
+  function nodeStrategy( type, path, data, callback ) {
+    request({
+      auth: {
+        username: user,
+        password: pass,
+        sendImmediately: true
+      },
+      method: type,
+      uri: path,
+      json: data
+    }, function( err, res, body ) {
 
-        if ( err ) {
-          callback( err );
-          return;
-        }
+      if ( err ) {
+        callback( err );
+        return;
+      }
 
-        if ( res.statusCode === 200 ) {
-          callback( err, body );
-        }
-      });
+      if ( res.statusCode === 200 ) {
+        callback( null, body );
+      }
+    });
+  }
+
+  function browserStrategy( type, path, data, callback ) {
+    var request = new XMLHttpRequest();
+
+    if ( auth ) {
+      request.open( type, path, true, user, pass );
+    } else {
+      request.open( type, path, true );
     }
+    request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
+    request.onreadystatechange = function() {
+      var response,
+          error;
+      if ( this.readyState === 4 ) {
+        try {
+          response = JSON.parse( this.responseText ),
+          error = response.error;
+        }
+        catch ( exception ) {
+          error = exception;
+        }
+        if ( error ) {
+          callback( error );
+        } else {
+          callback( null, response );
+        }
+      }
+    };
+    request.send( JSON.stringify( data ) );
   }
 
   function doXHR( type, path, data, callback ) {
@@ -55,32 +84,7 @@ var module = module || undefined;
 
     path = apiURL + path;
 
-    if ( !module ) {
-      var request = new XMLHttpRequest();
-
-      if ( auth ) {
-        request.open( type, path, true, user, pass );
-      } else {
-        request.open( type, path, true );
-      }
-      request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
-      request.onreadystatechange = function() {
-        var response,
-            error;
-        if ( this.readyState === 4 ) {
-          response = JSON.parse( this.responseText ),
-          error = response.error;
-          if ( error ) {
-            callback( error );
-          } else {
-            callback( error, response );
-          }
-        }
-      };
-      request.send( JSON.stringify( data ) );
-    } else {
-      doXHRServer( type, path, data, callback );
-    }
+    xhrStrategy( type, path, data, callback );
   }
 
   // Shorthand for creating a Make Object
@@ -161,7 +165,7 @@ var module = module || undefined;
 
         this.searchFilters.push({
           prefix: {
-            "tags": prefix
+            tags: prefix
           }
         });
 
@@ -203,7 +207,7 @@ var module = module || undefined;
         this.searchFilters.push({
           query: {
             field: {
-              "_id": id
+              _id: id
             }
           }
         });
@@ -249,17 +253,21 @@ var module = module || undefined;
   };
 
   // Depending on the environment we need to export our "Make" object differently.
-  if ( module ) {
+  if ( typeof module !== 'undefined' && module.exports ) {
     request = require( "request" );
     // npm install makeapi support
+    xhrStrategy = nodeStrategy;
     module.exports = Make;
-  } else if ( typeof define === "function" && define.amd ) {
-    // Support for requirejs
-    define(function() {
-      return Make;
-    });
   } else {
-    // Support for include on individual pages.
-    window.Make = Make;
+    xhrStrategy = browserStrategy;
+    if ( typeof define === "function" && define.amd ) {
+      // Support for requirejs
+      define(function() {
+        return Make;
+      });
+    } else {
+      // Support for include on individual pages.
+      window.Make = Make;
+    }
   }
 }( module ));
