@@ -1,7 +1,7 @@
 
-// New Relic Server monitoring support - configure using Environment Variables
-if ( process.env.NEW_RELIC_NO_CONFIG_FILE && process.env.NEW_RELIC_LICENSE_KEY ) {
-  require( 'newrelic' );
+// New Relic Server monitoring support
+if ( process.env.NEW_RELIC_ENABLED ) {
+  require( "newrelic" );
 }
 
 // Bring in all your require modules

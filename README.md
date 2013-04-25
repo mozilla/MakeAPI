@@ -35,6 +35,13 @@ Assuming MongoDB and ElasticSearch are running at the specified places in your `
 
 By default the server will run at http://localhost:5000. You can change this by adding PORT=<port> to your .env file.
 
+
+#### New Relic
+
+To enable New Relic, set the `NEW_RELIC_ENABLED` environment variable and add a config file, or set the relevant environment variables.
+
+For more information on configuring New Relic, see: https://github.com/newrelic/node-newrelic/#configuring-the-agent
+
 #### Deploying to Heroku
 
 If you don't have **Heroku Toolbelt** get it here https://toolbelt.heroku.com/.

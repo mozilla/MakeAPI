@@ -32,10 +32,10 @@
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
     "mongoosastic": "0.0.11",
+    "newrelic": "0.9.20",
     "nunjucks": "~0.1.8a",
     "request": "2.20.0",
     "querystring": "0.2.0",
-    "newrelic": "0.9.20",
     "Faker": "0.5.8"
   },
   "devDependencies": {
