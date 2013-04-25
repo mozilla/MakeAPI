@@ -21,6 +21,11 @@ var module = module || undefined;
   function doXHRServer( type, path, data, callback ) {
     if ( module ) {
       request({
+        auth: {
+          username: user,
+          password: pass,
+          sendImmediately: true
+        },
         method: type,
         uri: path,
         json: data
