@@ -1,6 +1,7 @@
  document.addEventListener( "DOMContentLoaded", function() {
   var make = Make({
-    makeAPI: ""
+    apiURL: "",
+    auth: "testuser:password"
   });
 
   var makeTitle = document.getElementById( "make-title" ),

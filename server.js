@@ -34,10 +34,6 @@ app.use( express.cookieSession({
   proxy: true
 }));
 
-require( "express-persona" )( app, {
-  audience: env.get( "PERSONA_AUDIENCE" )
-});
-
 app.get( "/", routes.index );
 app.post( "/api/make", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.create );
 app.put( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.update );
