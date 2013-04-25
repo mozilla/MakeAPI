@@ -35,6 +35,7 @@
     "nunjucks": "~0.1.8a",
     "request": "2.20.0",
     "querystring": "0.2.0",
+    "newrelic": "0.9.20",
     "Faker": "0.5.8"
   },
   "devDependencies": {

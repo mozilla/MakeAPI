@@ -1,3 +1,9 @@
+
+// New Relic Server monitoring support - configure using Environment Variables
+if ( process.env.NEW_RELIC_NO_CONFIG_FILE && process.env.NEW_RELIC_LICENSE_KEY ) {
+  require( 'newrelic' );
+}
+
 // Bring in all your require modules
 var express = require( "express" ),
     habitat = require( "habitat" ),
