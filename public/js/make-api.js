@@ -173,7 +173,11 @@ var module = module || undefined;
       },
 
       limit: function( num ) {
-        this.size = parseInt( num, 10 ) || DEFAULT_SIZE;
+        var val = +num;
+        // Check that val is a positive, whole number
+        if ( typeof val === "number" && val > 0 && val % 1 === 0 ) {
+          this.size = val;
+        }
         return this;
       },
 
