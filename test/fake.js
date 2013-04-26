@@ -38,7 +38,6 @@ function makeFake() {
     fakeData.locale = Faker.Helpers.randomize(["en_us","en_ca","en_gb"]);
     fakeData.updatedAt = randomDate(new Date(2011,1,1), new Date ).toString();
     fakeData.url = "http://www.webmaker.org/" + Faker.random.number( 99999999999 );
-    fakeData.remixedFrom = null;
     fakeData.tags = [];
     fakeData.email = Faker.Helpers.randomize([
         "matts@mozillafoundation.org", "kate@mozillafoundation.org", "jbuck@mozillafoundation.org",
