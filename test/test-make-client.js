@@ -1,36 +1,65 @@
 // Bring in all your require modules
 var express = require( "express" ),
-    path = require( "path" );
+    path = require( "path" ),
+    faker = require( "Faker" );
 
 // Generate app variables
 var app = express(),
     Make = require( "../public/js/make-api" ),
     makeClient = Make({
-      makeAPI: "http://localhost:5000"
-    });
+      apiURL: "http://localhost:5000",
+      auth: "testuser:password"
+    }),
+    IMG_CATEGORIES = [
+      "abstract",
+      "animals",
+      "business",
+      "cats",
+      "city",
+      "foodnight",
+      "life",
+      "fashion",
+      "people",
+      "nature",
+      "sports",
+      "technics",
+      "transport"
+    ];
 
-app.use( express.logger() );
+app.use( express.logger( "dev" ) );
 app.use( express.compress() );
 app.use( express.static( path.join( __dirname + "/public" ) ) );
 app.use( express.bodyParser() );
 app.use( express.cookieParser() );
 
+function randomDate(start, end) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+}
+
 app.get( "/", function( req, res ) {
   makeClient.create({
-    title: "Test Title",
-    author: "test@email.com",
-    contentType: "application/butter",
-    locale: "en_us",
-    url: "www.test.com",
+    title: faker.random.catch_phrase_adjective() + " " + faker.random.bs_adjective() + " " + faker.random.bs_noun(),
+    author: faker.Name.findName(),
+    description: faker.Lorem.paragraph(),
+    thumbnail: "http://www.lorempixel.com/640/350/" + faker.Helpers.randomize( IMG_CATEGORIES ) + "/" + faker.random.number( 10 ),
+    contentType: faker.Helpers.randomize( [ "application/x-butter", "application/x-thimble", "text/html" ] ),
+    locale: faker.Helpers.randomize(["en_us","en_ca","en_gb"]),
+    url: "http://www.webmaker.org/" + faker.random.number( 99999999999 ),
+    remixedFrom: null,
+    email: faker.Helpers.randomize([
+        "matts@mozillafoundation.org", "kate@mozillafoundation.org", "jbuck@mozillafoundation.org",
+        "scott@mozillafoundation.org", "surman@mozillafoundation.org", "pomax@mozillafoundation.org",
+        faker.Internet.email()
+    ]),
     tags: [
       "test:project",
       "test:featured"
     ]
-  }, function( result ) {
-    if ( !result.error ) {
-      res.send(JSON.stringify( arguments, null, 2 ) );
+  }, function( error, result ) {
+    if ( !error ) {
+      res.send(JSON.stringify( result, null, 2 ) );
     }
-  })
+  });
 });
 
 app.listen( 4000, function() {
