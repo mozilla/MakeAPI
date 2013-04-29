@@ -6,12 +6,15 @@ var querystring = require('querystring'),
     http = require('http'),
     fs = require('fs'),
     fakeIt = require('./fake'),
+    habitat = require('habitat'),
 
     auth = process.env.AUTH,
 
     postData, postOptions, postReq,
 
     numberOfRecords = 1000;
+
+habitat.load();
 
 if ( !auth ) {
   console.error( "ERROR: You need credentials to write to the database. " +
@@ -25,8 +28,8 @@ for ( var i = 0; i < numberOfRecords; i++ ) {
 
   postOptions = {
     auth: auth,
-    host: 'localhost',
-    port: '5000',
+    host: process.env.HOST,
+    port: process.env.PORT,
     path: '/api/make',
     method: 'POST',
     headers: {
