@@ -20,6 +20,7 @@
       searchTags = document.getElementById( "tags" ),
       searchAuthor = document.getElementById( "author" ),
       size = document.getElementById( "size" ),
+      page = document.getElementById( "page" ),
       makeTagPrefix = document.getElementById( "tag-prefix" ),
       makeId = document.getElementById( "make-id" ),
       sortBy = document.getElementById( "sort-field" ),
@@ -34,6 +35,7 @@
     })
     .field( sortBy.value )
     .limit( size.value )
+    .page( page.value || 1 )
     .then(function( error, data ) {
       if ( error ) {
         searchResult.value = JSON.stringify( error, null, 2 );
@@ -50,6 +52,7 @@
       execution: document.querySelector( "input[name='execution']:checked" ).value
     })
     .limit( size.value )
+    .page( page.value || 1 )
     .author( searchAuthor.value )
     .field( sortBy.value )
     .then(function( error, data ) {
@@ -77,6 +80,7 @@
     make
     .tagPrefix( makeTagPrefix.value )
     .limit( size.value )
+    .page( page.value || 1 )
     .field( sortBy.value )
     .then(function( error, data ) {
       if ( error ) {
