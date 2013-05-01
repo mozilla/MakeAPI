@@ -23,7 +23,7 @@ var app = express(),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
     middleware = require( "./lib/middleware" )( env ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) ),
-    routes = require( "./routes" )( Make );
+    routes = require( "./routes" )( Make, env );
 
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
