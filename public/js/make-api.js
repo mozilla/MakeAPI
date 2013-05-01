@@ -112,6 +112,7 @@ var module = module || undefined;
       searchFilters: [],
       sortBy: [],
       size: DEFAULT_SIZE,
+      pageNum: 1,
 
       find: function( options ) {
         options = options || {};
@@ -181,6 +182,14 @@ var module = module || undefined;
         return this;
       },
 
+      page: function( num ) {
+        var val = +num;
+        if ( typeof val === "number" && val > 0 && val % 1 === 0 ) {
+          this.pageNum = val;
+        }
+        return this;
+      },
+
       field: function( field, direction ) {
         if ( !field || typeof field !== "string" ) {
           return this;
@@ -222,6 +231,7 @@ var module = module || undefined;
         var searchQuery = BASE_QUERY;
 
         searchQuery.size = this.size;
+        searchQuery.from = ( this.pageNum - 1 ) * this.size;
 
         if ( this.searchFilters.length ) {
           searchQuery.query.filtered.filter = {};
@@ -233,6 +243,7 @@ var module = module || undefined;
         }
 
         this.size = DEFAULT_SIZE;
+        this.pageNum = 1;
         this.searchFilters = [];
         this.sortBy = [];
 
