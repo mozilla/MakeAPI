@@ -6,21 +6,23 @@
 
 "use strict";
 
-var Make;
+module.exports = function( makeCtor, env ) {
 
-module.exports = function( makeCtor ) {
+  var Make = makeCtor,
+      metrics = require( "../lib/metrics" )( env ),
+      querystring = require( "querystring" );
 
-  Make = makeCtor;
-
-  function handleError( res, err, code ){
+  function handleError( res, err, code, type ){
+    metrics.increment( "make." + type + ".error" );
     return res.json( { error: err }, code );
   }
 
-  function handleSave( resp, err, make ){
+  function handleSave( resp, err, make, type ){
     if ( err ) {
-      return handleError( resp, err, 400 );
+      handleError( resp, err, 400, type );
     } else {
-      return resp.send( make );
+      metrics.increment( "make." + type + ".success" );
+      resp.json( make );
     }
   }
 
@@ -34,7 +36,7 @@ module.exports = function( makeCtor ) {
       }
 
       make.save(function( err, make ){
-        return handleSave( res, err, make );
+        return handleSave( res, err, make, "create" );
       });
     },
     update: function( req, res ) {
@@ -48,7 +50,7 @@ module.exports = function( makeCtor ) {
         make.updatedAt = ( new Date() ).getTime();
 
         make.save(function( err, make ){
-          return handleSave( res, err, make );
+          handleSave( res, err, make, "update" );
         });
       });
     },
@@ -57,46 +59,54 @@ module.exports = function( makeCtor ) {
         if ( err ) {
           if ( err.name === "CastError" ) {
             err.message = "The supplied value does not look like a Make ID.";
-            return handleError( res, err, 400 );
+            return handleError( res, err, 400, "remove" );
           } else {
-            return handleError( res, err, 500 );
+            return handleError( res, err, 500, "remove" );
           }
         }
 
-        if ( make ) {
-          make.deletedAt = ( new Date() ).getTime();
-          make.save(function( err, make ) {
-            if ( err ) {
-              return handleError( res, err, 500 );
-            }
-          });
+        if ( !make ) {
+          return handleError( res, "The supplied id does not exist.", 404, "remove" );
         }
-        return res.send( make );
+
+        make.deletedAt = Date.now();
+        make.save( function( err, make ) {
+          if ( err ) {
+            return handleError( res, err, 500, "remove" );
+          }
+          metrics.increment( "make.remove.success" );
+          res.json( make );
+        });
       });
     },
     search: function( req, res ) {
       var searchData, filters, filter;
 
       if ( !req.query.s ) {
-        return handleError( res, "Malformed Request", 400 );
+        return handleError( res, "Malformed Request", 400, "search" );
       }
 
-      searchData = JSON.parse( req.query.s );
+      try {
+        searchData = JSON.parse( req.query.s );
+      } catch ( err ) {
+        return handleError ( res, "Unable to parse search data.", 400, "search" );
+      }
       filters = searchData.query.filtered.filter.and;
 
       // We have to unescape any URLs that were present in the data
       for ( var i = 0; i < filters.length; i++ ) {
         filter = filters[ i ];
         if ( filter.term && filter.term.url ) {
-          filter.term.url = require( "querystring" ).unescape( filter.term.url );
+          filter.term.url = querystring.unescape( filter.term.url );
         }
       }
 
       Make.search( searchData, function( err, results ) {
         if ( err ) {
-          return handleError( res, err, 500 );
+          return handleError( res, err, 500, "search" );
         } else {
-          return res.send( results );
+          metrics.increment( "make.search.success" );
+          res.json( results );
         }
       });
     },

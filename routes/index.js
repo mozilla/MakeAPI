@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 
-module.exports = function routesCtor( MakeCtor ) {
-  var makeRoutes = require( "./make" )( MakeCtor );
+module.exports = function routesCtor( MakeCtor, env ) {
+  var makeRoutes = require( "./make" )( MakeCtor, env );
 
   return {
     index: function( req, res ) {
