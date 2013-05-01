@@ -24,7 +24,10 @@ if ( !auth ) {
 
 for ( var i = 0; i < numberOfRecords; i++ ) {
 
-  var postData = querystring.stringify( fakeIt() );
+  var postData = querystring.stringify({
+    make: querystring.stringify( fakeIt() ),
+    maker: "cade"
+  });
 
   postOptions = {
     auth: auth,

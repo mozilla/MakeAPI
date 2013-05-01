@@ -30,9 +30,9 @@ module.exports = function( makeCtor, env ) {
     create: function( req, res ) {
       var make = new Make();
 
-      for ( var i in Make.publicFields ){
+      for ( var i in Make.publicFields ) {
         var field = Make.publicFields[ i ];
-        make[ field ] = req.body[ field ];
+        make[ field ] = req.body.make[ field ];
       }
 
       make.createdAt = Date.now();
@@ -45,8 +45,8 @@ module.exports = function( makeCtor, env ) {
       Make.findById( req.params.id ).where( "deletedAt", null ).exec(function( err, make ) {
         for ( var i in Make.publicFields ) {
           var field = Make.publicFields[ i ];
-          if ( req.body[ field ] ) {
-            make[ field ] = req.body[ field ];
+          if ( req.body.make[ field ] ) {
+            make[ field ] = req.body.make[ field ];
           }
         }
         make.updatedAt = ( new Date() ).getTime();
