@@ -37,8 +37,11 @@ var module = module || undefined;
       }
 
       if ( res.statusCode === 200 ) {
-        callback( null, body );
+        return callback( null, body );
       }
+
+      // There was an error of some sort, and the body contains the reason why
+      callback( body.error );
     });
   }
 
