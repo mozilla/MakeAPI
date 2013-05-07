@@ -36,7 +36,6 @@ function makeFake() {
     fakeData.thumbnail = "http://www.lorempixel.com/640/350/" + Faker.Helpers.randomize( IMG_CATEGORIES ) + "/" + Faker.random.number( 10 );
     fakeData.contentType = Faker.Helpers.randomize( [ "application/x-butter", "application/x-thimble", "text/html" ] );
     fakeData.locale = Faker.Helpers.randomize(["en_us","en_ca","en_gb"]);
-    fakeData.updatedAt = randomDate(new Date(2011,1,1), new Date ).toString();
     fakeData.url = "http://www.webmaker.org/" + Faker.random.number( 99999999999 );
     fakeData.tags = [];
     fakeData.email = Faker.Helpers.randomize([
