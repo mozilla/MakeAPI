@@ -35,6 +35,8 @@ module.exports = function( makeCtor, env ) {
         make[ field ] = req.body[ field ];
       }
 
+      make.createdAt = Date.now();
+
       make.save(function( err, make ){
         return handleSave( res, err, make, "create" );
       });

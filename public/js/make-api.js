@@ -193,7 +193,7 @@ var module = module || undefined;
         return this;
       },
 
-      field: function( field, direction ) {
+      sortByField: function( field, direction ) {
         if ( !field || typeof field !== "string" ) {
           return this;
         }
@@ -249,7 +249,6 @@ var module = module || undefined;
         this.pageNum = 1;
         this.searchFilters = [];
         this.sortBy = [];
-
         doXHR( "GET", "/api/makes/search", escape( JSON.stringify( searchQuery ) ), callback );
       },
 

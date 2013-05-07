@@ -33,7 +33,7 @@
       tags: searchTags.value.split( "," ),
       execution: document.querySelector( "input[name='execution']:checked" ).value
     })
-    .field( sortBy.value )
+    .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
     .limit( size.value )
     .page( page.value || 1 )
     .then(function( error, data ) {
@@ -54,7 +54,7 @@
     .limit( size.value )
     .page( page.value || 1 )
     .author( searchAuthor.value )
-    .field( sortBy.value )
+    .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
     .then(function( error, data ) {
       if ( error ) {
         searchResult.value = JSON.stringify( error, null, 2 );
@@ -81,7 +81,7 @@
     .tagPrefix( makeTagPrefix.value )
     .limit( size.value )
     .page( page.value || 1 )
-    .field( sortBy.value )
+    .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
     .then(function( error, data ) {
       if ( error ) {
         searchResult.value = JSON.stringify( error, null, 2 );
