@@ -234,7 +234,15 @@ var module = module || undefined;
               }
             }
           }
-        };
+        },
+        DELETED_FILTER = [
+          {
+            missing: {
+              field: "deletedAt",
+              null_value: true
+            }
+          }
+        ];
 
     return {
       searchFilters: [],
@@ -403,7 +411,9 @@ var module = module || undefined;
         searchQuery.from = ( this.pageNum - 1 ) * this.size;
 
         if ( this.searchFilters.length ) {
-          searchQuery.query.filtered.filter.and = this.searchFilters;
+          searchQuery.query.filtered.filter.and = DELETED_FILTER.concat( this.searchFilters );
+        } else {
+          searchQuery.query.filtered.filter.and = DELETED_FILTER;
         }
 
         if ( this.sortBy.length ) {
