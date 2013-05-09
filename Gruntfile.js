@@ -8,12 +8,17 @@ module.exports = function( grunt ) {
       ]
     },
     jshint: {
+      options: {
+        es5: true,
+        newcap: false
+      },
       files: [
         "Gruntfile.js",
         "server.js",
         "lib/**/*.js",
         "public/**/*.js",
-        "routes/**/*.js"
+        "routes/**/*.js",
+        "test/**/*.js"
       ]
     }
   });

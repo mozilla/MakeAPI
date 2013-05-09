@@ -37,7 +37,7 @@ app.use( express.bodyParser() );
 app.use( express.cookieParser() );
 
 function randomDate(start, end) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
 app.get( "/", function( req, res ) {
