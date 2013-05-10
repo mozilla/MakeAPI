@@ -10,7 +10,10 @@ module.exports = function( makeCtor, env ) {
 
   var Make = makeCtor,
       metrics = require( "../lib/metrics" )( env ),
-      querystring = require( "querystring" );
+      querystring = require( "querystring" ),
+      request = require( "request" ),
+      MIN_HEIGHT = 208,
+      MIN_WIDTH = 370;
 
   function handleError( res, err, code, type ){
     metrics.increment( "make." + type + ".error" );
@@ -26,6 +29,28 @@ module.exports = function( makeCtor, env ) {
     }
   }
 
+  function handleThumbnail( url, callback ) {
+    request({
+      method: "GET",
+      uri: "http://node-hubble.mofostaging.net/img/" + url
+    }, function( err, res, body ) {
+      var data = JSON.parse( body );
+
+      if ( data.error ) {
+        return callback( { error: data.error }, 415 );
+      }
+
+      if ( data.size.width < MIN_WIDTH ) {
+        return callback( { error: "Thumbnail width was too small. Must be at least " + MIN_WIDTH }, 415 );
+      }
+
+      if ( data.size.height < MIN_HEIGHT ) {
+        return callback( { error: "Thumbnail heigt was too small. Must be at least " + MIN_HEIGHT }, 415 );
+      }
+
+    });
+  }
+
   return {
     create: function( req, res ) {
       var make = new Make();
@@ -35,11 +60,23 @@ module.exports = function( makeCtor, env ) {
         make[ field ] = req.body[ field ];
       }
 
-      make.createdAt = Date.now();
+      function finish( error, code ) {
+        if ( error ) {
+          return handleError( res, error, code, "create" );
+        }
 
-      make.save(function( err, make ){
-        return handleSave( res, err, make, "create" );
-      });
+        make.createdAt = Date.now();
+
+        make.save(function( err, make ){
+          return handleSave( res, err, make, "create" );
+        });
+      }
+
+      if ( make.thumbnail ) {
+        handleThumbnail( make.thumbnail, finish );
+      } else {
+        finish();
+      }
     },
     update: function( req, res ) {
       Make.findById( req.params.id ).where( "deletedAt", null ).exec(function( err, make ) {
@@ -49,11 +86,24 @@ module.exports = function( makeCtor, env ) {
             make[ field ] = req.body[ field ];
           }
         }
-        make.updatedAt = ( new Date() ).getTime();
 
-        make.save(function( err, make ){
-          handleSave( res, err, make, "update" );
-        });
+        function finish( error, code ) {
+          if ( error ) {
+            return handleError( res, error, code, "update" );
+          }
+
+          make.updatedAt = ( new Date() ).getTime();
+
+          make.save(function( err, make ){
+            handleSave( res, err, make, "update" );
+          });
+        }
+
+        if ( make.thumbnail ) {
+          handleThumbnail( make.thumbnail, finish );
+        } else {
+          finish();
+        }
       });
     },
     remove: function( req, res ) {
