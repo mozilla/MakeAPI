@@ -73,21 +73,30 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
     <th>POST</th>
     <td>/api/make</td>
     <td>Create Make</td>
-    <td> If Post Data is a valid Make, it creates one and returns it with the _id and __v populated.</td>
+    <td>
+      If post data contains a valid Make, it creates one and returns it with the _id.
+      Post Data should be a JSON object specifying the id of the authenticated webmaker creating the Make<br />
+      <code>{ "maker": "username", make: { ... } } </code>
+    </td>
     <td><strong>Yes</strong></td>
   </tr>
   <tr>
     <th>PUT</th>
     <td>/api/make/:id</td>
     <td>Update a Make</td>
-    <td>The Make must already exist and the __v must be the same as the current version on the server. This is an implementation of optimistic locking.</td>
+    <td>The Make must already exist. This is an implementation of optimistic locking.
+    Post Data should be a JSON object specifying the id of the authenticated webmaker updating the Make and a flag indicating if the user has admin priveliges.<br />
+      <code>{ "maker": "username", make: { ... } }
+    </td>
     <td><strong>Yes</strong></td>
   </tr>
   <tr>
     <th>DELETE</th>
     <td>/api/make/:id</td>
     <td>Deletes a Make</td>
-    <td>The effect is that of a delete operation, though the Make is actually only marked as deleted using the deletedAt timestamp.</td>
+    <td>The effect is that of a delete operation, though the Make is actually only marked as deleted using the <code>deletedAt</code> timestamp.
+    Post Data should be a JSON object specifying the id of the authenticated webmaker deleting the Make and a flag indicating if the user has admin priveliges.<br />
+      <code>{ "maker": "username" }</td>
     <td><strong>Yes</strong></td>
   </tr>
   <tr>
@@ -100,27 +109,27 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
 </table>
 
 
-### Example Usage
+### Consuming the API
 
 ```
   jQuery.ajax({
     type: "POST",
     url: "/api/make",
     data: {
-      "url": "http://thimble.webmadecontent.org/abcd.html",
-      "contentType": "text/html",
-      "title": "Animal something-or-other",
-      "locale": "en_us",
-      "tags": ["awesome"],
-      "privateTags": ["webmaker.org:project", "skill:css"],
-      "description": "This handy HTML template makes it easy to quickly create your own text and image mashup, then publish it for sharing via Facebook, Tumblr or any web page. Your 15 seconds of internet fame await!",
-      "author": "swex@mozilla.com",
-      "contentAuthor": "swex@mozilla.com",
-      "remixedFrom": null,
-      "published": true
+      "user": "webmaker@host.com",
+      "make": {
+        "url": "http://thimble.webmadecontent.org/abcd.html",
+        "contentType": "application/x-thimble",
+        "title": "Animal something-or-other",
+        "locale": "en_us",
+        "tags": [ "awesome", "#css", "thimble.webmaker.org:project" ],
+        "description": "This handy HTML template makes it easy to quickly create your own text and image mashup, then publish it for sharing via Facebook, Tumblr or any web page. Your 15 seconds of internet fame await!",
+        "author": "swex@mozilla.com",
+        "remixedFrom": null
+      }
     },
     success: function(data, textStatus, jqXHR){
-      console.log("Post resposne:");
+      console.log("Post response:");
       console.dir(data);
       console.log(textStatus);
       console.dir(jqXHR);
@@ -130,6 +139,8 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
     }
   });
 ```
+A client library has been written to aid in the consumption of this API.
+Documentation can be found [here](public/js/README.md)
 
 ### Searching Test Ground
 

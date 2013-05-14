@@ -2,10 +2,8 @@
    - License, v. 2.0. If a copy of the MPL was not distributed with this
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 
-
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
     <meta charset="utf-8">
     <title>
@@ -19,6 +17,15 @@
   </head>
   <body>
     <h1>Make API Client Library Test Page</h1>
+    <div class="input-wrapper">
+      MakeAPI URL: <input type="text" id="makeURL" value="http://makeapi.mofostaging.net" />
+    </div>
+    <div class="input-wrapper">
+      Username: <input type="text" id="username" />
+    </div>
+    <div class="input-wrapper">
+      Password: <input type="password" id="password" />
+    </div>
     <h2>Search</h2>
     <div class="input-wrapper">
       Tags(CSV)<input type="text" id="tags"/>
@@ -96,9 +103,15 @@
     <div class="input-wrapper">
       Tags(CSV) <input type="text" id="make-tags" value="" placeholder="tags">
     </div>
+    <div class="input-wrapper">
+      AppTags(CSV) <input type="text" id="app-tags" placeholder="App Tags"/>
+    </div>
     <br />
     <div class="input-wrapper">
       ID(update and delete) <input type="text" id="make-id" value="" placeholder="ID HERE">
+    </div>
+    <div class="input-wrapper">
+      webmaker ID: <input type="text" id="webmaker-id" value="" placeholder="webmakerID">
     </div>
     <br />
     <input type="button" onclick="createMake();" value="Create a Make" /><br />

@@ -36,6 +36,7 @@ app.use( express.static( path.join( __dirname + "/public" ) ) );
 app.use( express.bodyParser() );
 app.use( express.cookieParser() );
 app.use( express.cookieSession({
+  key: "express.sid",
   secret: env.get( "SESSION_SECRET" ),
   cookie: {
     maxAge: 2678400000 // 31 days. Persona saves session data for 1 month
@@ -44,8 +45,8 @@ app.use( express.cookieSession({
 }));
 
 app.get( "/", routes.index );
-app.post( "/api/make", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.create );
-app.put( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.update );
+app.post( "/api/make", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, middleware.prefixAuth, routes.create );
+app.put( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, middleware.prefixAuth, routes.update );
 app.del( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.remove );
 app.get( "/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
