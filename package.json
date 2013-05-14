@@ -23,7 +23,11 @@
     {
       "name": "Christopher De Cairos",
       "email": "chris@chrisdecairos.ca"
-    }
+    },
+    {
+      "name": "Ali Al Dallal",
+      "email": "ali.aldallal@senecacollege.ca"
+    },
   ],
   "license": "MPL-2.0",
   "dependencies": {
