@@ -43,6 +43,11 @@ module.exports = function( makeCtor, env ) {
     },
     update: function( req, res ) {
       Make.findById( req.params.id ).where( "deletedAt", null ).exec(function( err, make ) {
+
+        if ( !make ) {
+          return handleError( res, "This record doesn't exist.", 404, "update" );
+        }
+
         for ( var i in Make.publicFields ) {
           var field = Make.publicFields[ i ];
           if ( req.body[ field ] ) {
