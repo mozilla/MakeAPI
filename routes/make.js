@@ -44,6 +44,10 @@ module.exports = function( makeCtor, env ) {
     update: function( req, res ) {
       Make.findById( req.params.id ).where( "deletedAt", null ).exec(function( err, make ) {
 
+        if ( err ) {
+          return handleError( res, "Unable to query user database", 500, "update" );
+        }
+
         if ( !make ) {
           return handleError( res, "This record doesn't exist.", 404, "update" );
         }
