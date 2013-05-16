@@ -1,6 +1,6 @@
 {
   "name": "makeapi",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MakeAPI for Webmaker",
   "main": "./lib/api.js",
   "scripts": {
@@ -28,6 +28,7 @@
   "license": "MPL-2.0",
   "dependencies": {
     "express": "~3.0.6",
+    "Faker": "0.5.8",
     "habitat": "0.4.1",
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
@@ -40,7 +41,6 @@
     "webmaker-loginapi": "0.1.0"
   },
   "devDependencies": {
-    "Faker": "0.5.8",
     "grunt": "~0.4.1",
     "grunt-contrib-csslint": "~0.1.2",
     "grunt-contrib-jshint": "~0.4.3"
