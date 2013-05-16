@@ -3,10 +3,8 @@
 .gitignore
 Gruntfile.js
 server.js
-lib/*
 node_modules/*
 public/js/search.js
 public/stylesheets/*
 routes/*
 views/*
-test/*
