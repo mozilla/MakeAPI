@@ -6,5 +6,4 @@ server.js
 node_modules/*
 public/js/search.js
 public/stylesheets/*
-routes/*
 views/*
