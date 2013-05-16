@@ -116,12 +116,14 @@ module.exports = {
     }, startFakeAPI );
   },
 
-  stop: function() {
+  stop: function( callback ) {
+    callback = callback || function(){};
     if ( !server ) {
       return;
     }
-    server.close();
-    Fogin.stop();
-    server = null;
+    server.close( function() {
+      server = null;
+      Fogin.stop( callback );
+    });
   }
 };
