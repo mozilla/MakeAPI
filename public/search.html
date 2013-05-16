@@ -6,14 +6,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>
-    </title>
+    <title>Demo Search Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <script src="/js/make-api.js"></script>
-    <script src="/js/search.js"></script>
-    <link rel="stylesheet" type="text/css" href="/stylesheets/search.css">
+    <script src="js/make-api.js"></script>
+    <script src="js/search.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/search.css">
   </head>
   <body>
     <h1>Make API Client Library Test Page</h1>
@@ -70,54 +69,5 @@
     <input type="button" onclick="findProject();" value="Find By Id" />
     <br/><br/>
     <textarea id="search-result" readonly="true" rows="20" cols="140"></textarea>
-
-    <h2>Create / Update / Delete</h2>
-    <div class="input-wrapper">
-      Title <input type="text" id="make-title" value="" placeholder="Title">
-    </div>
-    <div class="input-wrapper">
-      Description <input type="text" id="make-description" value="" placeholder="Description">
-    </div>
-    <div class="input-wrapper">
-      Author <input type="text" id="make-author" value="" placeholder="Author">
-    </div>
-    <div class="input-wrapper">
-      Email <input type="text" id="make-email" value="" placeholder="Email">
-    </div>
-    <div class="input-wrapper">
-    ContentType
-      <select id="make-content-type">
-        <option text="text/html" value="text/html">text/html</option>
-        <option value="application/butter">application/butter</option>
-      </select>
-    </div>
-    <div class="input-wrapper">
-      Locale <input type="text" id="make-locale" value="" placeholder="locale">
-    </div>
-    <div class="input-wrapper">
-      Url <input type="text" id="make-url" value="" placeholder="URL">
-    </div>
-    <div class="input-wrapper">
-      Thumbnail <input type="text" id="make-thumbnail" value="" placeholder="Thumbnail URL">
-    </div>
-    <div class="input-wrapper">
-      Tags(CSV) <input type="text" id="make-tags" value="" placeholder="tags">
-    </div>
-    <div class="input-wrapper">
-      AppTags(CSV) <input type="text" id="app-tags" placeholder="App Tags"/>
-    </div>
-    <br />
-    <div class="input-wrapper">
-      ID(update and delete) <input type="text" id="make-id" value="" placeholder="ID HERE">
-    </div>
-    <div class="input-wrapper">
-      webmaker ID: <input type="text" id="webmaker-id" value="" placeholder="webmakerID">
-    </div>
-    <br />
-    <input type="button" onclick="createMake();" value="Create a Make" /><br />
-    <input type="button" onclick="updateMake();" value="Update a Make" /><br />
-    <input type="button" onclick="deleteMake();" value="Delete a Make" />
-    <h3>Response Text</h3>
-    <textarea id="make-result" readonly="true" rows="20" cols="140"></textarea>
   </body>
 </html>

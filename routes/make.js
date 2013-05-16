@@ -14,7 +14,7 @@ module.exports = function( makeCtor, env ) {
 
   function handleError( res, err, code, type ){
     metrics.increment( "make." + type + ".error" );
-    return res.json( { error: err }, code );
+    res.json( code, { error: err } );
   }
 
   function handleSave( resp, err, make, type ){
@@ -26,34 +26,24 @@ module.exports = function( makeCtor, env ) {
     }
   }
 
+  function updateFields( res, make, body, type ) {
+    Make.publicFields.forEach( function( field ) {
+      make[ field ] = body[ field ] || null;
+    });
+
+    make.createdAt = Date.now();
+    make.save(function( err, make ){
+      return handleSave( res, err, make, type );
+    });
+  }
+
   return {
     create: function( req, res ) {
-      var make = new Make();
-
-      for ( var i in Make.publicFields ) {
-        var field = Make.publicFields[ i ];
-        make[ field ] = req.body.make[ field ];
-      }
-
-      make.createdAt = Date.now();
-
-      make.save(function( err, make ){
-        return handleSave( res, err, make, "create" );
-      });
+      updateFields( res, new Make(), req.body.make, "create" );
     },
     update: function( req, res ) {
       Make.findById( req.params.id ).where( "deletedAt", null ).exec(function( err, make ) {
-        for ( var i in Make.publicFields ) {
-          var field = Make.publicFields[ i ];
-          if ( req.body.make[ field ] ) {
-            make[ field ] = req.body.make[ field ];
-          }
-        }
-        make.updatedAt = ( new Date() ).getTime();
-
-        make.save(function( err, make ){
-          handleSave( res, err, make, "update" );
-        });
+        updateFields( res, make, req.body.make, "update" );
       });
     },
     remove: function( req, res ) {

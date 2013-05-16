@@ -1,8 +1,8 @@
 {
   "name": "makeapi",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "description": "MakeAPI for Webmaker",
-  "main": "public/js/make-api.js",
+  "main": "./lib/api.js",
   "scripts": {
     "test": "grunt"
   },
@@ -36,7 +36,8 @@
     "node-statsd": "0.0.7",
     "nunjucks": "~0.1.8a",
     "request": "2.20.0",
-    "querystring": "0.2.0"
+    "querystring": "0.2.0",
+    "webmaker-loginapi": "0.1.0"
   },
   "devDependencies": {
     "Faker": "0.5.8",
