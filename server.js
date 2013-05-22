@@ -36,7 +36,7 @@ app.use( express.static( path.join( __dirname + "/public" ) ) );
 app.use( express.bodyParser() );
 app.use( express.cookieParser() );
 app.use( express.cookieSession({
-  key: "express.sid",
+  key: "makeapi.sid",
   secret: env.get( "SESSION_SECRET" ),
   cookie: {
     maxAge: 2678400000 // 31 days. Persona saves session data for 1 month
