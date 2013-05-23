@@ -338,6 +338,15 @@ var module = module || undefined;
         return this;
       },
 
+      contentType: function( contentType ) {
+        this.searchFilters.push({
+          term: {
+            contentType: contentType
+          }
+        });
+        return this;
+      },
+
       id: function( id ) {
         this.searchFilters.push({
           query: {
