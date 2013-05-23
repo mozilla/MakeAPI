@@ -200,9 +200,9 @@ var module = module || undefined;
     };
 
     // Extend wrapped with contents of make
-    [ "url", "contentType", "locale", "title", "description",
-      "author", "published", "tags", "thumbnail", "email",
-      "remixedFrom", "_id" ].forEach( function( prop ) {
+    [ "url", "remixUrl", "contentType", "locale", "title",
+      "description", "author", "published", "tags", "thumbnail",
+      "email", "remixedFrom", "_id" ].forEach( function( prop ) {
         wrapped[ prop ] = make[ prop ];
     });
 
