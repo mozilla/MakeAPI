@@ -29,6 +29,7 @@
   "dependencies": {
     "deferred": "0.6.4",
     "express": "~3.0.6",
+    "express-persona": "0.0.8",
     "Faker": "0.5.8",
     "habitat": "0.4.1",
     "mongoose": "~3.5.2",
@@ -36,10 +37,10 @@
     "mongoosastic": "0.0.11",
     "newrelic": "0.9.20",
     "node-statsd": "0.0.7",
-    "nunjucks": "~0.1.8a",
+    "nunjucks": "0.1.8a",
     "request": "2.20.0",
     "querystring": "0.2.0",
-    "webmaker-loginapi": "0.1.1"
+    "webmaker-loginapi": "0.1.2"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

@@ -21,9 +21,12 @@ var app = express(),
     env = new habitat(),
     Mongo = require( "./lib/mongoose" )( env ),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
-    middleware = require( "./lib/middleware" )( env ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) ),
-    routes = require( "./routes" )( Make, env );
+    routes,
+    loginApi,
+    middleware,
+    authMiddleware;
+
 
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
@@ -44,10 +47,20 @@ app.use( express.cookieSession({
   proxy: true
 }));
 
+loginApi = require( "webmaker-loginapi" )( app, env.get( "LOGIN_SERVER_URL_WITH_AUTH" ) );
+routes = require( "./routes" )( Make, loginApi, env );
+middleware = require( "./lib/middleware" )( loginApi, env );
+authMiddleware = express.basicAuth( middleware.authenticateUser );
+
+require( "express-persona" )( app, {
+  audience: env.get( "AUDIENCE" ),
+  verifyResponse: middleware.verifyPersonaLogin
+});
+
 app.get( "/", routes.index );
-app.post( "/api/make", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, middleware.prefixAuth, routes.create );
-app.put( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, middleware.prefixAuth, routes.update );
-app.del( "/api/make/:id", express.basicAuth( middleware.authenticateUser ), Mongo.isDbOnline, routes.remove );
+app.post( "/api/make", authMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
+app.put( "/api/make/:id", authMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.update );
+app.del( "/api/make/:id", authMiddleware, Mongo.isDbOnline, routes.remove );
 app.get( "/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();
@@ -58,6 +71,19 @@ app.options( "/api/makes/search", function( req, res ) {
   res.send( 200 );
 });
 app.get( "/healthcheck", routes.healthcheck );
+
+app.get( "/login", routes.login );
+app.get( "/admin", middleware.adminAuth, routes.admin );
+app.put( "/admin/api/make/:id", middleware.adminAuth, routes.update );
+app.get( "/admin/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
+  res.header( "Access-Control-Allow-Origin", "*" );
+  next();
+}, routes.search );
+app.options( "/admin/api/makes/search", function( req, res ) {
+  res.header( "Access-Control-Allow-Origin", "*" );
+  res.header( "Access-Control-Allow-Headers", "Content-Type" );
+  res.send( 200 );
+});
 
 app.listen( env.get( "PORT", 3000 ), function() {
   console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 3000 ));
