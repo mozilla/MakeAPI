@@ -27,6 +27,7 @@
   ],
   "license": "MPL-2.0",
   "dependencies": {
+    "deferred": "0.6.4",
     "express": "~3.0.6",
     "Faker": "0.5.8",
     "habitat": "0.4.1",

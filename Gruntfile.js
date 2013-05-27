@@ -4,7 +4,8 @@ module.exports = function( grunt ) {
 
     csslint: {
       files: [
-        "public/**/*.css"
+        "public/gallery/**/*.css",
+        "public/stylesheets/search.css"
       ]
     },
     jshint: {

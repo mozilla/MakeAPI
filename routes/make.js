@@ -10,7 +10,10 @@ module.exports = function( makeCtor, env ) {
 
   var Make = makeCtor,
       metrics = require( "../lib/metrics" )( env ),
-      querystring = require( "querystring" );
+      maker = require( "../lib/maker" )(),
+      querystring = require( "querystring" ),
+      deferred = require( "deferred" ),
+      getUser = deferred.promisify( maker.getUser );
 
   function handleError( res, err, code, type ){
     metrics.increment( "make." + type + ".error" );
@@ -34,6 +37,34 @@ module.exports = function( makeCtor, env ) {
     make.createdAt = Date.now();
     make.save(function( err, make ){
       return handleSave( res, err, make, type );
+    });
+  }
+
+  function getUserNames( res, results ) {
+    var searchHit;
+    deferred.map( results.hits, function( make ){
+      return Make.pFindOne({ _id: make._id }, "email" )(function( withEmail ){
+        return getUser( withEmail.email )(function( result ){
+          searchHit = {};
+          Make.publicFields.forEach(function( val ){
+            searchHit[ val ] = make[ val ];
+          });
+          searchHit.username = result.subdomain;
+          return searchHit;
+        });
+      });
+    })(function( result ){
+      res.json( result );
+    });
+  }
+
+  function doSearch( res, searchData ) {
+    Make.search( searchData, function( err, results ) {
+      if ( err ) {
+        return handleError( res, err, 500, "search" );
+      } else {
+        getUserNames( res, results );
+      }
     });
   }
 
@@ -83,6 +114,11 @@ module.exports = function( makeCtor, env ) {
       } catch ( err ) {
         return handleError ( res, "Unable to parse search data.", 400, "search" );
       }
+
+      if ( !searchData.query.filtered.filter.and ) {
+        searchData.query.filtered.filter.and = [];
+      }
+
       filters = searchData.query.filtered.filter.and;
 
       // We have to unescape any URLs that were present in the data
@@ -93,14 +129,23 @@ module.exports = function( makeCtor, env ) {
         }
       }
 
-      Make.search( searchData, function( err, results ) {
-        if ( err ) {
-          return handleError( res, err, 500, "search" );
-        } else {
-          metrics.increment( "make.search.success" );
-          res.json( results );
-        }
-      });
+      if ( searchData.makerID ) {
+        return maker.getUser( searchData.makerID, function( err, userData ) {
+          if ( err ) {
+            return handleError( res, "Specified user does not exist", 400, "search" );
+          }
+          searchData.query.filtered.filter.and.push({
+            term: {
+              email: userData.email
+            }
+          });
+          delete searchData.makerID;
+          doSearch( res, searchData );
+        });
+      }
+
+      doSearch( res, searchData );
+
     },
     healthcheck: function( req, res ) {
       res.json({ http: "okay" });

@@ -6,68 +6,150 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Demo Search Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakeAPI Search Tool</title>
     <meta name="description" content="">
     <meta name="author" content="">
     <script src="js/make-api.js"></script>
     <script src="js/search.js"></script>
-    <link rel="stylesheet" type="text/css" href="stylesheets/search.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
   </head>
-  <body>
-    <h1>Make API Client Library Test Page</h1>
-    <div class="input-wrapper">
-      MakeAPI URL: <input type="text" id="makeURL" value="http://makeapi.mofostaging.net" />
+  </body>
+    <div class="container">
+      <form class="form-horizontal">
+        <fieldset>
+
+          <legend>Make API Client Library Test Page</legend>
+
+          <div class="control-group">
+            <label class="control-label" for="makeURL">MakeAPI Url:</label>
+            <div class="controls">
+              <input id="makeURL" name="makeURL" placeholder="Tag" value="http://makeapi.mofostaging.net" class="input-large" type="text">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="tags">Search By Tags:</label>
+            <div class="controls">
+              <input id="tags" name="tags" placeholder="comma separated, please" class="input-large search-query" type="text">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="execution">Execution ( &gt;1 tags )</label>
+            <div class="controls">
+              <label class="radio" for="execution-0">
+                <input name="execution" value="and" checked type="radio">
+                AND
+              </label>
+              <label class="radio" for="execution-1">
+                <input name="execution" value="bool" type="radio">
+                OR
+              </label>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="tag-prefix">Tag Prefix:</label>
+            <div class="controls">
+              <input id="tag-prefix" name="tag-prefix" placeholder="prefix" class="input-large search-query" type="text">
+              <p class="help-block">search by tag prefix - i.e. "asdf" in "asdf:foo"</p>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="author">Author Name:</label>
+            <div class="controls">
+              <input id="author" name="author" placeholder="author name" class="input-large search-query" type="text">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="size">Number of Results:</label>
+            <div class="controls">
+              <input id="size" name="size" placeholder="number of results" value="10" class="input-large" type="number">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="page">Page:</label>
+            <div class="controls">
+              <input id="page" name="page" placeholder="page" value="1" class="input-large" type="number">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="sort-field">Sort By Field:</label>
+            <div class="controls">
+              <input id="sort-field" name="sort-field" placeholder="sort by field" class="input-large" type="number">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="direction">Sort Direction</label>
+            <div class="controls">
+              <label class="radio" for="direction-0">
+                <input name="direction" id="direction-0" value="asd" checked type="radio">
+                Ascending
+              </label>
+              <label class="radio" for="direction-1">
+                <input name="direction" id="direction-1" value="desc" type="radio">
+                Descending
+              </label>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button id="search" onClick="grabTags();" type="button" name="search" class="btn btn-success">Search Makes By Tags</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button id="search" onClick="myProjects();" type="button" name="search" class="btn btn-success">Search Makes By Author And Tags</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button id="search" onClick="prefixSearch();" type="button" name="search" class="btn btn-success">Search Makes By Prefix</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="search-make-id">Search By Make ID:</label>
+            <div class="controls">
+              <input id="search-make-id" name="search-make-id" placeholder="Make ID" class="input-large search-query" type="number">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button id="search" onClick="findProject();" type="button" name="search" class="btn btn-success">Find By ID</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="search-make-username">Search By Username:</label>
+            <div class="controls">
+              <input id="search-make-username" name="search-make-username" placeholder="maker username" class="input-large search-query" type="number">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button id="username-search" onClick="usernameSearch();" type="button" name="username-search" class="btn btn-success">Find By Username</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="search-result">Text Area</label>
+            <div class="controls">
+              <textarea id="search-result" readonly="true" name="search-result" rows="20" cols="140"></textarea>
+            </div>
+          </div>
+        </fieldset>
+      </form>
     </div>
-    <div class="input-wrapper">
-      Username: <input type="text" id="username" />
-    </div>
-    <div class="input-wrapper">
-      Password: <input type="password" id="password" />
-    </div>
-    <h2>Search</h2>
-    <div class="input-wrapper">
-      Tags(CSV)<input type="text" id="tags"/>
-    </div>
-    <div class="input-wrapper">
-    Execution( > 1 tags ):
-      <div>
-        And<input type="radio" name="execution" value="and" checked/>
-        Or<input type="radio" name="execution" value="bool" />
-      </div>
-    </div>
-    <div class="input-wrapper">
-      Tag prefix<input type="text" id="tag-prefix"/>
-    </div>
-    <div class="input-wrapper">
-      Author:<input type="text" id="author"/>
-    </div>
-    <div class="input-wrapper">
-      Number of Results:<input type="number" id="size" />
-    </div>
-    <div class="input-wrapper">
-      Page: <input type="number" id="page" />
-    </div>
-    <div class="input-wrapper">
-      Sort By Field:<input type="text" id="sort-field" />
-    </div>
-    <div class="input-wrapper">
-    sort direction:
-      <div>
-        asc<input type="radio" name="direction" value="asc" checked/>
-        desc<input type="radio" name="direction" value="desc" />
-      </div>
-    </div>
-    <br />
-    <input type="button" onclick="grabTags();" value="Search Makes By Tags"/><br />
-    <input type="button" onclick="myProjects();" value="Search Makes By Author and Tags"/><br />
-    <input type="button" onclick="prefixSearch();" value="Search Makes By Prefix"/>
-    <br /><br />
-    <div class="input-wrapper">
-      ID <input type="text" id="search-make-id" value="" placeholder="ID HERE">
-    </div>
-    <input type="button" onclick="findProject();" value="Find By Id" />
-    <br/><br/>
-    <textarea id="search-result" readonly="true" rows="20" cols="140"></textarea>
   </body>
 </html>

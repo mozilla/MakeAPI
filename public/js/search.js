@@ -5,8 +5,6 @@
  document.addEventListener( "DOMContentLoaded", function() {
 
   var makeURL = document.getElementById( "makeURL" ),
-      username = document.getElementById( "username" ),
-      password = document.getElementById( "password" ),
       searchTags = document.getElementById( "tags" ),
       searchAuthor = document.getElementById( "author" ),
       size = document.getElementById( "size" ),
@@ -14,14 +12,22 @@
       makeTagPrefix = document.getElementById( "tag-prefix" ),
       idSearch = document.getElementById( "search-make-id" ),
       sortBy = document.getElementById( "sort-field" ),
+      makerID = document.getElementById( "search-make-username" ),
       searchResult = document.getElementById( "search-result" );
 
   function make() {
     var url = makeURL.value || "";
     return Make({
-      apiURL: url,
-      auth: username.value + ":" + password.value
+      apiURL: url
     });
+  }
+
+  function processResult( error, data ) {
+    if ( error ) {
+      searchResult.value = JSON.stringify( error, null, 2 );
+    } else {
+      searchResult.value = JSON.stringify( data, null, 2 );
+    }
   }
 
   window.grabTags = function() {
@@ -33,13 +39,7 @@
     .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
     .limit( size.value )
     .page( page.value || 1 )
-    .then(function( error, data ) {
-      if ( error ) {
-        searchResult.value = JSON.stringify( error, null, 2 );
-        return;
-      }
-      searchResult.value = JSON.stringify( data, null, 2 );
-    });
+    .then( processResult );
   };
 
   window.myProjects = function() {
@@ -52,25 +52,13 @@
     .page( page.value || 1 )
     .author( searchAuthor.value )
     .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
-    .then(function( error, data ) {
-      if ( error ) {
-        searchResult.value = JSON.stringify( error, null, 2 );
-        return;
-      }
-      searchResult.value = JSON.stringify( data, null, 2 );
-    });
+    .then( processResult );
   };
 
   window.findProject = function() {
     make()
     .find( { id: idSearch.value } )
-    .then(function( error, data ) {
-      if ( error ) {
-        searchResult.value = JSON.stringify( error, null, 2 );
-        return;
-      }
-      searchResult.value = JSON.stringify( data, null, 2 );
-    });
+    .then( processResult );
   };
 
   window.prefixSearch = function() {
@@ -79,13 +67,13 @@
     .limit( size.value )
     .page( page.value || 1 )
     .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
-    .then(function( error, data ) {
-      if ( error ) {
-        searchResult.value = JSON.stringify( error, null, 2 );
-        return;
-      }
-      searchResult.value = JSON.stringify( data, null, 2 );
-    });
+    .then( processResult );
+  };
+
+  window.usernameSearch = function() {
+    make()
+    .user( makerID.value )
+    .then( processResult );
   };
 
   function getData() {
