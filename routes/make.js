@@ -34,6 +34,7 @@ module.exports = function( makeCtor, env ) {
       make[ field ] = body[ field ] || null;
     });
 
+    make.email = body.email;
     make.createdAt = Date.now();
     make.save(function( err, make ){
       return handleSave( res, err, make, type );
@@ -42,26 +43,29 @@ module.exports = function( makeCtor, env ) {
 
   function getUserNames( res, results ) {
     var searchHit;
+
+    // Query for each Make's creator and attach their username to the Make
     deferred.map( results.hits, function( make ) {
-      return Make.pFindOne( { _id: make._id }, "email" )
-      .then(function( withEmail ) {
-        return getUser( withEmail.email )
-        .then(function( result ) {
+
+      // Query the Login API for User data using the email attached to the Make
+      return getUser( make.email )
+        .then(function onSuccess( user ) {
+          // Create new object and copy the makes public fields to it
           searchHit = {};
           Make.publicFields.forEach(function( val ) {
             searchHit[ val ] = make[ val ];
           });
-          searchHit.username = result.subdomain;
+          // Attach the Maker's subdomain(username) and return the result
+          searchHit.username = user.subdomain;
           return searchHit;
+        }, function onError( err ) {
+          handleError( res, err, 500, "search" );
         });
-      }, function( err ) {
-        handleError( res, err, 500, "search" );
-      });
     })
-    .then(function( result ) {
+    .then(function onSuccess( result ) {
       metrics.increment( "make.search.success" );
       res.json( result );
-    }, function( err ) {
+    }, function onError( err ) {
       handleError( res, err, 500, "search" );
     });
   }

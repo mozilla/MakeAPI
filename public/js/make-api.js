@@ -387,7 +387,7 @@ var module = module || undefined;
               callback( err );
             } else {
               // Wrap resulting makes with some extra API.
-              var hits = data || [];
+              var hits = data;
               for( var i = 0; i < hits.length; i++ ) {
                 hits[ i ] = wrap( hits[ i ], options );
               }
