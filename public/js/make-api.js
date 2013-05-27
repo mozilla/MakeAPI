@@ -347,6 +347,15 @@ var module = module || undefined;
         return this;
       },
 
+      remixedFrom: function( projectID ) {
+        this.searchFilters.push({
+          term: {
+            remixedFrom: projectID
+          }
+        });
+        return this;
+      },
+
       id: function( id ) {
         this.searchFilters.push({
           query: {
