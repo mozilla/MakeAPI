@@ -200,7 +200,7 @@ var module = module || undefined;
     };
 
     // Extend wrapped with contents of make
-    [ "url", "remixUrl", "contentType", "locale", "title",
+    [ "url", "contentType", "locale", "title",
       "description", "author", "published", "tags", "thumbnail",
       "email", "remixedFrom", "_id" ].forEach( function( prop ) {
         wrapped[ prop ] = make[ prop ];
