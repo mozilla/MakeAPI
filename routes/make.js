@@ -42,19 +42,27 @@ module.exports = function( makeCtor, env ) {
 
   function getUserNames( res, results ) {
     var searchHit;
-    deferred.map( results.hits, function( make ){
-      return Make.pFindOne({ _id: make._id }, "email" )(function( withEmail ){
-        return getUser( withEmail.email )(function( result ){
+    deferred.map( results.hits, function( make ) {
+      return Make.pFindOne( { _id: make._id }, "email" )
+      .then(function( withEmail ) {
+        return getUser( withEmail.email )
+        .then(function( result ) {
           searchHit = {};
-          Make.publicFields.forEach(function( val ){
+          Make.publicFields.forEach(function( val ) {
             searchHit[ val ] = make[ val ];
           });
           searchHit.username = result.subdomain;
           return searchHit;
         });
+      }, function( err ) {
+        handleError( res, err, 500, "search" );
       });
-    })(function( result ){
+    })
+    .then(function( result ) {
+      metrics.increment( "make.search.success" );
       res.json( result );
+    }, function( err ) {
+      handleError( res, err, 500, "search" );
     });
   }
 
