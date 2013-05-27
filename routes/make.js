@@ -10,7 +10,10 @@ module.exports = function( makeCtor, env ) {
 
   var Make = makeCtor,
       metrics = require( "../lib/metrics" )( env ),
-      querystring = require( "querystring" );
+      maker = require( "../lib/maker" )(),
+      querystring = require( "querystring" ),
+      deferred = require( "deferred" ),
+      getUser = deferred.promisify( maker.getUser );
 
   function handleError( res, err, code, type ){
     metrics.increment( "make." + type + ".error" );
@@ -31,9 +34,49 @@ module.exports = function( makeCtor, env ) {
       make[ field ] = body[ field ] || null;
     });
 
+    make.email = body.email;
     make.createdAt = Date.now();
     make.save(function( err, make ){
       return handleSave( res, err, make, type );
+    });
+  }
+
+  function getUserNames( res, results ) {
+    var searchHit;
+
+    // Query for each Make's creator and attach their username to the Make
+    deferred.map( results.hits, function( make ) {
+
+      // Query the Login API for User data using the email attached to the Make
+      return getUser( make.email )
+        .then(function onSuccess( user ) {
+          // Create new object and copy the makes public fields to it
+          searchHit = {};
+          Make.publicFields.forEach(function( val ) {
+            searchHit[ val ] = make[ val ];
+          });
+          // Attach the Maker's subdomain(username) and return the result
+          searchHit.username = user.subdomain;
+          return searchHit;
+        }, function onError( err ) {
+          handleError( res, err, 500, "search" );
+        });
+    })
+    .then(function onSuccess( result ) {
+      metrics.increment( "make.search.success" );
+      res.json( result );
+    }, function onError( err ) {
+      handleError( res, err, 500, "search" );
+    });
+  }
+
+  function doSearch( res, searchData ) {
+    Make.search( searchData, function( err, results ) {
+      if ( err ) {
+        return handleError( res, err, 500, "search" );
+      } else {
+        getUserNames( res, results );
+      }
     });
   }
 
@@ -83,6 +126,11 @@ module.exports = function( makeCtor, env ) {
       } catch ( err ) {
         return handleError ( res, "Unable to parse search data.", 400, "search" );
       }
+
+      if ( !searchData.query.filtered.filter.and ) {
+        searchData.query.filtered.filter.and = [];
+      }
+
       filters = searchData.query.filtered.filter.and;
 
       // We have to unescape any URLs that were present in the data
@@ -93,14 +141,23 @@ module.exports = function( makeCtor, env ) {
         }
       }
 
-      Make.search( searchData, function( err, results ) {
-        if ( err ) {
-          return handleError( res, err, 500, "search" );
-        } else {
-          metrics.increment( "make.search.success" );
-          res.json( results );
-        }
-      });
+      if ( searchData.makerID ) {
+        return maker.getUser( searchData.makerID, function( err, userData ) {
+          if ( err ) {
+            return handleError( res, "Specified user does not exist", 400, "search" );
+          }
+          searchData.query.filtered.filter.and.push({
+            term: {
+              email: userData.email
+            }
+          });
+          delete searchData.makerID;
+          doSearch( res, searchData );
+        });
+      }
+
+      doSearch( res, searchData );
+
     },
     healthcheck: function( req, res ) {
       res.json({ http: "okay" });

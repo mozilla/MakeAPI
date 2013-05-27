@@ -191,10 +191,10 @@ var module = module || undefined;
         .then( callback );
       },
 
-      update: function( callback ) {
+      update: function( email, callback ) {
         callback = callback || function(){};
         getMakeInstance()
-        .update( wrapped._id, { maker: wrapped.email, make: wrapped }, callback );
+        .update( wrapped._id, { maker: email, make: wrapped }, callback );
       }
 
     };
@@ -202,7 +202,7 @@ var module = module || undefined;
     // Extend wrapped with contents of make
     [ "url", "contentType", "locale", "title",
       "description", "author", "published", "tags", "thumbnail",
-      "email", "remixedFrom", "_id" ].forEach( function( prop ) {
+      "username", "remixedFrom", "_id" ].forEach( function( prop ) {
         wrapped[ prop ] = make[ prop ];
     });
 
@@ -223,6 +223,7 @@ var module = module || undefined;
     var BASE_QUERY = {
           query: {
             filtered: {
+              filter: {},
               query: {
                 match_all: {}
               }
@@ -235,6 +236,7 @@ var module = module || undefined;
       sortBy: [],
       size: DEFAULT_SIZE,
       pageNum: 1,
+      makerID: "",
 
       find: function( options ) {
         options = options || {};
@@ -257,12 +259,8 @@ var module = module || undefined;
         return this;
       },
 
-      email: function( name ) {
-        this.searchFilters.push({
-          term: {
-            email: name
-          }
-        });
+      user: function( id ) {
+        this.makerID = id;
         return this;
       },
 
@@ -374,12 +372,16 @@ var module = module || undefined;
         searchQuery.from = ( this.pageNum - 1 ) * this.size;
 
         if ( this.searchFilters.length ) {
-          searchQuery.query.filtered.filter = {};
           searchQuery.query.filtered.filter.and = this.searchFilters;
         }
 
         if ( this.sortBy.length ) {
           searchQuery.sort = this.sortBy;
+        }
+
+        if ( this.makerID ) {
+          searchQuery.makerID = this.makerID;
+          this.makerID = "";
         }
 
         this.size = DEFAULT_SIZE;
@@ -394,7 +396,7 @@ var module = module || undefined;
               callback( err );
             } else {
               // Wrap resulting makes with some extra API.
-              var hits = data.hits || [];
+              var hits = data;
               for( var i = 0; i < hits.length; i++ ) {
                 hits[ i ] = wrap( hits[ i ], options );
               }
