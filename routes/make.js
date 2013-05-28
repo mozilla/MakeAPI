@@ -31,11 +31,26 @@ module.exports = function( makeCtor, env ) {
 
   function updateFields( res, make, body, type ) {
     Make.publicFields.forEach( function( field ) {
-      make[ field ] = body[ field ] || null;
+      // only update if the field exists on the body
+      if ( field in body ) {
+        // arrays need to be concatenated to avoid overwriting elements in the original.
+        if ( Array.isArray( make[ field ] ) ) {
+          make[ field ] = make[ field ].concat( body[ field ] );
+        } else {
+          make[ field ] = body[ field ];
+        }
+      }
     });
 
     make.email = body.email;
-    make.createdAt = Date.now();
+
+    // If createdAt doesn't exist, we know this is a Create, otherwise stamp updatedAt
+    if ( !make.createdAt ) {
+      make.createdAt = Date.now();
+    } else {
+      make.updatedAt = Date.now();
+    }
+
     make.save(function( err, make ){
       return handleSave( res, err, make, type );
     });
