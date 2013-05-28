@@ -206,6 +206,10 @@ var module = module || undefined;
         wrapped[ prop ] = make[ prop ];
     });
 
+    // Virtuals will only be exposed while still on the server end
+    // forcing us to still manually expose it for client side users.
+    wrapped.id = wrapped._id;
+
     return wrapped;
   }
 
