@@ -70,6 +70,10 @@ module.exports = function( makeCtor, env ) {
           Make.publicFields.forEach(function( val ) {
             searchHit[ val ] = make[ val ];
           });
+          // _id is not a part of our public fields. We need to manually assign
+          // it to the object we are returning
+          searchHit._id = make._id;
+
           // Attach the Maker's subdomain(username) and return the result
           searchHit.username = user.subdomain;
           searchHit.emailHash = user.emailHash;
