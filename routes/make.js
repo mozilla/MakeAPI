@@ -72,6 +72,7 @@ module.exports = function( makeCtor, env ) {
           });
           // Attach the Maker's subdomain(username) and return the result
           searchHit.username = user.subdomain;
+          searchHit.emailHash = user.emailHash;
           return searchHit;
         }, function onError( err ) {
           handleError( res, err, 500, "search" );
