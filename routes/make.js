@@ -35,7 +35,9 @@ module.exports = function( makeCtor, env ) {
       if ( field in body ) {
         // arrays need to be concatenated to avoid overwriting elements in the original.
         if ( Array.isArray( make[ field ] ) ) {
-          make[ field ] = make[ field ].concat( body[ field ] );
+          make[ field ] = make[ field ].concat( body[ field ] ).filter(function( tag, pos, arr ) {
+            return arr.indexOf( tag ) === pos;
+          });
         } else {
           make[ field ] = body[ field ];
         }
