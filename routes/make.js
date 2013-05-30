@@ -78,8 +78,8 @@ module.exports = function( makeCtor, env ) {
           searchHit.createdAt = make.createdAt;
           searchHit.updatedAt = make.updatedAt;
 
-          // Attach the Maker's subdomain(username) and return the result
-          searchHit.username = user.subdomain;
+          // Attach the Maker's username and return the result
+          searchHit.username = user.username;
           searchHit.emailHash = user.emailHash;
           return searchHit;
         }, function onError( err ) {
