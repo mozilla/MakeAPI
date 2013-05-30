@@ -30,6 +30,24 @@
     }
   }
 
+  window.searchTitle = function() {
+    make()
+    .title( document.getElementById( "title" ).value )
+    .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
+    .limit( size.value )
+    .page( page.value || 1 )
+    .then( processResult );
+  };
+
+  window.searchDescription = function() {
+    make()
+    .description( document.getElementById( "description" ).value )
+    .sortByField( sortBy.value, document.querySelector( "input[name='direction']:checked" ).value )
+    .limit( size.value )
+    .page( page.value || 1 )
+    .then( processResult );
+  };
+
   window.grabTags = function() {
     make()
     .tags({

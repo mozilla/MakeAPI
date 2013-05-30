@@ -35,6 +35,20 @@
           </div>
 
           <div class="control-group">
+            <label class="control-label" for="tags">Search By Title:</label>
+            <div class="controls">
+              <input id="title" name="title" placeholder="Title Goes Here" class="input-large search-query" type="text">
+            </div>
+          </div>
+
+          <div class="control-group">
+            <label class="control-label" for="tags">Search By Description:</label>
+            <div class="controls">
+              <input id="description" name="description" placeholder="Description Goes Here" class="input-large search-query" type="text">
+            </div>
+          </div>
+
+          <div class="control-group">
             <label class="control-label" for="execution">Execution ( &gt;1 tags )</label>
             <div class="controls">
               <label class="radio" for="execution-0">
@@ -101,6 +115,18 @@
           <div class="control-group">
             <div class="controls">
               <button id="search" onClick="grabTags();" type="button" name="search" class="btn btn-success">Search Makes By Tags</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button id="search" onClick="searchTitle();" type="button" name="search" class="btn btn-success">Search Makes By Title</button>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="controls">
+              <button id="search" onClick="searchDescription();" type="button" name="search" class="btn btn-success">Search Makes By Description</button>
             </div>
           </div>
 
