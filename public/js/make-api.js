@@ -370,6 +370,32 @@ var module = module || undefined;
         return this;
       },
 
+      title: function( title ) {
+        this.searchFilters.push({
+          query: {
+            query_string: {
+              query: title,
+              fields: [ "title" ],
+              default_operator: "AND"
+            }
+          }
+        });
+        return this;
+      },
+
+      description: function( description ) {
+        this.searchFilters.push({
+          query: {
+            query_string: {
+              query: description,
+              fields: [ "description" ],
+              default_operator: "AND"
+            }
+          }
+        });
+        return this;
+      },
+
       then: function( callback ) {
         var searchQuery = BASE_QUERY;
 
