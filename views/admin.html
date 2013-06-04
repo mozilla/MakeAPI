@@ -1,0 +1,78 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Make Editor</title>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="js/external/jquery.event.drag-2.2.js"></script>
+    <script src="js/external/slick.core.js"></script>
+    <script src="js/external/slick.grid.js"></script>
+    <script src="js/external/slick.editors.js"></script>
+    <script src="js/make-api.js"></script>
+    <script src="js/admin.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/slick.grid.css" >
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      div.data-table-area {
+        width: 95%;
+        margin-left: 2.5%;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">Make Editor</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav nav-pills pull-right">
+              <li class="user">
+                <a id="identity" href="#" >{{email}}</a>
+              </li>
+              <li ><a id="logout" href="#">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label" for="search-tag">Search By Tag:</label>
+            <div class="controls">
+              <input id="search-tag" name="search-tag" placeholder="Tag" class="input-large" type="text">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="search"></label>
+            <div class="controls">
+              <button id="search" type="button" name="search" class="btn btn-success">Search</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+      <div class="data-table-area"></div>
+
+    <script src="{{audience}}/sso/include.js"></script>
+  </body>
+</html>

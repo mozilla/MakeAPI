@@ -5,5 +5,8 @@ Gruntfile.js
 server.js
 node_modules/*
 public/js/search.js
+public/js/README.md
+public/js/admin.js
+public/js/external/*
 public/stylesheets/*
 views/*

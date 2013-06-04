@@ -1,0 +1,33 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta title="persona-email" content="{{email}}">
+    <title>Sign in</title>
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.custom.css" >
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin">
+        <h2 class="form-signin-heading text-center">Please sign in</h2>
+        <!-- <div class="form-action"> -->
+          <button id="submit" class="btn btn-large btn-primary" type="button">Sign in</button>
+        <!-- </div> -->
+      </form>
+
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="{{audience}}/sso/include.js"></script>
+    <script src="js/login.js"></script>
+  </body>
+</html>

@@ -6,14 +6,13 @@
 
 "use strict";
 
-module.exports = function( makeCtor, env ) {
+module.exports = function( makeCtor, loginApi, env ) {
 
   var Make = makeCtor,
       metrics = require( "../lib/metrics" )( env ),
-      maker = require( "../lib/maker" )(),
       querystring = require( "querystring" ),
       deferred = require( "deferred" ),
-      getUser = deferred.promisify( maker.getUser );
+      getUser = deferred.promisify( loginApi.getUser );
 
   function handleError( res, err, code, type ){
     metrics.increment( "make." + type + ".error" );
@@ -166,7 +165,7 @@ module.exports = function( makeCtor, env ) {
       }
 
       if ( searchData.makerID ) {
-        return maker.getUser( searchData.makerID, function( err, userData ) {
+        return loginApi.getUser( searchData.makerID, function( err, userData ) {
           if ( err ) {
             return handleError( res, "Specified user does not exist", 400, "search" );
           }

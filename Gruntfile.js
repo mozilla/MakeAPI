@@ -17,7 +17,7 @@ module.exports = function( grunt ) {
         "Gruntfile.js",
         "server.js",
         "lib/**/*.js",
-        "public/**/*.js",
+        "public/js/*.js",
         "routes/**/*.js",
         "test/**/*.js"
       ]
