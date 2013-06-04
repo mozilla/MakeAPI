@@ -48,7 +48,7 @@ app.use( express.cookieSession({
   secret: env.get( "SESSION_SECRET" ),
   cookie: {
     maxAge: 2678400000, // 31 days. Persona saves session data for 1 month
-    secure: !!env.get( "FORCE_SSL" ),
+    secure: !!env.get( "FORCE_SSL" )
   },
   proxy: true
 }));
