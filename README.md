@@ -21,7 +21,7 @@ Execute `npm install` in the application directory:
 Copy and edit your .env file. -- This should never be committed to the repo. Ensure that you fill in the ALLOWED_USERS variable.
 
 ```
-cp .env.sample .env
+cp env.sample .env
 ```
 
 #### Running the Services
