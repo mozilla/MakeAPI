@@ -10,6 +10,7 @@ if ( process.env.NEW_RELIC_ENABLED ) {
 // Bring in all your require modules
 var express = require( "express" ),
     habitat = require( "habitat" ),
+    helmet = require( "helmet" ),
     nunjucks = require( "nunjucks" ),
     path = require( "path" );
 
@@ -34,6 +35,10 @@ nunjucksEnv.express( app );
 app.disable( "x-powered-by" );
 
 app.use( express.logger( env.get( "NODE_ENV" ) === "production" ? "" : "dev" ) );
+if ( !!env.get( "FORCE_SSL" ) ) {
+  app.use( helmet.hsts() );
+  app.enable( "trust proxy" );
+}
 app.use( express.compress() );
 app.use( express.static( path.join( __dirname + "/public" ) ) );
 app.use( express.bodyParser() );
@@ -42,7 +47,8 @@ app.use( express.cookieSession({
   key: "makeapi.sid",
   secret: env.get( "SESSION_SECRET" ),
   cookie: {
-    maxAge: 2678400000 // 31 days. Persona saves session data for 1 month
+    maxAge: 2678400000, // 31 days. Persona saves session data for 1 month
+    secure: !!env.get( "FORCE_SSL" ),
   },
   proxy: true
 }));

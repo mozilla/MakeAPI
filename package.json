@@ -32,6 +32,7 @@
     "express-persona": "0.0.8",
     "Faker": "0.5.8",
     "habitat": "0.4.1",
+    "helmet": "0.0.9",
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
     "mongoosastic": "0.0.11",
