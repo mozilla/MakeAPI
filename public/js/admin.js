@@ -14,7 +14,7 @@ $(function() {
             newDate = val ? new Date( val ) : "N/A";
           } catch( e ) {
             newDate = Date.now();
-            // Alert User to Error? - need error infrastructure
+            errorSpan.removeClass( "hidden" ).html( "Bad Date Value. Falling back to current date and time." );
           }
           return newDate;
         },
@@ -25,47 +25,55 @@ $(function() {
 
   var COLUMNS = [
     { id: "url", name: "Url", field: "url",
-      editor: Slick.Editors.Text
+      editor: Slick.Editors.Text,
+      sortable: true
     },
     { id: "contentType", name: "Content Type", field: "contentType",
-      editor: Slick.Editors.Text
+      editor: Slick.Editors.Text,
+      sortable: true
     },
     { id: "locale", name: "Locale", field: "locale",
-      editor: Slick.Editors.Text
+      editor: Slick.Editors.Text,
+      sortable: true
     },
     { id: "title", name: "Title", field: "title",
-      editor: Slick.Editors.Text
+      editor: Slick.Editors.Text,
+      sortable: true
     },
     { id: "description", name: "Description", field: "description",
-      editor: Slick.Editors.Text
+      editor: Slick.Editors.Text,
+      sortable: true
     },
     { id: "thumbnail", name: "Thumbnail Url", field: "thumbnail",
-      editor: Slick.Editors.Text
+      editor: Slick.Editors.Text,
+      sortable: true
     },
-    { id: "author", name: "Author", field: "author" },
+    { id: "username", name: "username", field: "username",
+      sortable: true },
     { id: "tags", name: "Tags", field: "tags",
       formatter: formatters.tags,
       editor: Slick.Editors.Text
     },
-    { id: "remixedFrom", name: "Remixed From", field: "remixedFrom" },
+    { id: "remixedFrom", name: "Remixed From", field: "remixedFrom",
+      sortable: true },
     { id: "createdAt", name: "Created At", field: "createdAt",
       formatter: formatters.date,
-      editor: Slick.Editors.Date
+      editor: Slick.Editors.Date,
+      sortable: true
     },
     { id: "updatedAt", name: "Updated At", field: "updatedAt",
       formatter: formatters.date,
-      editor: Slick.Editors.Date
-    },
-    { id: "deletedAt", name: "Deleted At", field: "deletedAt",
-      formatter: formatters.date,
-      editor: Slick.Editors.Date
+      editor: Slick.Editors.Date,
+      sortable: true
     }
   ];
+
+  // max hits that ES should return on a search.
+  var MAX_SIZE = 50000;
 
   var options = {
         autoEdit: false,
         editable: true,
-        autoHeight: true,
         enableTextSelectionOnCells: true,
         defaultColumnWidth: 150,
         topPanelHeight: 200
@@ -77,41 +85,62 @@ $(function() {
       searchBtn = $( "#search" ),
       gridArea = $( ".data-table-area" ),
       identity = $( "#identity" ).text(),
-      grid,
+      errorSpan = $( ".error-message" ),
+      dataView = new Slick.Data.DataView(),
+      grid = new Slick.Grid( gridArea, dataView, COLUMNS, options ),
+      pager = new Slick.Controls.Pager( dataView, grid, $( "#pager" ) ),
       data;
 
-  function updateMake( e, data ) {
+  grid.onCellChange.subscribe(function ( e, data ) {
     var make = data.item;
 
     make.tags = Array.isArray( make.tags )? make.tags : make.tags.split( "," );
-    make.email = identity;
 
     make.update( identity, function( err, data ) {
       if ( err ) {
-        console.log( err );
+        errorSpan.removeClass( "hidden" ).html( "Error Updating! " + JSON.stringify( err ) );
         return;
       }
-      // Better Success/Failure notification
+      dataView.updateItem( data.item.id, make );
     });
-  }
+  });
+
+  dataView.onRowCountChanged.subscribe(function () {
+    grid.updateRowCount();
+    grid.render();
+  });
+
+  dataView.onRowsChanged.subscribe(function ( e, data ) {
+    grid.invalidateRows( data.rows );
+    grid.render();
+  });
+
+  grid.onSort.subscribe(function( e, data ) {
+    dataView.fastSort( data.sortCol.field, data.sortAsc );
+  });
 
   function createGrid( err, data ) {
     if ( err ) {
-      console.log( err );
-      // need better error handling
+      errorSpan.removeClass( "hidden" ).html( "Error retrieving data: " + err );
       return;
     }
-    grid = new Slick.Grid( gridArea, data, COLUMNS, options );
-    grid.onCellChange.subscribe( updateMake );
+    dataView.beginUpdate();
+    dataView.setItems( data );
+    dataView.endUpdate();
+    grid.render();
   }
 
   function doSearch() {
+    errorSpan.addClass( "hidden" ).html( "" );
     make
     .tags( tagSearchInput.val().split( "," ) )
+    .limit( MAX_SIZE )
     .then( createGrid );
   }
 
   searchBtn.click( doSearch );
+
+  // Press enter to search
   tagSearchInput.keypress(function( e ) {
     if ( e.which === 13 ) {
       e.preventDefault();
@@ -121,8 +150,10 @@ $(function() {
     }
   });
 
-  // SSO
+  // On initial load, Query for all makes.
+  make.limit( MAX_SIZE ).then( createGrid );
 
+  // SSO
   var logout = $( "#logout" );
 
   logout.click(function(){

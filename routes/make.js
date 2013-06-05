@@ -43,7 +43,9 @@ module.exports = function( makeCtor, loginApi, env ) {
       }
     });
 
-    make.email = body.email;
+    if ( body.email ) {
+      make.email = body.email;
+    }
 
     // If createdAt doesn't exist, we know this is a Create, otherwise stamp updatedAt
     if ( !make.createdAt ) {
@@ -150,19 +152,22 @@ module.exports = function( makeCtor, loginApi, env ) {
         return handleError ( res, "Unable to parse search data.", 400, "search" );
       }
 
-      if ( !searchData.query.filtered.filter.and ) {
-        searchData.query.filtered.filter.and = [];
-      }
+      if ( searchData.query.filtered.filter ) {
+        if ( !searchData.query.filtered.filter.and ) {
+          searchData.query.filtered.filter.and = [];
+        }
 
-      filters = searchData.query.filtered.filter.and;
+        filters = searchData.query.filtered.filter.and;
 
-      // We have to unescape any URLs that were present in the data
-      for ( var i = 0; i < filters.length; i++ ) {
-        filter = filters[ i ];
-        if ( filter.term && filter.term.url ) {
-          filter.term.url = querystring.unescape( filter.term.url );
+        // We have to unescape any URLs that were present in the data
+        for ( var i = 0; i < filters.length; i++ ) {
+          filter = filters[ i ];
+          if ( filter.term && filter.term.url ) {
+            filter.term.url = querystring.unescape( filter.term.url );
+          }
         }
       }
+
 
       if ( searchData.makerID ) {
         return loginApi.getUser( searchData.makerID, function( err, userData ) {

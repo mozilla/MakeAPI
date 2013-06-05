@@ -1,0 +1,28 @@
+body {
+  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+div.data-table-area {
+  width: 95%;
+  margin-left: 2.5%;
+  height: 500px;
+  overflow: hidden;
+  outline: 0px none;
+  position: relative;
+  border: 1px solid gray;
+}
+div#pager {
+  width: 95%;
+  margin-left: 2.5%;
+  height: 20px;
+}
+
+.error-message {
+  width: 100%;
+  text-align: center;
+  color: #ff0000;
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
