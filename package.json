@@ -1,6 +1,6 @@
 {
   "name": "makeapi",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "MakeAPI for Webmaker",
   "main": "./lib/api.js",
   "scripts": {
