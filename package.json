@@ -41,7 +41,7 @@
     "nunjucks": "0.1.8a",
     "request": "2.20.0",
     "querystring": "0.2.0",
-    "webmaker-loginapi": "0.1.2"
+    "webmaker-loginapi": "0.1.4"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
