@@ -52,14 +52,6 @@ classes should alter those!
   float: left;
 }
 
-.slick-sort-indicator-desc {
-  background: url(images/sort-desc.gif);
-}
-
-.slick-sort-indicator-asc {
-  background: url(images/sort-asc.gif);
-}
-
 .slick-resizable-handle {
   position: absolute;
   font-size: 0.1px;
