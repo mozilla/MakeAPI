@@ -231,7 +231,8 @@ var module = module || undefined;
               filter: {},
               query: {
                 match_all: {}
-              }
+              },
+              filter: {}
             }
           }
         },
