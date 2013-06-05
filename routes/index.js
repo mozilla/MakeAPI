@@ -15,6 +15,7 @@ module.exports = function routesCtor( MakeCtor, loginApi, env ) {
     update: makeRoutes.update,
     remove: makeRoutes.remove,
     healthcheck: makeRoutes.healthcheck,
+    searchTest: makeRoutes.searchTest,
     admin: adminRoutes.admin,
     login: adminRoutes.login
   };

@@ -187,6 +187,9 @@ module.exports = function( makeCtor, loginApi, env ) {
       doSearch( res, searchData );
 
     },
+    searchTest: function( req, res ) {
+      res.render( "search.html" );
+    },
     healthcheck: function( req, res ) {
       res.json({ http: "okay" });
     }
