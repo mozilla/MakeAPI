@@ -24,6 +24,16 @@ $(function() {
       };
 
   var COLUMNS = [
+    {
+      id: "id",
+      name: "Click To Delete",
+      headerCssClass: "red-text",
+      field: "id",
+      minWidth: 150,
+      formatter: function (r, c, val, def, datactx) {
+        return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\')" class="delete-make-btn red-text">Delete</button>';
+      }
+    },
     { id: "url", name: "Url", field: "url",
       editor: Slick.Editors.Text,
       sortable: true
@@ -91,12 +101,25 @@ $(function() {
       pager = new Slick.Controls.Pager( dataView, grid, $( "#pager" ) ),
       data;
 
+  window.removeClick = function( id, dataViewId ){
+    make.remove( id, function( err ) {
+      if ( err ) {
+        errorSpan.removeClass( "hidden" ).html( "Error Deleting! " + JSON.stringify( err ) );
+      }
+      else {
+        dataView.deleteItem( dataViewId );
+        grid.invalidate();
+        grid.render();
+      }
+    });
+  };
+
   grid.onCellChange.subscribe(function ( e, data ) {
     var make = data.item;
 
     make.tags = Array.isArray( make.tags )? make.tags : make.tags.split( "," );
 
-    make.update( identity, function( err, data ) {
+    make.update( identity, function( err, updated ) {
       if ( err ) {
         errorSpan.removeClass( "hidden" ).html( "Error Updating! " + JSON.stringify( err ) );
         return;
@@ -132,9 +155,10 @@ $(function() {
 
   function doSearch() {
     errorSpan.addClass( "hidden" ).html( "" );
-    make
-    .tags( tagSearchInput.val().split( "," ) )
-    .limit( MAX_SIZE )
+    if ( tagSearchInput.val() ) {
+      make.tags( tagSearchInput.val().split( "," ) );
+    }
+    make.limit( MAX_SIZE )
     .then( createGrid );
   }
 

@@ -79,11 +79,12 @@ app.get( "/healthcheck", routes.healthcheck );
 
 app.get( "/login", routes.login );
 app.get( "/admin", middleware.adminAuth, routes.admin );
-app.put( "/admin/api/make/:id", middleware.adminAuth, routes.update );
-app.get( "/admin/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
+app.put( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, routes.update );
+app.get( "/admin/api/makes/search", Mongo.isDbOnline, Mongo.isDbOnline, function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();
 }, routes.search );
+app.del( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, routes.remove );
 app.options( "/admin/api/makes/search", function( req, res ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   res.header( "Access-Control-Allow-Headers", "Content-Type" );

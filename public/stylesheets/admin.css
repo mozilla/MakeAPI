@@ -19,10 +19,17 @@ div#pager {
 .error-message {
   width: 100%;
   text-align: center;
-  color: #ff0000;
   display: block;
 }
 
 .hidden {
   display: none;
+}
+
+.delete-make-btn {
+  width: 100%;
+}
+
+.red-text {
+  color: #ff0000;
 }
