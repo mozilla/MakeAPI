@@ -55,7 +55,7 @@ app.use( express.cookieSession({
 
 loginApi = require( "webmaker-loginapi" )( app, env.get( "LOGIN_SERVER_URL_WITH_AUTH" ) );
 routes = require( "./routes" )( Make, loginApi, env );
-middleware = require( "./lib/middleware" )( loginApi, env );
+middleware = require( "./lib/middleware" )( Make, loginApi, env );
 authMiddleware = express.basicAuth( middleware.authenticateUser );
 
 require( "express-persona" )( app, {
@@ -63,9 +63,10 @@ require( "express-persona" )( app, {
   verifyResponse: middleware.verifyPersonaLogin
 });
 
+// public and auth routes
 app.post( "/api/make", authMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
-app.put( "/api/make/:id", authMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.update );
-app.del( "/api/make/:id", authMiddleware, Mongo.isDbOnline, routes.remove );
+app.put( "/api/make/:id", authMiddleware, Mongo.isDbOnline, middleware.getMake, middleware.prefixAuth, routes.update );
+app.del( "/api/make/:id", authMiddleware, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.get( "/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();
@@ -77,14 +78,15 @@ app.options( "/api/makes/search", function( req, res ) {
 });
 app.get( "/healthcheck", routes.healthcheck );
 
+// Routes relating to admin tools
 app.get( "/login", routes.login );
 app.get( "/admin", middleware.adminAuth, routes.admin );
-app.put( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, routes.update );
+app.put( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
 app.get( "/admin/api/makes/search", Mongo.isDbOnline, Mongo.isDbOnline, function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();
 }, routes.search );
-app.del( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, routes.remove );
+app.del( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.options( "/admin/api/makes/search", function( req, res ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   res.header( "Access-Control-Allow-Headers", "Content-Type" );

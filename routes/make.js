@@ -6,9 +6,9 @@
 
 "use strict";
 
-module.exports = function( makeCtor, loginApi, env ) {
+module.exports = function( makeModel, loginApi, env ) {
 
-  var Make = makeCtor,
+  var Make = makeModel,
       metrics = require( "../lib/metrics" )( env ),
       querystring = require( "querystring" ),
       deferred = require( "deferred" ),
@@ -103,33 +103,18 @@ module.exports = function( makeCtor, loginApi, env ) {
       updateFields( res, new Make(), req.body.make, "create" );
     },
     update: function( req, res ) {
-      Make.findById( req.params.id ).where( "deletedAt", null ).exec(function( err, make ) {
-        updateFields( res, make, req.body.make, "update" );
-      });
+      updateFields( res, req.make, req.body.make, "update" );
     },
     remove: function( req, res ) {
-      return Make.findById( req.params.id ).where( "deletedAt", null ).exec(function( err, make ) {
+      var make = req.make;
+
+      make.deletedAt = Date.now();
+      make.save( function( err, make ) {
         if ( err ) {
-          if ( err.name === "CastError" ) {
-            err.message = "The supplied value does not look like a Make ID.";
-            return handleError( res, err, 400, "remove" );
-          } else {
-            return handleError( res, err, 500, "remove" );
-          }
+          return handleError( res, err, 500, "remove" );
         }
-
-        if ( !make ) {
-          return handleError( res, "The supplied id does not exist.", 404, "remove" );
-        }
-
-        make.deletedAt = Date.now();
-        make.save( function( err, make ) {
-          if ( err ) {
-            return handleError( res, err, 500, "remove" );
-          }
-          metrics.increment( "make.remove.success" );
-          res.json( make );
-        });
+        metrics.increment( "make.remove.success" );
+        res.json( make );
       });
     },
     search: function( req, res ) {
