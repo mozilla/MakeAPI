@@ -30,13 +30,16 @@ $(function() {
       headerCssClass: "red-text",
       field: "id",
       minWidth: 150,
-      formatter: function (r, c, val, def, datactx) {
-        return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\')" class="delete-make-btn red-text">Delete</button>';
+      formatter: function ( r, c, val, def, datactx ) {
+        return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">Delete</button>';
       }
     },
     { id: "url", name: "Url", field: "url",
       editor: Slick.Editors.Text,
-      sortable: true
+      sortable: true,
+      formatter: function( r, c, val, def, datactx ) {
+        return '<a href="#" onclick="previewUrl( \'' + val + '\' );">' + val + '</a>';
+      }
     },
     { id: "contentType", name: "Content Type", field: "contentType",
       editor: Slick.Editors.Text,
@@ -113,6 +116,13 @@ $(function() {
         grid.invalidate();
         grid.render();
       }
+    });
+  };
+
+  window.previewUrl = function( url ) {
+    $( '<iframe src="' + url + '" style="height: 80%; width: 80%;"></iframe>' )
+    .lightbox_me({
+      centered: true
     });
   };
 
