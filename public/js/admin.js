@@ -122,7 +122,8 @@ $(function() {
   window.previewUrl = function( url ) {
     $( '<iframe src="' + url + '" style="height: 80%; width: 80%;"></iframe>' )
     .lightbox_me({
-      centered: true
+      centered: true,
+      destroyOnClose: true
     });
   };
 
