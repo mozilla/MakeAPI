@@ -101,6 +101,8 @@ $(function() {
       pager = new Slick.Controls.Pager( dataView, grid, $( "#pager" ) ),
       data;
 
+  dataView.setPagingOptions( { pageSize: 25 } );
+
   window.removeClick = function( id, dataViewId ){
     make.remove( id, function( err ) {
       if ( err ) {
