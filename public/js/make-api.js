@@ -17,6 +17,7 @@ var module = module || undefined;
       auth,
       user,
       pass,
+      csrfToken,
       request;
 
   function nodeStrategy( type, path, data, callback ) {
@@ -52,6 +53,9 @@ var module = module || undefined;
       request.open( type, path, true, user, pass );
     } else {
       request.open( type, path, true );
+    }
+    if ( csrfToken ) {
+      request.setRequestHeader( "x-csrf-token", csrfToken );
     }
     request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
     request.onreadystatechange = function() {
@@ -223,6 +227,10 @@ var module = module || undefined;
       auth = auth.split( ":" );
       user = auth[ 0 ];
       pass = auth[ 1 ];
+    }
+
+    if ( options.csrf ) {
+      csrfToken = options.csrf;
     }
 
     var BASE_QUERY = {

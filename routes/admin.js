@@ -12,13 +12,15 @@ module.exports = function( audience ) {
     admin: function( req, res ) {
       res.render( "admin.html", {
         email: req.session.email,
-        audience: audience
+        audience: audience,
+        csrf: req.session._csrf
       });
     },
     login: function( req, res ) {
       res.render( "login.html", {
         email: req.session.email,
-        audience: audience
+        audience: audience,
+        csrf: req.session._csrf
       });
     }
   };

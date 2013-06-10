@@ -91,8 +91,10 @@ $(function() {
         defaultColumnWidth: 150,
         topPanelHeight: 200
       },
+      csrfToken = $("meta[name=csrf_token]").attr("content"),
       make = window.Make({
-        apiURL: "/admin"
+        apiURL: "/admin",
+        csrf: csrfToken
       }),
       tagSearchInput = $( "#search-tag" ),
       searchBtn = $( "#search" ),
@@ -120,7 +122,7 @@ $(function() {
   };
 
   window.previewUrl = function( url ) {
-    $( '<iframe src="' + url + '" style="height: 80%; width: 80%;"></iframe>' )
+    $( '<iframe src="' + url + '" style="background: white; height: 80%; width: 80%;"></iframe>' )
     .lightbox_me({
       centered: true,
       destroyOnClose: true
@@ -203,6 +205,7 @@ $(function() {
       var request = new XMLHttpRequest();
 
       request.open( "POST", "/persona/logout", true );
+      request.setRequestHeader( "x-csrf-token", csrfToken );
       request.addEventListener( "loadend", function() {
         window.location.replace( "./login" );
       }, false);
