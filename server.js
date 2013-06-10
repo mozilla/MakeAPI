@@ -23,6 +23,7 @@ var app = express(),
     Mongo = require( "./lib/mongoose" )( env ),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) ),
+    csrfMiddleware = express.csrf(),
     routes,
     loginApi,
     middleware,
@@ -79,14 +80,14 @@ app.options( "/api/makes/search", function( req, res ) {
 app.get( "/healthcheck", routes.healthcheck );
 
 // Routes relating to admin tools
-app.get( "/login", routes.login );
-app.get( "/admin", middleware.adminAuth, routes.admin );
-app.put( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
+app.get( "/login", csrfMiddleware, routes.login );
+app.get( "/admin", csrfMiddleware, middleware.adminAuth, routes.admin );
+app.put( "/admin/api/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
+app.del( "/admin/api/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.get( "/admin/api/makes/search", Mongo.isDbOnline, Mongo.isDbOnline, function crossOrigin( req, res, next ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   next();
 }, routes.search );
-app.del( "/admin/api/make/:id", middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.options( "/admin/api/makes/search", function( req, res ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   res.header( "Access-Control-Allow-Headers", "Content-Type" );

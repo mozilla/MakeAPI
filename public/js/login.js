@@ -4,7 +4,8 @@
 
 $(function() {
   var submit = $("#submit"),
-      identity = $("meta[title=persona-email]").attr( "content" ) || null;
+      identity = $("meta[name=persona-email]").attr("content") || null,
+      csrfToken = $("meta[name=csrf_token]").attr("content");
 
   submit.click(function() {
     navigator.idSSO.request();
@@ -16,6 +17,7 @@ $(function() {
 
       request.open( "POST", "/persona/verify", true );
       request.setRequestHeader( "Content-Type", "application/json" );
+      request.setRequestHeader( "x-csrf-token", csrfToken );
       request.addEventListener( "loadend", function() {
         try {
           var data = JSON.parse( this.response );
