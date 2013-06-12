@@ -59,7 +59,13 @@ $(function() {
     },
     { id: "thumbnail", name: "Thumbnail Url", field: "thumbnail",
       editor: Slick.Editors.Text,
-      sortable: true
+      sortable: true,
+      formatter: function( r, c, val, def, datactx ) {
+        if ( !val ) {
+          return "";
+        }
+        return '<a href="#" onclick="previewUrl( \'' + val + '\', \'auto\', \'auto\' );">' + val + '</a>';
+      }
     },
     { id: "username", name: "username", field: "username",
       sortable: true },
@@ -121,8 +127,8 @@ $(function() {
     });
   };
 
-  window.previewUrl = function( url ) {
-    $( '<iframe src="' + url + '" style="background: white; height: 80%; width: 80%;"></iframe>' )
+  window.previewUrl = function( url, height, width ) {
+    $( '<iframe src="' + url + '" style="background: white; height: ' + (height || '80%') + '; width: ' + (width || '80%') + ';"></iframe>' )
     .lightbox_me({
       centered: true,
       destroyOnClose: true
