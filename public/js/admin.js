@@ -20,6 +20,17 @@ $(function() {
         },
         tags: function( row, cell, val ) {
           return Array.isArray( val ) ? val.join( "," ) : val;
+        },
+        del: function ( r, c, val, def, datactx ) {
+          return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">Delete</button>';
+        },
+        url: function( r, c, val ) {
+          return '<a href="#" onclick="previewUrl( \'' + val + '\' );">' + val + '</a>';
+        },
+        featured: function( r, c, val, def, datactx ) {
+          var tags =  Array.isArray( datactx.tags ) ? datactx.tags : [ datactx.tags ],
+              checked = tags.indexOf( "webmaker:featured" ) !== -1 ? "checked" : "";
+          return '<input ' + checked + ' type="checkbox" value="featured" id="featured-' +  r + '" onchange="toggleTags(' + r + ', \'webmaker:featured\', \'featured\' );" />';
         }
       };
 
@@ -30,16 +41,12 @@ $(function() {
       headerCssClass: "red-text",
       field: "id",
       minWidth: 150,
-      formatter: function ( r, c, val, def, datactx ) {
-        return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">Delete</button>';
-      }
+      formatter: formatters.del
     },
     { id: "url", name: "Url", field: "url",
       editor: Slick.Editors.Text,
       sortable: true,
-      formatter: function( r, c, val, def, datactx ) {
-        return '<a href="#" onclick="previewUrl( \'' + val + '\' );">' + val + '</a>';
-      }
+      formatter: formatters.url
     },
     { id: "contentType", name: "Content Type", field: "contentType",
       editor: Slick.Editors.Text,
@@ -67,11 +74,19 @@ $(function() {
         return '<a href="#" onclick="previewUrl( \'' + val + '\', \'auto\', \'auto\' );">' + val + '</a>';
       }
     },
+    { id: "author", name: "author", field: "author",
+      sortable: true,
+      editor: Slick.Editors.Text
+    },
     { id: "username", name: "username", field: "username",
       sortable: true },
     { id: "tags", name: "Tags", field: "tags",
       formatter: formatters.tags,
       editor: Slick.Editors.Text
+    },
+    {
+      id: "featured", name: "featured",
+      formatter: formatters.featured
     },
     { id: "remixedFrom", name: "Remixed From", field: "remixedFrom",
       sortable: true },
@@ -82,7 +97,6 @@ $(function() {
     },
     { id: "updatedAt", name: "Updated At", field: "updatedAt",
       formatter: formatters.date,
-      editor: Slick.Editors.Date,
       sortable: true
     }
   ];
@@ -141,6 +155,35 @@ $(function() {
       return $.trim( item );
     });
   }
+
+  window.toggleTags = function( row, tags, type, id ) {
+    var make = dataView.getItem( row ),
+        checkbox = $( "#" + type + "-" + row );
+
+    make.tags = ( Array.isArray( make.tags ) ? make.tags : make.tags.split( "," ) ).filter(function( elem ){
+      return !!elem;
+    });
+
+    tags = tags.split( "," );
+
+    if ( checkbox.is( ":checked" ) ) {
+      make.tags = make.tags.concat( tags );
+    } else {
+      tags.forEach(function( tag ) {
+        if ( make.taggedWithAny( tag ) ) {
+          make.tags.splice( make.tags.indexOf( tag ), 1 );
+        }
+      });
+    }
+
+    make.update( identity, function( err, updated ) {
+      if ( err ) {
+        errorSpan.removeClass( "hidden" ).html( "Error Updating! " + JSON.stringify( err ) );
+        return;
+      }
+      dataView.updateItem( make.id, make );
+    });
+  };
 
   grid.onCellChange.subscribe(function ( e, data ) {
     var make = data.item;
