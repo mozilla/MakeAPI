@@ -11,12 +11,22 @@
     <meta name="csrf_token" content="{{csrf}}" >
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.custom.css" >
+    <style>
+      #err-message {
+        color: red;
+        display: block;
+      }
+      #err-message .hidden {
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
       <form class="form-signin">
         <h2 class="form-signin-heading text-center">Please sign in</h2>
           <button id="submit" class="btn btn-large btn-primary" type="button">Sign in</button>
+          <p id="err-message" class="help-block hidden"></p>
       </form>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>

@@ -24,7 +24,7 @@ $(function() {
           if ( data.status === "okay" ) {
             window.location.replace( "./admin" );
           } else {
-            console.log( "Login failed because " + data.reason);
+            $( "#err-message" ).html( "Login failed for " + identity + " because " + data.reason );
           }
         } catch (ex) {
           // oh no, we didn't get valid JSON from the server
@@ -34,12 +34,8 @@ $(function() {
         assertion: assertion
       }));
     },
-    onmatch: function() {
-      if ( identity ) {
-        window.location.replace( "./admin" );
-      }
-    },
-    loggedInUser: identity,
-    onlogout: function() {}
+    onmatch: function() {},
+    onlogout: function() {},
+    loggedInUser: identity
   });
 });
