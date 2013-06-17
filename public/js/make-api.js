@@ -233,25 +233,6 @@ var module = module || undefined;
       csrfToken = options.csrf;
     }
 
-    var BASE_QUERY = {
-          query: {
-            filtered: {
-              filter: {},
-              query: {
-                match_all: {}
-              }
-            }
-          }
-        },
-        DELETED_FILTER = [
-          {
-            missing: {
-              field: "deletedAt",
-              null_value: true
-            }
-          }
-        ];
-
     return {
       searchFilters: [],
       sortBy: [],
@@ -413,15 +394,29 @@ var module = module || undefined;
       },
 
       then: function( callback ) {
-        var searchQuery = BASE_QUERY;
+        var searchQuery = {
+          query: {
+            filtered: {
+              filter: {
+                and: [{
+                  missing: {
+                    field: "deletedAt",
+                    null_value: true
+                  }
+                }]
+              },
+              query: {
+                match_all: {}
+              }
+            }
+          }
+        };
 
         searchQuery.size = this.size;
         searchQuery.from = ( this.pageNum - 1 ) * this.size;
 
-        if ( this.searchFilters.length ) {
-          searchQuery.query.filtered.filter.and = DELETED_FILTER.concat( this.searchFilters );
-        } else {
-          searchQuery.query.filtered.filter.and = DELETED_FILTER;
+        if ( Array.isArray( this.searchFilters )) {
+          searchQuery.query.filtered.filter.and = searchQuery.query.filtered.filter.and.concat( this.searchFilters );
         }
 
         if ( this.sortBy.length ) {
