@@ -33,20 +33,21 @@ function startLoginServer( done ) {
       method: 'post',
       json: user
     }, function( err, res, body ) {
+console.log("err", err, "body", body);
       assert.ok( !err );
       assert.equal( res.statusCode, 200 );
       callback();
     });
   }
 
-  loginChild = fork( 'test/login.webmaker.org/app.js', null, {
+  loginChild = fork( 'test/login.webmaker.org/app.js', [], { env: {
     PORT: loginPort,
     HOSTNAME: "http://localhost",
     MONGO_URL: "mongodb://localhost:27017/local_webmakers",
     SESSION_SECRET: "secret",
     ALLOWED_USERS: "travis:travis",
     ALLOWED_DOMAINS: "http://localhost:3000 http://localhost:3001"
-  });
+  }});
 
   loginChild.on( "message", function( msg ) {
     if( msg === "Started" ) {
