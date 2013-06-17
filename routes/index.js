@@ -4,7 +4,7 @@
 
 module.exports = function routesCtor( MakeCtor, loginApi, env ) {
   var makeRoutes = require( "./make" )( MakeCtor, loginApi, env ),
-      adminRoutes = require( "./admin" )( env.get( "AUDIENCE" ) );
+      adminRoutes = require( "./admin" )( env.get( "AUDIENCE" ), env.get( "LOGIN_SERVER" ) );
 
   return {
     index: function( req, res ) {

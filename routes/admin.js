@@ -6,13 +6,14 @@
 
 "use strict";
 
-module.exports = function( audience ) {
+module.exports = function( audience, login ) {
 
   return {
     admin: function( req, res ) {
       res.render( "admin.html", {
         email: req.session.email,
         audience: audience,
+        login: login,
         csrf: req.session._csrf
       });
     },
@@ -20,6 +21,7 @@ module.exports = function( audience ) {
       res.render( "login.html", {
         email: req.session.email,
         audience: audience,
+        login: login,
         csrf: req.session._csrf
       });
     }
