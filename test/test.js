@@ -132,6 +132,27 @@ describe( 'POST /make (create)', function() {
   });
 
 
+  it( 'make-api.js - id', function( done ) {
+    var m = unique();
+
+    apiHelper( 'post', api, 200, m, function( err, res, body ) {
+      var make = MakeAPI({ apiURL: hostNoAuth });
+
+      console.log("body", body);
+
+      make.id( body.id ).then( function( err, data ) {
+
+        console.log("data", data);
+
+        assert.ok( !err );
+        assert.ok( !!data );
+        assert.equal( data[ 0 ].id, body.id );
+        done();
+      });
+    });
+  });
+
+
   it( 'make-api.js - url', function( done ) {
     var m = unique();
 
