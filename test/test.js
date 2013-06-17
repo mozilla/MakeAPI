@@ -99,7 +99,11 @@ function apiHelper( verb, uri, httpCode, data, callback, assertions ) {
   request({
     url: uri,
     method: verb,
-    json: data
+    json: data,
+    auth: {
+      user: "travis",
+      pass: "travis"
+    }
   }, function( err, res, body ) {
     assertions( err, res, body, callback );
   });
