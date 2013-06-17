@@ -1,0 +1,3 @@
+[submodule "test/login.wemaker.org"]
+	path = test/login.wemaker.org
+	url = git://github.com/mozilla/login.webmaker.org.git

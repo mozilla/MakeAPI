@@ -1,10 +1,10 @@
 var assert = require( 'assert' ),
     fork = require( 'child_process' ).fork,
     request = require( 'request' ),
-    Webfaker = require( 'webfaker' ),
     MakeAPI = require( '../public/js/make-api.js' ),
     now = Date.now(),
     child,
+    loginChild,
     port = 3000,
     hostAuth = 'http://travis:travis@localhost:' + port,
     hostNoAuth = 'http://localhost:' + port,
@@ -24,15 +24,42 @@ var assert = require( 'assert' ),
 /**
  * Server functions
  */
+function startLoginServer( done ) {
+  var loginPort = 3001;
+
+  function createUser( user, callback ) {
+    request({
+      url: "http://localhost:" + loginPort + "/user",
+      method: 'post',
+      json: user
+    }, function( err, res, body ) {
+      assert.ok( !err );
+      assert.equal( res.statusCode, 200 );
+      callback();
+    });
+  }
+
+  loginChild = fork( 'test/login.webmaker.org/app.js', null, {
+    PORT: loginPort,
+    HOSTNAME: "http://localhost",
+    MONGO_URL: "mongodb://localhost:27017/local_webmakers",
+    SESSION_SECRET: "secret",
+    ALLOWED_USERS: "travis:travis",
+    ALLOWED_DOMAINS: "http://localhost:3000 http://localhost:3001"
+  });
+
+  loginChild.on( "message", function( msg ) {
+    if( msg === "Started" ) {
+      // Create a few logins
+      createUser( admin, function() {
+        createUser( notAdmin, done );
+      });
+    }
+  });
+}
+
 function startServer( done ) {
-  Webfaker.start({
-    port: port + 1,
-    username: "travis",
-    password: "travis",
-    fakes: 10,
-    logins: [ admin, notAdmin ],
-    isAdminCheck: true
-  }, function() {
+  startLoginServer( function() {
     // Spin-up the MakeAPI server as a child process
     child = fork( 'server.js', null, {} );
     child.on( 'message', function( msg ) {
@@ -44,10 +71,9 @@ function startServer( done ) {
 }
 
 function stopServer( done ) {
-  Webfaker.stop( function() {
-    child.kill();
-    done();
-  });
+  loginChild.kill();
+  child.kill();
+  done();
 }
 
 /**
