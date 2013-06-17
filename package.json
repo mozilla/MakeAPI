@@ -4,7 +4,7 @@
   "description": "MakeAPI for Webmaker",
   "main": "./lib/api.js",
   "scripts": {
-    "test": "grunt --verbose && mocha test/test.js --reporter spec"
+    "test": "grunt --verbose && mocha --reporter spec --grep tests.js"
   },
   "repository": {
     "type": "git",
