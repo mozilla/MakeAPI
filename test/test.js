@@ -85,17 +85,18 @@ function apiHelper( verb, uri, httpCode, data, callback, assertions ) {
 function unique( options ) {
   options = options || {};
   var u = ( ++now ).toString( 36 ),
-      user = options.user || admin;
+      user = options.user || admin,
+      url = 'http://' + user.subdomain + '.makes.org/' + u;
 
   return {
     maker: user.email,
     make: {
-      url: 'http://' + user.subdomain + '.makes.org/' + u,
+      url: url,
       locale: options.locale || "en_US",
       contentType: options.contentType || 'text/html',
       title: options.title || u,
       description: options.description || u,
-      thumbnail: options.thumbnail || this.url + "/thumbnail.png",
+      thumbnail: options.thumbnail || url + "/thumbnail.png",
       author: options.author || user.fullName,
       email: options.email || user.email,
       tags: options.tags,
@@ -139,13 +140,13 @@ describe( 'POST /make (create)', function() {
 
       console.log("body", body);
 
-      make.url( m.url ).then( function( err, data ) {
+      make.url( m.make.url ).then( function( err, data ) {
 
         console.log("data", data);
 
         assert.ok( !err );
         assert.ok( !!data );
-        assert.equal( data[ 0 ].url, m.url );
+        assert.equal( data[ 0 ].url, m.make.url );
         done();
       });
     });
