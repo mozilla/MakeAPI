@@ -2,6 +2,7 @@ var assert = require( 'assert' ),
     fork = require( 'child_process' ).fork,
     request = require( 'request' ),
     Webfaker = require( 'webfaker' ),
+    MakeAPI = require( '../public/js/make-api.js' ),
     now = Date.now(),
     child,
     port = 3000,
@@ -126,6 +127,21 @@ describe( 'POST /make (create)', function() {
       // Simple test, needs to be expanded for other properties we expect
       assert.equal( body.url, m.make.url );
       done();
+    });
+  });
+
+
+  it( 'make-api.js - url', function( done ) {
+    var m = unique();
+
+    apiHelper( 'post', api, 200, m, function( err, res, body ) {
+      var make = Make({ apiURL: hostNoAuth });
+      make.url( m.url ).then( function( err, data ) {
+        assert.ok( !err );
+        assert.ok( !!data );
+        assert.equal( data[ 0 ].url, m.url );
+        done();
+      });
     });
   });
 
