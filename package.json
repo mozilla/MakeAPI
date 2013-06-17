@@ -48,7 +48,7 @@
     "grunt-contrib-csslint": "~0.1.2",
     "grunt-contrib-jshint": "~0.4.3",
     "mocha": "~1.9.0",
-    "webfaker": "0.0.9"
+    "webfaker": "0.0.10"
   },
   "engines": {
     "node": ">=0.8.23",
