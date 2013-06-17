@@ -23,28 +23,22 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/slick.grid.css" >
     <link rel="stylesheet" type="text/css" href="stylesheets/slick.pager.css" >
     <link rel="stylesheet" type="text/css" href="stylesheets/admin.css" >
+    <link rel="stylesheet" href="{{login}}/css/nav.css" />
   </head>
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">Make Editor</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav nav-pills pull-right">
-              <li class="user">
-                <a id="identity" href="#" >{{email}}</a>
-              </li>
-              <li ><a id="logout" href="#">Logout</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+    <div id="webmaker-nav">
+      <nav class="webmaker-nav-container">
+        <a id="logo" href="https://webmaker.org"><img src="{{login}}/img/webmaker-logo.png" alt="Mozilla Webmaker" /></a>
+        <ul class="webmaker-nav user-info">
+          <li class="user">
+            Hi <span id="identity" class="user-name-container"></span>
+          </li>
+          <li>
+            <iframe src="{{audience}}/sso/include.html" class="include-frame"></iframe>
+          </li>
+        </ul>
+      </nav>
     </div>
 
     <div class="container">

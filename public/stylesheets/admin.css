@@ -1,6 +1,7 @@
-body {
-  padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+div.container {
+  margin-top: 30px;
 }
+
 div.data-table-area {
   width: 95%;
   margin-left: 2.5%;
@@ -10,6 +11,7 @@ div.data-table-area {
   position: relative;
   border: 1px solid gray;
 }
+
 div#pager {
   width: 95%;
   margin-left: 2.5%;
