@@ -135,8 +135,14 @@ describe( 'POST /make (create)', function() {
     var m = unique();
 
     apiHelper( 'post', api, 200, m, function( err, res, body ) {
-      var make = Make({ apiURL: hostNoAuth });
+      var make = MakeAPI({ apiURL: hostNoAuth });
+
+      console.log("body", body);
+
       make.url( m.url ).then( function( err, data ) {
+
+        console.log("data", data);
+
         assert.ok( !err );
         assert.ok( !!data );
         assert.equal( data[ 0 ].url, m.url );
