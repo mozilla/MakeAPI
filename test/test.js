@@ -11,12 +11,12 @@ var assert = require( 'assert' ),
     // One admin user, one non-admin
     admin = {
       email: "admin@webfaker.org",
-      subdomain: "admin",
+      username: "admin",
       fullName: "An Admin",
       isAdmin: true },
     notAdmin = {
       email: "notadmin@webfaker.org",
-      subdomain: "notadmin",
+      username: "notadmin",
       fullName: "Not Admin",
       isAdmin: false
     };
@@ -86,7 +86,7 @@ function unique( options ) {
   options = options || {};
   var u = ( ++now ).toString( 36 ),
       user = options.user || admin,
-      url = 'http://' + user.subdomain + '.makes.org/' + u;
+      url = 'http://' + user.username + '.makes.org/' + u;
 
   return {
     maker: user.email,
