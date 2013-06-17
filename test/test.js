@@ -33,7 +33,6 @@ function startLoginServer( done ) {
       method: 'post',
       json: user
     }, function( err, res, body ) {
-console.log("err", err, "body", body);
       assert.ok( !err );
       assert.equal( res.statusCode, 200 );
       callback();
@@ -99,11 +98,7 @@ function apiHelper( verb, uri, httpCode, data, callback, assertions ) {
   request({
     url: uri,
     method: verb,
-    json: data,
-    auth: {
-      user: "travis",
-      pass: "travis"
-    }
+    json: data
   }, function( err, res, body ) {
     assertions( err, res, body, callback );
   });
@@ -167,7 +162,7 @@ describe( 'POST /make (create)', function() {
     var m = unique();
 
     apiHelper( 'post', api, 200, m, function( err, res, body ) {
-      var make = MakeAPI({ apiURL: hostNoAuth });
+      var make = MakeAPI({ apiURL: hostNoAuth, auth: "travis:travis" });
 
       console.log("body", body);
 
