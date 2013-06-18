@@ -54,7 +54,6 @@ module.exports = function( makeModel, loginApi, env ) {
 
   function getUserNames( res, results ) {
     var searchHit;
-
     // Query for each Make's creator and attach their username to the Make
     deferred.map( results.hits, function( make ) {
 
@@ -82,7 +81,7 @@ module.exports = function( makeModel, loginApi, env ) {
     })
     .then(function onSuccess( result ) {
       metrics.increment( "make.search.success" );
-      res.json( result );
+      res.json( { makes: result, total: results.total } );
     }, function onError( err ) {
       handleError( res, err, 500, "search" );
     });
