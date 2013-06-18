@@ -82,7 +82,7 @@ $(function() {
   ];
 
   // max hits that ES should return on a search.
-  var MAX_SIZE = 100;
+  var MAX_SIZE = 1000;
 
   var options = {
         autoEdit: false,
