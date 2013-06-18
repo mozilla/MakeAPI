@@ -129,10 +129,16 @@ $(function() {
     });
   };
 
+  function trimItems( items ) {
+    return items.map( function( item ) {
+      return $.trim( item );
+    });
+  }
+
   grid.onCellChange.subscribe(function ( e, data ) {
     var make = data.item;
 
-    make.tags = Array.isArray( make.tags )? make.tags : make.tags.split( "," );
+    make.tags = Array.isArray( make.tags ) ? make.tags : trimItems( make.tags.split( "," ) );
 
     make.update( identity, function( err, updated ) {
       if ( err ) {
@@ -171,7 +177,7 @@ $(function() {
   function doSearch() {
     errorSpan.addClass( "hidden" ).html( "" );
     if ( tagSearchInput.val() ) {
-      make.tags( tagSearchInput.val().split( "," ) );
+      make.tags( trimItems( tagSearchInput.val().split( "," ) ) );
     }
     make.limit( MAX_SIZE )
     .then( createGrid );
