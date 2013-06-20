@@ -102,7 +102,8 @@ $(function() {
         apiURL: "/admin",
         csrf: csrfToken
       }),
-      tagSearchInput = $( "#search-tag" ),
+      searchTypeSelector = $( "#filter-type" ),
+      searchValue = $( "#search-tag" ),
       searchBtn = $( "#search" ),
       gridArea = $( ".data-table-area" ),
       identity = $( "#identity" ).text(),
@@ -181,10 +182,18 @@ $(function() {
   }
 
   function doSearch() {
+    var searchType = searchTypeSelector.val(),
+        search = searchValue.val();
+
     errorSpan.addClass( "hidden" ).html( "" );
-    if ( tagSearchInput.val() ) {
-      make.tags( trimItems( tagSearchInput.val().split( "," ) ) );
+
+    if ( search ) {
+      if ( searchType === "tags" ) {
+        search = trimItems( search.split( "," ) );
+      }
+      make[ searchType ]( search );
     }
+
     make.limit( MAX_SIZE )
     .then( createGrid );
   }
@@ -192,12 +201,12 @@ $(function() {
   searchBtn.click( doSearch );
 
   // Press enter to search
-  tagSearchInput.keypress(function( e ) {
+  searchValue.keypress(function( e ) {
     if ( e.which === 13 ) {
       e.preventDefault();
       e.stopPropagation();
       doSearch();
-      tagSearchInput.blur();
+      searchValue.blur();
     }
   });
 
