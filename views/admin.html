@@ -45,7 +45,18 @@
       <form class="form-horizontal">
         <fieldset>
           <div class="control-group">
-            <label class="control-label" for="search-tag">Search By Tag:</label>
+            <label class="control-label" for="filter-type">Seach By:</label>
+            <div class="controls">
+              <select id="filter-type" name="filter-type" class="input-xlarge">
+                <option value="title" selected>Title</option>
+                <option value="user">User</option>
+                <option value="description">Description</option>
+                <option value="tags">Tags</option>
+              </select>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="search-tag">Search For:</label>
             <div class="controls">
               <input id="search-tag" name="search-tag" title="PROTIP: empty === get all makes" placeholder="empty gets all makes" class="input-large" type="text">
             </div>
