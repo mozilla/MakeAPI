@@ -21,12 +21,15 @@ var module = module || undefined;
       request;
 
   function nodeStrategy( type, path, data, callback ) {
-    request({
-      auth: {
+    // Only use auth if provided
+    var authObj = ( user && pass ) ? {
         username: user,
         password: pass,
         sendImmediately: true
-      },
+      } : undefined;
+
+    request({
+      auth: authObj,
       method: type,
       uri: path,
       json: data
