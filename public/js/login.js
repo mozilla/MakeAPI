@@ -21,10 +21,10 @@ $(function() {
       request.addEventListener( "loadend", function() {
         try {
           var data = JSON.parse( this.response );
-          if ( data.status === "okay" ) {
+          if ( !data.error ) {
             window.location.replace( "./admin" );
           } else {
-            $( "#err-message" ).html( "Login failed for " + identity + " because " + data.reason );
+            $( "#err-message" ).html( "Login failed - " + data.error );
           }
         } catch (ex) {
           // oh no, we didn't get valid JSON from the server
