@@ -8,6 +8,9 @@
 
 module.exports = function( makeModel, loginApi, env ) {
 
+  var DEFAULT_SEARCH_SIZE = 10,
+      MAX_SEARCH_SIZE = 1000;
+
   var Make = makeModel,
       metrics = require( "../lib/metrics" )( env ),
       querystring = require( "querystring" ),
@@ -145,6 +148,14 @@ module.exports = function( makeModel, loginApi, env ) {
         }
       }
 
+      // No need to check for undefined, Elastic Search assumes 10
+      if ( searchData.size ) {
+        if ( searchData.size <= 0 ) {
+          searchData.size = DEFAULT_SEARCH_SIZE;
+        } else if ( searchData.size > MAX_SEARCH_SIZE ) {
+          searchData.size = MAX_SEARCH_SIZE;
+        }
+      }
 
       if ( searchData.makerID ) {
         return loginApi.getUser( searchData.makerID, function( err, userData ) {
