@@ -22,7 +22,7 @@ var express = require( "express" ),
     server,
     Fogin,
     Fake = require( "./fake.js" ),
-    Make = require( "../../public/js/make-api.js" ),
+    Make = require( "makeapi-client" ),
     counterfeit = require( "./counterfeit.js" );
 
 module.exports = {

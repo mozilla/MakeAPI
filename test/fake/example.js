@@ -1,5 +1,5 @@
 var FakeAPI = require("./FakeAPI.js"),
-    Make = require("../../public/js/make-api.js"),
+    Make = require("makeapi-client"),
     port = 5124,
     username = "username",
     password = "secret";
