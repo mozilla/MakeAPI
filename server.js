@@ -94,6 +94,10 @@ app.options( "/admin/api/makes/search", function( req, res ) {
   res.send( 200 );
 });
 
+app.get( "/js/make-api.js", function( req, res ) {
+  res.sendfile( path.resolve( __dirname, "node_modules/makeapi-client/src/make-api.js" ) );
+});
+
 if ( env.get( "NODE_ENV" ) !== "production" ) {
   app.get( "/search.html", routes.searchTest );
 }
