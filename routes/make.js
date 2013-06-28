@@ -158,15 +158,23 @@ module.exports = function( makeModel, loginApi, env ) {
       }
 
       if ( searchData.makerID ) {
-        return loginApi.getUser( searchData.makerID, function( err, userData ) {
+        return loginApi.getUser( searchData.makerID.id, function( err, userData ) {
           if ( err ) {
             return handleError( res, "Specified user does not exist", 400, "search" );
           }
-          searchData.query.filtered.filter.and.push({
+          var filter = {
             term: {
               email: userData.email
             }
-          });
+          };
+
+          if ( searchData.makerID.not ) {
+            filter = {
+              not: filter
+            };
+          }
+
+          searchData.query.filtered.filter.and.push( filter );
           delete searchData.makerID;
           doSearch( res, searchData );
         });
