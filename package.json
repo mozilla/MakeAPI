@@ -4,7 +4,7 @@
   "description": "MakeAPI for Webmaker",
   "main": "./lib/api.js",
   "scripts": {
-    "test": "grunt"
+    "test": "grunt --verbose && mocha --reporter spec"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.4.0",
     "mongoose": "~3.5.2",
     "mongoose-validator": "~0.2.1",
-    "mongoosastic": "0.0.11",
+    "mongoosastic": "0.0.12",
     "newrelic": "0.9.20",
     "node-statsd": "0.0.7",
     "nunjucks": "0.1.9",
@@ -47,7 +47,8 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-csslint": "~0.1.2",
-    "grunt-contrib-jshint": "~0.4.3"
+    "grunt-contrib-jshint": "~0.4.3",
+    "mocha": "~1.9.0"
   },
   "engines": {
     "node": ">=0.8.23",

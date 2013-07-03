@@ -2,5 +2,13 @@ language: node_js
 node_js:
   - "0.8"
   - "0.10"
+services:
+  - mongodb
+  - elasticsearch
+before_install:
+  - git submodule update --init --recursive
 before_script:
   - npm install -g grunt-cli
+  - cd test/login.webmaker.org && npm install && cd ../..
+env:
+  - PORT=3000 HOST="localhost" MONGO_URL="mongodb://localhost/makeapi" ELASTIC_SEARCH_URL="http://localhost:9200" SESSION_SECRET="secret" ALLOWED_USERS="travis:travis" LOGIN_SERVER_URL_WITH_AUTH="http://travis:travis@localhost:3001"

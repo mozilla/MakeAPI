@@ -19,7 +19,7 @@ module.exports = function( grunt ) {
         "lib/**/*.js",
         "public/js/*.js",
         "routes/**/*.js",
-        "test/**/*.js"
+        "test/test.js"
       ]
     }
   });
