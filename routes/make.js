@@ -15,7 +15,9 @@ module.exports = function( makeModel, loginApi, env ) {
       metrics = require( "../lib/metrics" )( env ),
       querystring = require( "querystring" ),
       deferred = require( "deferred" ),
-      getUser = deferred.promisify( loginApi.getUser );
+      getUser = deferred.promisify( loginApi.getUser ),
+      version = require( "../package" ).version;
+
 
   function handleError( res, err, code, type ){
     metrics.increment( "make." + type + ".error" );
@@ -187,7 +189,10 @@ module.exports = function( makeModel, loginApi, env ) {
       res.render( "search.html" );
     },
     healthcheck: function( req, res ) {
-      res.json({ http: "okay" });
+      res.json({
+        http: "okay",
+        version: version
+      });
     }
   };
 };
