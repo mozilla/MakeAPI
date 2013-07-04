@@ -187,6 +187,7 @@ $(function() {
     }
 
     make.limit( MAX_SIZE )
+    .sortByField( "createdAt", "desc" )
     .then( createGrid );
   }
 
@@ -203,7 +204,10 @@ $(function() {
   });
 
   // On initial load, Query for all makes.
-  make.limit( MAX_SIZE ).then( createGrid );
+  make
+  .limit( MAX_SIZE )
+  .sortByField( "createdAt", "desc" )
+  .then( createGrid );
 
   // SSO
   var logout = $( "#logout" );
