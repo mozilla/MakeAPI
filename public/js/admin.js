@@ -38,7 +38,7 @@ $(function() {
       editor: Slick.Editors.Text,
       sortable: true,
       formatter: function( r, c, val, def, datactx ) {
-        return '<a href="#" onclick="previewUrl( \'' + val + '\' );">' + val + '</a>';
+        return '<a href="' + val + '" target="_blank">' + val + '</a>';
       }
     },
     { id: "contentType", name: "Content Type", field: "contentType",
@@ -64,7 +64,7 @@ $(function() {
         if ( !val ) {
           return "";
         }
-        return '<a href="#" onclick="previewUrl( \'' + val + '\', \'auto\', \'auto\' );">' + val + '</a>';
+        return '<a href="' + val + '" target="_blank">' + val + '</a>';
       }
     },
     { id: "username", name: "username", field: "username",
@@ -125,14 +125,6 @@ $(function() {
         grid.invalidate();
         grid.render();
       }
-    });
-  };
-
-  window.previewUrl = function( url, height, width ) {
-    $( '<iframe src="' + url + '" style="background: white; height: ' + (height || '80%') + '; width: ' + (width || '80%') + ';"></iframe>' )
-    .lightbox_me({
-      centered: true,
-      destroyOnClose: true
     });
   };
 
