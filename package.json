@@ -29,7 +29,6 @@
   "dependencies": {
     "deferred": "0.6.4",
     "express": "~3.0.6",
-    "express-persona": "0.0.8",
     "Faker": "0.5.8",
     "habitat": "0.4.1",
     "helmet": "0.0.9",
@@ -42,7 +41,7 @@
     "nunjucks": "0.1.9",
     "request": "2.21.0",
     "querystring": "0.2.0",
-    "webmaker-loginapi": "0.1.6"
+    "webmaker-loginapi": "0.1.8"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

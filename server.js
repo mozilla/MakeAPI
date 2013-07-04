@@ -54,15 +54,20 @@ app.use( express.cookieSession({
   proxy: true
 }));
 
-loginApi = require( "webmaker-loginapi" )( app, env.get( "LOGIN_SERVER_URL_WITH_AUTH" ) );
+loginApi = require( "webmaker-loginapi" )( app, {
+  loginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
+  audience: env.get( "AUDIENCE" ),
+  middleware: csrfMiddleware,
+  verifyResponse: function( res, data ) {
+    if ( !data.user.isAdmin ) {
+      return res.json({ status: "failure", reason: "You are not authorised to view this page." });
+    }
+    res.json({ status: "okay", email: data.user.email });
+  }
+});
 routes = require( "./routes" )( Make, loginApi, env );
 middleware = require( "./lib/middleware" )( Make, loginApi, env );
 authMiddleware = express.basicAuth( middleware.authenticateUser );
-
-require( "express-persona" )( app, {
-  audience: env.get( "AUDIENCE" ),
-  verifyResponse: middleware.verifyPersonaLogin
-});
 
 // public and auth routes
 app.post( "/api/make", authMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
