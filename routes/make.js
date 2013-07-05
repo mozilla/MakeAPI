@@ -162,7 +162,11 @@ module.exports = function( makeModel, loginApi, env ) {
       if ( searchData.makerID ) {
         return loginApi.getUser( searchData.makerID.id, function( err, userData ) {
           if ( err ) {
-            return handleError( res, "Specified user does not exist", 400, "search" );
+            return handleError( res, err, 500, "search" );
+          }
+
+          if ( !userData ) {
+            return handleError( res, "Specified user does not exist", 404, "search" );
           }
           var filter = {
             term: {
