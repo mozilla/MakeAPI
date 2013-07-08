@@ -24,7 +24,7 @@ $(function() {
           if ( data.status === "okay" ) {
             window.location.replace( "./admin" );
           } else {
-            $( "#err-message" ).html( "Login failed for " + identity + " because " + data.reason );
+            $( "#err-message" ).html( "Login failed - " + data.reason );
           }
         } catch (ex) {
           // oh no, we didn't get valid JSON from the server
