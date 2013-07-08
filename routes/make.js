@@ -76,9 +76,18 @@ module.exports = function( makeModel, loginApi, env ) {
           searchHit.createdAt = make.createdAt;
           searchHit.updatedAt = make.updatedAt;
 
-          // Attach the Maker's username and return the result
-          searchHit.username = user.username;
-          searchHit.emailHash = user.emailHash;
+          if ( user ) {
+            // Attach the Maker's username and return the result
+            searchHit.username = user.username;
+            searchHit.emailHash = user.emailHash;
+          } else {
+            // The user account was likely deleted.
+            // We need cascading delete, so that this code will only be hit on rare circumstances
+            // cron jobs can be used to clean up anything that slips through the cracks.
+            searchHit.username = "";
+            searchHit.emailHash = "";
+          }
+
           return searchHit;
         }, function onError( err ) {
           handleError( res, err, 500, "search" );
