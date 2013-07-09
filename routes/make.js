@@ -175,8 +175,9 @@ module.exports = function( makeModel, loginApi, env ) {
           }
 
           if ( !userData ) {
-            return handleError( res, "Specified user does not exist", 404, "search" );
+            return res.json( { makes: [], total: 0 } );
           }
+
           var filter = {
             term: {
               email: userData.email
