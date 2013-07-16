@@ -25,7 +25,6 @@ var app = express(),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) ),
     csrfMiddleware = express.csrf(),
     routes,
-    loginApi,
     middleware,
     authMiddleware;
 
@@ -55,7 +54,7 @@ app.use( express.cookieSession({
 }));
 app.use( app.router );
 
-loginApi = require( "webmaker-loginapi" )( app, {
+require( "./lib/loginapi" )( app, {
   loginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
   audience: env.get( "AUDIENCE" ),
   middleware: csrfMiddleware,
@@ -66,8 +65,8 @@ loginApi = require( "webmaker-loginapi" )( app, {
     res.json({ status: "okay", email: data.user.email });
   }
 });
-routes = require( "./routes" )( Make, loginApi, env );
-middleware = require( "./lib/middleware" )( Make, loginApi, env );
+routes = require( "./routes" )( Make, env );
+middleware = require( "./lib/middleware" )( Make, env );
 authMiddleware = express.basicAuth( middleware.authenticateUser );
 
 app.use( middleware.errorHandler );

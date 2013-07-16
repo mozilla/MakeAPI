@@ -6,7 +6,9 @@
 
 "use strict";
 
-module.exports = function( makeModel, loginApi, env ) {
+var loginApi = require( "../lib/loginapi" );
+
+module.exports = function( makeModel, env ) {
 
   var Make = makeModel,
       metrics = require( "../lib/metrics" )( env ),
