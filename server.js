@@ -53,6 +53,7 @@ app.use( express.cookieSession({
   },
   proxy: true
 }));
+app.use( app.router );
 
 loginApi = require( "webmaker-loginapi" )( app, {
   loginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
@@ -68,6 +69,9 @@ loginApi = require( "webmaker-loginapi" )( app, {
 routes = require( "./routes" )( Make, loginApi, env );
 middleware = require( "./lib/middleware" )( Make, loginApi, env );
 authMiddleware = express.basicAuth( middleware.authenticateUser );
+
+app.use( middleware.errorHandler );
+app.use( middleware.fourOhFourHandler );
 
 // public and auth routes
 app.post( "/api/make", authMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
