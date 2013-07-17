@@ -4,12 +4,15 @@ module.exports = function( qb ) {
         query: {
           filtered: {
             filter: {
-              and: [{
-                missing: {
-                  field: "deletedAt",
-                  null_value: true
-                }
-              }]
+              bool: {
+                must: [{
+                  missing: {
+                    field: "deletedAt",
+                    null_value: true
+                  }
+                }],
+                should: []
+              }
             },
             query: {
               match_all: {}

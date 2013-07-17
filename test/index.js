@@ -23,22 +23,22 @@ var core = require( "./queryBuilder/core.unit" )( qb ),
     filterTests = require( "./queryBuilder/termFilters.unit" )( qb ),
     complexQueries = require( "./queryBuilder/complexQueries.unit" )( qb );
 
-describe( "QueryBuilder", core.base );
+describe( "QueryBuilder: ", core.base );
 
-describe( "build() - bad args", core.badArgs );
+describe( "build() - bad args: ", core.badArgs );
 
-describe( "build() - empty query object", core.emptyQuery );
+describe( "build() - empty query object: ", core.emptyQuery );
 
-describe( "build() - size(limit)", size );
+describe( "build() - size(limit): ", size );
 
-describe( "build() - page", page );
+describe( "build() - page: ", page );
 
-describe( "build() - size and limit", sizeAndLimit );
+describe( "build() - size and limit: ", sizeAndLimit );
 
-describe( "build() - sort", sort );
+describe( "build() - sort: ", sort );
 
-describe( "build() - user", user );
+describe( "build() - user: ", user );
 
-describe( "build() - All Term filters", filterTests );
+describe( "build() - All Term filters: ", filterTests );
 
-describe( "build() - complexQueries", complexQueries );
+describe( "build() - complexQueries: ", complexQueries );

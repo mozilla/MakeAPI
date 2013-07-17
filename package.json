@@ -33,7 +33,7 @@
     "habitat": "0.4.1",
     "hawk": "1.0.0",
     "helmet": "0.0.11",
-    "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.3",
+    "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.4",
     "mongoose": "3.5.2",
     "mongoose-validator": "0.2.1",
     "mongoosastic": "0.0.11",
