@@ -27,19 +27,21 @@
   ],
   "license": "MPL-2.0",
   "dependencies": {
+    "async": "0.2.9",
     "deferred": "0.6.4",
     "express": "3.0.6",
     "habitat": "0.4.1",
+    "hawk": "1.0.0",
     "helmet": "0.0.11",
-    "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.2",
+    "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.3",
     "mongoose": "3.5.2",
     "mongoose-validator": "0.2.1",
     "mongoosastic": "0.0.11",
     "newrelic": "0.9.20",
     "node-statsd": "0.0.7",
     "nunjucks": "0.1.9",
-    "request": "2.21.0",
     "querystring": "0.2.0",
+    "uuid": "1.4.1",
     "webmaker-loginapi": "https://github.com/mozilla/node-webmaker-loginapi/tarball/v0.1.9"
   },
   "devDependencies": {

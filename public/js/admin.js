@@ -216,6 +216,50 @@ $(function() {
     navigator.idSSO.logout();
   });
 
+  // User Keys
+  var contactEmail = $( "#app-contact"),
+      createUser = $( "#add-user" ),
+      createResult = $( "#user-result" );
+
+  function generateKeys() {
+    var request = new XMLHttpRequest();
+
+    request.open( "POST", "/admin/api/user", true );
+    request.setRequestHeader( "x-csrf-token", csrfToken );
+    request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
+    request.onreadystatechange = function() {
+      var response,
+          error;
+      if ( this.readyState === 4 ) {
+        try {
+          response = JSON.parse( this.responseText ),
+          error = response.error;
+        }
+        catch ( exception ) {
+          error = exception;
+        }
+        if ( error ) {
+          createResult.val( JSON.stringify( error, null, 2 ) );
+        } else {
+          createResult.val( JSON.stringify( response, null, 2 ) );
+        }
+      }
+    };
+    request.send(JSON.stringify({
+      contact: contactEmail.val()
+    }));
+  }
+
+  createUser.keypress(function( e ) {
+    if ( e.which === 13 ) {
+      e.preventDefault();
+      e.stopPropagation();
+      generateKeys();
+    }
+  });
+
+  createUser.click( generateKeys );
+
   navigator.idSSO.watch({
     onlogin: function() {},
     onlogout: function() {

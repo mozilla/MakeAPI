@@ -11,28 +11,33 @@ var loginApi = require( "../lib/loginapi" );
 module.exports = function( makeModel, env ) {
 
   var Make = makeModel,
+      hawkModule = require( "../lib/hawk" )(),
       metrics = require( "../lib/metrics" )( env ),
       queryBuilder = require( "../lib/queryBuilder" )( loginApi ),
       deferred = require( "deferred" ),
       getUser = deferred.promisify( loginApi.getUser ),
       version = require( "../package" ).version;
 
-
-  function handleError( res, err, code, type ){
-    metrics.increment( "make." + type + ".error" );
+  function searchError( res, err, code ) {
+    metrics.increment( "make.search.error" );
     res.json( code, { error: err } );
   }
 
-  function handleSave( resp, err, make, type ){
+  function hawkError( req, res, err, code, type ){
+    metrics.increment( "make." + type + ".error" );
+    hawkModule.respond( code, res, req.credentials, req.artifacts, { status: "failure", reason: err }, "application/json" );
+  }
+
+  function handleSave( req, res, err, make, type ){
     if ( err ) {
-      handleError( resp, err, 400, type );
+      hawkError( req, res, err, 400, type );
     } else {
       metrics.increment( "make." + type + ".success" );
-      resp.json( make );
+      hawkModule.respond( 200, res, req.credentials, req.artifacts, make, "application/json" );
     }
   }
 
-  function updateFields( res, make, body, type ) {
+  function updateFields( req, res, make, body, type ) {
     Make.publicFields.forEach( function( field ) {
       // only update if the field exists on the body
       if ( field in body ) {
@@ -52,11 +57,11 @@ module.exports = function( makeModel, env ) {
     }
 
     make.save(function( err, make ){
-      return handleSave( res, err, make, type );
+      return handleSave( req, res, err, make, type );
     });
   }
 
-  function getUserNames( res, results ) {
+  function getUserNames( req, res, results ) {
     var searchHit;
     // Query for each Make's creator and attach their username to the Make
     deferred.map( results.hits, function( make ) {
@@ -89,33 +94,33 @@ module.exports = function( makeModel, env ) {
 
           return searchHit;
         }, function onError( err ) {
-          handleError( res, err, 500, "search" );
+          searchError( res, err, 500 );
         });
     })
     .then(function onSuccess( result ) {
       metrics.increment( "make.search.success" );
       res.json( { makes: result, total: results.total } );
     }, function onError( err ) {
-      handleError( res, err, 500, "search" );
+      searchError( res, err, 500 );
     });
   }
 
-  function doSearch( res, searchData ) {
+  function doSearch( req, res, searchData ) {
     Make.search( searchData, function( err, results ) {
       if ( err ) {
-        return handleError( res, err, 500, "search" );
+        searchError( res, err, 500 );
       } else {
-        getUserNames( res, results );
+        getUserNames( req, res, results );
       }
     });
   }
 
   return {
     create: function( req, res ) {
-      updateFields( res, new Make(), req.body.make, "create" );
+      updateFields( req, res, new Make(), req.body, "create" );
     },
     update: function( req, res ) {
-      updateFields( res, req.make, req.body.make, "update" );
+      updateFields( req, res, req.make, req.body, "update" );
     },
     remove: function( req, res ) {
       var make = req.make;
@@ -123,28 +128,29 @@ module.exports = function( makeModel, env ) {
       make.deletedAt = Date.now();
       make.save( function( err, make ) {
         if ( err ) {
-          return handleError( res, err, 500, "remove" );
+          return hawkError( req, res, err, 500, "remove" );
         }
         metrics.increment( "make.remove.success" );
-        res.json( make );
+        hawkModule.respond( 200, res, req.credentials, req.artifacts, make, "application/json" );
       });
     },
     search: function( req, res ) {
 
       if ( !req.query ) {
-        return handleError( res, "Malformed Request", 400, "search" );
+        return searchError( res, "Malformed Request", 400 );
       }
 
       queryBuilder.build( req.query, function( err, dsl ) {
         if ( err ) {
           if ( err.code === 404 ) {
             // No user was found, no makes to search.
+            metrics.increment( "make.search.success" );
             return res.json( { makes: [], total: 0 } );
           } else {
-            return handleError( res, err.error, err.code, "search" );
+            return searchError( res, err, err.code );
           }
         }
-        doSearch( res, dsl );
+        doSearch( req, res, dsl );
       });
     },
     searchTest: function( req, res ) {
