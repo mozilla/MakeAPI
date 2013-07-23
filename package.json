@@ -30,7 +30,7 @@
     "deferred": "0.6.4",
     "express": "3.0.6",
     "habitat": "0.4.1",
-    "helmet": "0.0.9",
+    "helmet": "0.0.11",
     "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.2",
     "mongoose": "3.5.2",
     "mongoose-validator": "0.2.1",
