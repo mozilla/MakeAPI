@@ -66,7 +66,7 @@ module.exports = function( qb ){
           assert( query );
         });
         it( "user filter should exist", function() {
-          assert.deepEqual( query.query.filtered.filter.and[ 1 ], test.expected );
+          assert.deepEqual( query.query.filtered.filter.bool.must[ 1 ], test.expected );
         });
       });
     });
