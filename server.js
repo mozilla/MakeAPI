@@ -22,12 +22,12 @@ var app = express(),
     env = new habitat(),
     Mongo = require( "./lib/mongoose" )( env ),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
-    nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ) ),
+    ApiUser = require( "./lib/models/apiUser" )( env, Mongo.mongoInstance() ),
+    basicAuthMiddleware = require( "./lib/basicAuth" )( env ),
+    nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
     csrfMiddleware = express.csrf(),
     routes,
-    middleware,
-    authMiddleware;
-
+    middleware;
 
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
@@ -65,46 +65,57 @@ require( "./lib/loginapi" )( app, {
     res.json({ status: "okay", email: data.user.email });
   }
 });
-routes = require( "./routes" )( Make, env );
-middleware = require( "./lib/middleware" )( Make, env );
-authMiddleware = express.basicAuth( middleware.authenticateUser );
+
+routes = require( "./routes" )( Make, ApiUser, env );
+middleware = require( "./lib/middleware" )( Make, ApiUser, env );
 
 app.use( middleware.errorHandler );
 app.use( middleware.fourOhFourHandler );
 
-// public and auth routes
-app.post( "/api/make", authMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
-app.put( "/api/make/:id", authMiddleware, Mongo.isDbOnline, middleware.getMake, middleware.prefixAuth, routes.update );
-app.del( "/api/make/:id", authMiddleware, Mongo.isDbOnline, middleware.getMake, routes.remove );
-app.get( "/api/makes/search", Mongo.isDbOnline, function crossOrigin( req, res, next ) {
-  res.header( "Access-Control-Allow-Origin", "*" );
-  next();
-}, routes.search );
-app.options( "/api/makes/search", function( req, res ) {
+function corsOptions ( req, res ) {
   res.header( "Access-Control-Allow-Origin", "*" );
   res.header( "Access-Control-Allow-Headers", "Content-Type" );
   res.send( 200 );
-});
-app.get( "/healthcheck", routes.healthcheck );
+}
+
+app.options( "/api/makes/search", corsOptions );
+app.options( "/api/20130724/make/search", corsOptions );
+
+// API routes (Basic Authentication, Deprecated)
+app.post( "/api/make", basicAuthMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
+app.put( "/api/make/:id", basicAuthMiddleware, Mongo.isDbOnline, middleware.getMake, middleware.prefixAuth, routes.update );
+app.del( "/api/make/:id", basicAuthMiddleware, Mongo.isDbOnline, middleware.getMake, routes.remove );
+app.get( "/api/makes/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
+
+// 20130724 API Routes (Hawk Authentication)
+app.post( "/api/20130724/make", middleware.hawkAuth, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
+app.put( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.prefixAuth, routes.update );
+app.del( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
+app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
 
 // Routes relating to admin tools
 app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.adminAuth, routes.admin );
+
+// Deprecated Admin API routes
 app.put( "/admin/api/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
 app.del( "/admin/api/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
-app.get( "/admin/api/makes/search", Mongo.isDbOnline, Mongo.isDbOnline, function crossOrigin( req, res, next ) {
-  res.header( "Access-Control-Allow-Origin", "*" );
-  next();
-}, routes.search );
-app.options( "/admin/api/makes/search", function( req, res ) {
-  res.header( "Access-Control-Allow-Origin", "*" );
-  res.header( "Access-Control-Allow-Headers", "Content-Type" );
-  res.send( 200 );
-});
+app.get( "/admin/api/makes/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
 
+// 20130724 Admin API routes
+app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
+app.del( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
+app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
+
+// Admin tool path for generating Hawk Keys
+app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
+
+// Serve makeapi-client.js over http
 app.get( "/js/make-api.js", function( req, res ) {
   res.sendfile( path.resolve( __dirname, "node_modules/makeapi-client/src/make-api.js" ) );
 });
+
+app.get( "/healthcheck", routes.healthcheck );
 
 if ( env.get( "NODE_ENV" ) !== "production" ) {
   app.get( "/search.html", routes.searchTest );
