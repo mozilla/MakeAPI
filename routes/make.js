@@ -14,8 +14,7 @@ module.exports = function( makeModel, env ) {
       hawkModule = require( "../lib/hawk" )(),
       metrics = require( "../lib/metrics" )( env ),
       queryBuilder = require( "../lib/queryBuilder" )( loginApi ),
-      deferred = require( "deferred" ),
-      getUser = deferred.promisify( loginApi.getUser ),
+      async = require( "async" ),
       version = require( "../package" ).version;
 
   function searchError( res, err, code ) {
@@ -62,46 +61,47 @@ module.exports = function( makeModel, env ) {
   }
 
   function getUserNames( req, res, results ) {
-    var searchHit;
-    // Query for each Make's creator and attach their username to the Make
-    deferred.map( results.hits, function( make ) {
+    var tasks = [];
 
-      // Query the Login API for User data using the email attached to the Make
-      return getUser( make.email )
-        .then(function onSuccess( user ) {
-          // Create new object and copy the makes public fields to it
-          searchHit = {};
-          Make.publicFields.forEach(function( val ) {
-            searchHit[ val ] = make[ val ];
-          });
-          // _id, createdAt and updatedAt are not apart of our public fields.
-          // We need to manually assign it to the object we are returning
-          searchHit._id = make._id;
-          searchHit.createdAt = make.createdAt;
-          searchHit.updatedAt = make.updatedAt;
+    // Resolve each in series, to preserve order of the original Array
+    async.mapSeries( results.hits, function eachHit( hit, cb ) {
+      loginApi.getUser( hit.email, function( err, user ) {
+        var searchHit = {};
 
-          if ( user ) {
-            // Attach the Maker's username and return the result
-            searchHit.username = user.username;
-            searchHit.emailHash = user.emailHash;
-          } else {
-            // The user account was likely deleted.
-            // We need cascading delete, so that this code will only be hit on rare circumstances
-            // cron jobs can be used to clean up anything that slips through the cracks.
-            searchHit.username = "";
-            searchHit.emailHash = "";
-          }
+        if ( err ) {
+          return cb( err );
+        }
 
-          return searchHit;
-        }, function onError( err ) {
-          searchError( res, err, 500 );
+        Make.publicFields.forEach(function( val ) {
+          searchHit[ val ] = hit[ val ];
         });
-    })
-    .then(function onSuccess( result ) {
+
+        // _id, createdAt and updatedAt are not apart of our public fields.
+        // We need to manually assign it to the object we are returning
+        searchHit._id = hit._id;
+        searchHit.createdAt = hit.createdAt;
+        searchHit.updatedAt = hit.updatedAt;
+
+        if ( user ) {
+          // Attach the Maker's username and return the result
+          searchHit.username = user.username;
+          searchHit.emailHash = user.emailHash;
+        } else {
+          // The user account was likely deleted.
+          // We need cascading delete, so that this code will only be hit on rare circumstances
+          // cron jobs can be used to clean up anything that slips through the cracks.
+          searchHit.username = "";
+          searchHit.emailHash = "";
+        }
+
+         cb( null, searchHit );
+      });
+    }, function done( err, mappedMakes ) {
+      if ( err ) {
+        return searchError( res, err, 500 );
+      }
       metrics.increment( "make.search.success" );
-      res.json( { makes: result, total: results.total } );
-    }, function onError( err ) {
-      searchError( res, err, 500 );
+      res.json( { makes: mappedMakes, total: results.total } );
     });
   }
 
