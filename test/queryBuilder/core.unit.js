@@ -11,7 +11,8 @@ module.exports = function( qb ){
                     null_value: true
                   }
                 }],
-                should: []
+                should: [],
+                minimum_should_match: 1
               }
             },
             query: {
