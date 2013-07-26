@@ -3,20 +3,15 @@ module.exports = function( qb ) {
       baseQuery = {
         query: {
           filtered: {
-            filter: {
-              bool: {
-                must: [{
-                  missing: {
-                    field: "deletedAt",
-                    null_value: true
-                  }
-                }],
-                should: []
-              }
-            },
             query: {
               match_all: {}
-            }
+            },
+            filter: {
+              missing: {
+                field: "deletedAt",
+                null_value: true
+              }
+            } 
           }
         },
         size: 10,

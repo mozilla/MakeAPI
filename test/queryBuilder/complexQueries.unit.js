@@ -123,7 +123,7 @@ module.exports = function( qb ) {
               attributes = test.attributes,
               i;
           for( i = 0, l = filters.length; i < l; i++ ) {
-            assert.deepEqual( query.query.filtered.filter.bool.must[ i + 1 ], filters[ i ] );
+            assert.deepEqual( query.query.filtered.filter.bool.must[ i ], filters[ i ] );
           }
           if ( attributes ) {
             for( i = 0, l = attributes.length; i < l; i++ ) {

@@ -473,7 +473,7 @@ module.exports = function( qb ){
             assert( query );
           });
           it( "user filter should exist", function() {
-            assert.deepEqual( query.query.filtered.filter.bool.must[ 1 ], test.expected );
+            assert.deepEqual( query.query.filtered.filter.bool.must[ 0 ], test.expected );
           });
         });
         qb.build.apply( this, test.args );
