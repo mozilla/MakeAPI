@@ -18,7 +18,7 @@ Execute `npm install` in the application directory:
 
 #### Configuration for Node w/ Habitat
 
-Copy and edit your .env file. -- This should never be committed to the repo. Ensure that you fill in the ALLOWED_USERS variable.
+Copy and edit your .env file. -- This should never be committed to the repo.
 
 ```
 cp env.sample .env
@@ -32,9 +32,25 @@ Before you start your Node.js server, you'll need to run MongoDB and ElasticSear
 
 Assuming MongoDB and ElasticSearch are running at the specified places in your `.env` file simply running `node server.js` from the root should start the server.
 
-
 By default the server will run at http://localhost:5000. You can change this by adding PORT=<port> to your .env file.
 
+#### API Keys
+
+The Create, Update and Delete Routes are protected using [Hawk](https://github.com/hueniverse/hawk).
+
+All applications that wish to make authenticated calls must be issued a pair of keys to sign all requests. Keys are optional for search requests.
+
+The generation of keys can be done using the [generateKeys](https://github.com/mozilla/MakeAPI/blob/master/scripts/generateKeys.js) script.
+
+The script is called with two arguments: an email address to associate with the keys and a integer indicating the number of pairs to be generated. Generated keys are added to the database and then outputted to the console.
+
+There is also a tool in the Admin Make Editor that generates keys. It can be reached by visiting `http://localhost:5000/admin` (change the hostname & port appropriately)
+
+For convenience of development and testing, the `USE_DEV_KEY_LOOKUP` variable can be set to true in the environment file. This flag will use a **DEVELOPMENT ONLY** strategy when verifying keys.
+
+When development key mode is enabled, clients can sign their requests by passing hawk `"00000000-0000-0000-000000000000" as their public and private key. Any other key combination will fail to authenticate.
+
+**DO NOT USE DEV KEYS OUTSIDE OF A DEVELOPMENT ENVIRONMENT!**
 
 #### New Relic
 
@@ -54,10 +70,9 @@ You will need an account with heroku. If you don't have one, sign up for one at 
 4. Add the necessary plugins using `heroku addons:add <plugin name>`. Supported MongoDB plugins are: MongoHQ and MongoLab. Supported Elastic Search plugins are: FoundElasticSearch and Bonsai. Installing a plugin should automatically set up the required environment variables.
 5. You should be ready to push up to heroku! `git push heroku featureBranchName:master`. If all goes well, your app should deploy. You can see logs by running `heroku logs` and you can open the MakeAPI in a browser by running `heroku open`.
 
-
 #### Testing the API
 
-Right now there is a small node app in `test/test-make-client.js` that will require in the API and make a sample create request. This is reliant upon the the entire repo being included down and not being pulled in through **NPM**. Eventually there will be tests not reliant on this.
+The QueryBuilder's mocha test suite can be run by executing `npm test`. NOTE: you must have installed mocha, `npm install -g mocha`
 
 ## API:
 
@@ -111,44 +126,8 @@ Right now there is a small node app in `test/test-make-client.js` that will requ
 
 ### Consuming the API
 
-```
-  jQuery.ajax({
-    type: "POST",
-    url: "/api/make",
-    data: {
-      "user": "webmaker@host.com",
-      "make": {
-        "url": "http://thimble.webmadecontent.org/abcd.html",
-        "contentType": "application/x-thimble",
-        "title": "Animal something-or-other",
-        "locale": "en_us",
-        "tags": [ "awesome", "#css", "thimble.webmaker.org:project" ],
-        "description": "This handy HTML template makes it easy to quickly create your own text and image mashup, then publish it for sharing via Facebook, Tumblr or any web page. Your 15 seconds of internet fame await!",
-        "author": "swex@mozilla.com",
-        "remixedFrom": null
-      }
-    },
-    success: function(data, textStatus, jqXHR){
-      console.log("Post response:");
-      console.dir(data);
-      console.log(textStatus);
-      console.dir(jqXHR);
-    },
-    error: function(jqXHR, textStatus, errorThrown){
-      console.log(jqXHR.responseText);
-    }
-  });
-```
-A client library has been written to aid in the consumption of this API.
-Documentation can be found [here](public/js/README.md)
-
-### Searching Test Ground
-
-If you load http://localhost:5000/search.html, you can use the basic set of form fields to create/update/delete makes and search based on several fields.'
-
-### Generating fake data
-
-Running `AUTH=<username>:<password node test/post.js` from the root of the repository will generate one thousand fake records in your database. Be sure to include a valid username and password as an environment variable.
+The [makeapi-client](https://github.com/mozilla/makeapi-client) should be used to facilitate interaction with the API.
+Documentation can be found [here](https://github.com/mozilla/makeapi-client/blob/master/README.md)
 
 ### Deleting all fake data
 
