@@ -23,7 +23,6 @@ var app = express(),
     Mongo = require( "./lib/mongoose" )( env ),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
     ApiUser = require( "./lib/models/apiUser" )( env, Mongo.mongoInstance() ),
-    basicAuthMiddleware = require( "./lib/basicAuth" )( env ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
     csrfMiddleware = express.csrf(),
     routes,
@@ -78,14 +77,7 @@ function corsOptions ( req, res ) {
   res.send( 200 );
 }
 
-app.options( "/api/makes/search", corsOptions );
 app.options( "/api/20130724/make/search", corsOptions );
-
-// API routes (Basic Authentication, Deprecated)
-app.post( "/api/make", basicAuthMiddleware, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
-app.put( "/api/make/:id", basicAuthMiddleware, Mongo.isDbOnline, middleware.getMake, middleware.prefixAuth, routes.update );
-app.del( "/api/make/:id", basicAuthMiddleware, Mongo.isDbOnline, middleware.getMake, routes.remove );
-app.get( "/api/makes/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
 
 // 20130724 API Routes (Hawk Authentication)
 app.post( "/api/20130724/make", middleware.hawkAuth, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
@@ -93,19 +85,14 @@ app.put( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middle
 app.del( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
 
-// Routes relating to admin tools
-app.get( "/login", csrfMiddleware, routes.login );
-app.get( "/admin", csrfMiddleware, middleware.adminAuth, routes.admin );
-
-// Deprecated Admin API routes
-app.put( "/admin/api/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
-app.del( "/admin/api/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
-app.get( "/admin/api/makes/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
-
 // 20130724 Admin API routes
 app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
 app.del( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
+
+// Routes relating to admin tools
+app.get( "/login", csrfMiddleware, routes.login );
+app.get( "/admin", csrfMiddleware, middleware.adminAuth, routes.admin );
 
 // Admin tool path for generating Hawk Keys
 app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
