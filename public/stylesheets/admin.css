@@ -22,6 +22,10 @@ div.data-table-area {
   display: none;
 }
 
+.spin-hidden {
+  display: none !important;
+}
+
 .delete-make-btn {
   width: 100%;
 }

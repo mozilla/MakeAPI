@@ -70,8 +70,8 @@
         </fieldset>
       </form>
     </div>
-    <span class="error-message hidden red-text"></span>
-    <div class="data-table-area"></div>
+    <span class="error-message hidden red-text" id="error-message"></span>
+    <div class="data-table-area" id="data-table-area"></div>
     <div class="paging">
       <span class="paging-nav">
         <span id="nav-first" class="nav-icon nav-icon-left icon-fast-backward" title="First Page"></span>
@@ -83,6 +83,7 @@
           <input type="number" id="nav-go-to-page">
           <button class="nav-btn" id="nav-go-to-page-btn">Go</button>
         </span>
+        <span class="nav-loading icon-spinner icon-spin spin-hidden" id="nav-loading"></span>
       </span>
     </div>
     <hr />
