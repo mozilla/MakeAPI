@@ -7,21 +7,21 @@
   <head>
     <title>Make Editor</title>
     <meta name="csrf_token" content="{{csrf}}" >
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="js/external/jquery.min.js"></script>
+    <script src="js/external/jquery-ui.min.js"></script>
     <script src="js/external/jquery.event.drag-2.2.js"></script>
     <script src="js/external/slick.core.js"></script>
     <script src="js/external/slick.grid.js"></script>
     <script src="js/external/slick.editors.js"></script>
     <script src="js/external/slick.dataview.js"></script>
-    <script src="js/external/slick.pager.js"></script>
     <script src="js/make-api.js"></script>
     <script src="js/admin.js"></script>
-    <link rel="stylesheet" type="text/css" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/admin.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/font-awesome.min.css" >
     <link rel="stylesheet" type="text/css" href="stylesheets/slick.grid.css" >
     <link rel="stylesheet" type="text/css" href="stylesheets/slick.pager.css" >
-    <link rel="stylesheet" type="text/css" href="stylesheets/admin.css" >
     <link rel="stylesheet" href="{{login}}/css/nav.css" />
   </head>
   <body>
@@ -72,7 +72,19 @@
     </div>
     <span class="error-message hidden red-text"></span>
     <div class="data-table-area"></div>
-    <div id="pager"></div>
+    <div class="paging">
+      <span class="paging-nav">
+        <span id="nav-first" class="nav-icon nav-icon-left icon-fast-backward" title="First Page"></span>
+        <span id="nav-previous" class="nav-icon icon-backward" title="Previous Page"></span>
+        <span id="nav-next" class="nav-icon icon-forward" title="Next Page"></span>
+        <span id="nav-last" class="nav-icon icon-fast-forward" title="Last Page"></span>
+        <span id="nav-status"  class="nav-status">Page 1 of 1</span>
+        <span class="nav-go-to">
+          <input type="number" id="nav-go-to-page">
+          <button class="nav-btn" id="nav-go-to-page-btn">Go</button>
+        </span>
+      </span>
+    </div>
     <hr />
     <form class="form-horizontal">
       <fieldset>
