@@ -47,6 +47,12 @@ span.paging-nav {
   float: left;
 }
 
+span.nav-paging-settings {
+  display: inline-block;
+  float: right;
+  margin: 3px 10px 0 0;
+}
+
 span.nav-icon {
   display: inline-block;
   padding-right: 3px;
@@ -83,4 +89,16 @@ button.nav-btn {
   height: 24px;
   width: 45px;
   margin-top: -5px;
+}
+
+span.nav-page-total-setting {
+  color: #00f;
+  text-decoration: underline;
+  font-size: 1em;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+span.nav-page-total-setting.selected {
+  color: #f00;
 }
