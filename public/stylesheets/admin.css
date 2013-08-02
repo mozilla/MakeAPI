@@ -12,12 +12,6 @@ div.data-table-area {
   border: 1px solid gray;
 }
 
-div#pager {
-  width: 95%;
-  margin-left: 2.5%;
-  height: 20px;
-}
-
 .error-message {
   width: 100%;
   text-align: center;
@@ -34,4 +28,55 @@ div#pager {
 
 .red-text {
   color: #ff0000;
+}
+
+div.paging {
+  width: 95%;
+  margin-left: 2.5%;
+  height: 30px;
+  border: 1px solid gray;
+  background: #cccccc;
+}
+
+span.paging-nav {
+  display: inline-block;
+  float: left;
+}
+
+span.nav-icon {
+  display: inline-block;
+  padding-right: 3px;
+  cursor: pointer;
+}
+
+span.nav-icon-left {
+  margin-left: 4px;
+}
+
+span.nav-go-to {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+input#nav-go-to-page {
+  display: inline-block;
+  height: 12px;
+  width: 35px;
+  margin-top: 3px;
+  font-size: x-small;
+}
+
+.invalid-input {
+  /*
+    !important overrides bootstrap styles
+  */
+  background-color: #ff0000 !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+button.nav-btn {
+  height: 24px;
+  width: 45px;
+  margin-top: -5px;
 }
