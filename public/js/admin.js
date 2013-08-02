@@ -2,8 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-$(function() {
-
+document.addEventListener( "DOMContentLoaded", function() {
   var Slick = window.Slick;
 
   var FORMATTERS = {
@@ -87,6 +86,12 @@ $(function() {
     }
   ];
 
+  function trimItems( items ) {
+    return items.map( function( item ) {
+      return item.trim();
+    });
+  }
+
   var MakePager = function( settings ) {
 
     var STATUS_TEMPLATE = "Page {{pagenum}} of {{pagetotal}} - {{hits}} total hits",
@@ -100,15 +105,10 @@ $(function() {
         goToBtn = settings.goToBtn,
         navStatus = settings.navStatus,
         errorElem = settings.errorElement,
+        loadingElem = settings.loadingElem,
         currentQuery = {},
         currentPage = 1,
         totalPages = 1;
-
-    function trimItems( items ) {
-      return items.map( function( item ) {
-        return item.trim();
-      });
-    }
 
     function setQuery( type, query ) {
       currentQuery.type = type;
@@ -149,10 +149,13 @@ $(function() {
         make[ currentQuery.type ]( currentQuery.query );
       }
 
+      loadingElem.classList.remove( "spin-hidden" );
+
       make.limit( PAGE_SIZE )
       .page( num )
       .sortByField( "createdAt", "desc" )
       .then(function( err, data, total ) {
+        loadingElem.classList.add( "spin-hidden" );
         handleMakes( err, data, total, num );
       });
     }
@@ -228,17 +231,17 @@ $(function() {
     return this;
   };
 
-  var csrfToken = $("meta[name=csrf_token]").attr("content"),
+  var csrfToken = document.querySelector( "meta[name=csrf_token]" ).getAttribute( "content" ),
       make = window.Make({
         apiURL: "/admin",
         csrf: csrfToken
       }),
-      searchTypeSelector = $( "#filter-type" ),
-      searchValue = $( "#search-tag" ),
-      searchBtn = $( "#search" ),
-      gridArea = $( ".data-table-area" ),
-      identity = $( "#identity" ).text(),
-      errorSpan = $( ".error-message" ),
+      searchTypeSelector = document.querySelector( "#filter-type" ),
+      searchValue = document.querySelector( "#search-tag" ),
+      searchBtn = document.querySelector( "#search" ),
+      gridArea = document.querySelector( "#data-table-area" ),
+      identity = document.querySelector( "#identity" ).textContent,
+      errorSpan = document.querySelector( "#error-message" ),
       dataView = new Slick.Data.DataView(),
       grid = new Slick.Grid( gridArea, dataView, COLUMNS, {
         autoEdit: false,
@@ -255,7 +258,8 @@ $(function() {
         goToInput: document.querySelector( "#nav-go-to-page"),
         goToBtn: document.querySelector( "#nav-go-to-page-btn"),
         navStatus: document.querySelector( "#nav-status" ),
-        errorElement: errorSpan
+        loadingElem: document.querySelector( "#nav-loading" ),
+        errorElement: errorSpan,
       });
 
   window.removeClick = function( id, dataViewId ){
@@ -276,7 +280,8 @@ $(function() {
     make.tags = Array.isArray( make.tags ) ? make.tags : trimItems( make.tags.split( "," ) );
     make.update( identity, function( err, updated ) {
       if ( err ) {
-        errorSpan.removeClass( "hidden" ).html( "Error Updating! " + JSON.stringify( err ) );
+        errorSpan.classList.remove( "hidden" );
+        errorSpan.textContent = "Error Updating! " + JSON.stringify( err );
         return;
       }
       dataView.updateItem( data.item.id, make );
@@ -298,38 +303,31 @@ $(function() {
   });
 
   function doSearch() {
-    pager.setQuery( searchTypeSelector.val(), searchValue.val() );
-    errorSpan.addClass( "hidden" ).html( "" );
+    pager.setQuery( searchTypeSelector.value, searchValue.value );
+    errorSpan.classList.add( "hidden" );
+    errorSpan.textContent = "";
     pager.goToPage( 1 );
   }
 
   searchBtn.click( doSearch );
 
   // Press enter to search
-  searchValue.keypress(function( e ) {
+  searchValue.addEventListener( "keypress", function( e ) {
     if ( e.which === 13 ) {
       e.preventDefault();
       e.stopPropagation();
       doSearch();
       searchValue.blur();
     }
-  });
+  }, false );
 
   // On initial load, Query for all makes.
   pager.setQuery();
   pager.goToPage( 1 );
 
-  // SSO
-  var logout = $( "#logout" );
-
-  logout.click(function(){
-    navigator.idSSO.logout();
-  });
-
-  // User Keys
-  var contactEmail = $( "#app-contact"),
-      createUser = $( "#add-user" ),
-      createResult = $( "#user-result" );
+  var contactEmail = document.querySelector( "#app-contact"),
+      createUser = document.querySelector( "#add-user" ),
+      createResult = document.querySelector( "#user-result" );
 
   function generateKeys() {
     var request = new XMLHttpRequest();
@@ -349,24 +347,24 @@ $(function() {
           error = exception;
         }
         if ( error ) {
-          createResult.val( JSON.stringify( error, null, 2 ) );
+          createResult.value( JSON.stringify( error, null, 2 ) );
         } else {
-          createResult.val( JSON.stringify( response, null, 2 ) );
+          createResult.value( JSON.stringify( response, null, 2 ) );
         }
       }
     };
     request.send(JSON.stringify({
-      contact: contactEmail.val()
+      contact: contactEmail.value
     }));
   }
 
-  createUser.keypress(function( e ) {
+  createUser.addEventListener( "keypress", function( e ) {
     if ( e.which === 13 ) {
       e.preventDefault();
       e.stopPropagation();
       generateKeys();
     }
-  });
+  }, false );
 
   createUser.click( generateKeys );
 
@@ -383,4 +381,4 @@ $(function() {
       request.send();
     }
   });
-});
+}, false );
