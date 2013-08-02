@@ -95,7 +95,7 @@ document.addEventListener( "DOMContentLoaded", function() {
   var MakePager = function( settings ) {
 
     var STATUS_TEMPLATE = "Page {{pagenum}} of {{pagetotal}} - {{hits}} total hits",
-        PAGE_SIZE = 100;
+        DEFAULT_PAGE_SIZE = 100;
 
     var goFirst = settings.goFirst,
         goPrevious = settings.goPrevious,
@@ -106,7 +106,10 @@ document.addEventListener( "DOMContentLoaded", function() {
         navStatus = settings.navStatus,
         errorElem = settings.errorElement,
         loadingElem = settings.loadingElem,
+        pageTotalToggles = settings.pageTotalToggles,
         currentQuery = {},
+        resultsPerPage = DEFAULT_PAGE_SIZE,
+        forEach = Array.prototype.forEach,
         currentPage = 1,
         totalPages = 1;
 
@@ -125,7 +128,7 @@ document.addEventListener( "DOMContentLoaded", function() {
         currentPage = 1;
         total = 0;
       } else {
-        totalPages = Math.ceil( total / PAGE_SIZE );
+        totalPages = Math.ceil( total / resultsPerPage );
         currentPage = page;
       }
 
@@ -151,7 +154,7 @@ document.addEventListener( "DOMContentLoaded", function() {
 
       loadingElem.classList.remove( "spin-hidden" );
 
-      make.limit( PAGE_SIZE )
+      make.limit( resultsPerPage )
       .page( num )
       .sortByField( "createdAt", "desc" )
       .then(function( err, data, total ) {
@@ -225,6 +228,22 @@ document.addEventListener( "DOMContentLoaded", function() {
       setPage( checkInputRange( val ) );
     }, false );
 
+    forEach.call( pageTotalToggles, function( elem ) {
+      elem.addEventListener( "click", function() {
+        if ( this.classList.contains( "selected" ) ) {
+          return;
+        }
+        forEach.call( pageTotalToggles, function( elem ) {
+          if ( this !== elem && elem.classList.contains( "selected" ) ) {
+            elem.classList.remove( "selected" );
+          }
+        }, this );
+        this.classList.add( "selected" );
+        resultsPerPage = +elem.getAttribute( "data-value" );
+        goToPage( currentPage );
+      }, false );
+    });
+
     this.goToPage = goToPage;
     this.setQuery = setQuery;
 
@@ -259,7 +278,8 @@ document.addEventListener( "DOMContentLoaded", function() {
         goToBtn: document.querySelector( "#nav-go-to-page-btn"),
         navStatus: document.querySelector( "#nav-status" ),
         loadingElem: document.querySelector( "#nav-loading" ),
-        errorElement: errorSpan,
+        pageTotalToggles: document.querySelectorAll( ".nav-page-total-setting" ),
+        errorElement: errorSpan
       });
 
   window.removeClick = function( id, dataViewId ){
@@ -347,9 +367,9 @@ document.addEventListener( "DOMContentLoaded", function() {
           error = exception;
         }
         if ( error ) {
-          createResult.value( JSON.stringify( error, null, 2 ) );
+          createResult.value = JSON.stringify( error, null, 2 );
         } else {
-          createResult.value( JSON.stringify( response, null, 2 ) );
+          createResult.value = JSON.stringify( response, null, 2 );
         }
       }
     };
@@ -366,7 +386,7 @@ document.addEventListener( "DOMContentLoaded", function() {
     }
   }, false );
 
-  createUser.click( generateKeys );
+  createUser.addEventListener( "click", generateKeys, false );
 
   navigator.idSSO.watch({
     onlogin: function() {},
