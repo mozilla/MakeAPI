@@ -332,7 +332,7 @@ document.addEventListener( "DOMContentLoaded", function() {
     pager.goToPage( 1 );
   }
 
-  searchBtn.click( doSearch );
+  searchBtn.addEventListener( "click", doSearch, false );
 
   // Press enter to search
   searchValue.addEventListener( "keypress", function( e ) {
