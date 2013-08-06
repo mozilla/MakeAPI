@@ -123,6 +123,9 @@ document.addEventListener( "DOMContentLoaded", function() {
         errorElem.classList.remove( "hidden" );
         errorElem.textContent = "Error retrieving data: " + err;
       } else if ( !data.length  ) {
+        if ( total ) {
+          return goToPage( Math.ceil( total / resultsPerPage ) );
+        }
         data = [];
         totalPages = 1;
         currentPage = 1;
