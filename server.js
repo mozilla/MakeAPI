@@ -33,6 +33,10 @@ nunjucksEnv.express( app );
 // Don't send the "X-Powered-By: Express" header
 app.disable( "x-powered-by" );
 
+app.use(express.favicon("public/images/favicon.ico", {
+  maxAge: 31556952000
+}));
+
 app.use( express.logger( env.get( "NODE_ENV" ) === "production" ? "" : "dev" ) );
 if ( !!env.get( "FORCE_SSL" ) ) {
   app.use( helmet.hsts() );
@@ -58,7 +62,7 @@ require( "./lib/loginapi" )( app, {
   audience: env.get( "AUDIENCE" ),
   middleware: csrfMiddleware,
   verifyResponse: function( res, data ) {
-    if ( !data.user.isAdmin ) {
+    if ( !data.user.isAdmin && !data.user.isCollaborator ) {
       return res.json({ status: "failure", reason: "You are not authorised to view this page." });
     }
     res.json({ status: "okay", email: data.user.email });
@@ -86,13 +90,13 @@ app.del( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middle
 app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
 
 // 20130724 Admin API routes
-app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.update );
+app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.collabAuth, middleware.fieldFilter, Mongo.isDbOnline, middleware.getMake, routes.update );
 app.del( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
 
 // Routes relating to admin tools
 app.get( "/login", csrfMiddleware, routes.login );
-app.get( "/admin", csrfMiddleware, middleware.adminAuth, routes.admin );
+app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
 
 // Admin tool path for generating Hawk Keys
 app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );

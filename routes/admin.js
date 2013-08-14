@@ -15,7 +15,8 @@ module.exports = function( apiUserModel, audience, login ) {
         email: req.session.email,
         audience: audience,
         login: login,
-        csrf: req.session._csrf
+        csrf: req.session._csrf,
+        iscollaborator: req.isCollab ? 1 : 0
       });
     },
     login: function( req, res ) {
