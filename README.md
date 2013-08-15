@@ -129,6 +129,8 @@ The QueryBuilder's mocha test suite can be run by executing `npm test`. NOTE: yo
 The [makeapi-client](https://github.com/mozilla/makeapi-client) should be used to facilitate interaction with the API.
 Documentation can be found [here](https://github.com/mozilla/makeapi-client/blob/master/README.md)
 
+**The Make API Does not sanitize Data it receives or outputs, so it is up to consumer applications to sanitize data appropriately.**
+
 ### Deleting all fake data
 
 Clear elastic search:
