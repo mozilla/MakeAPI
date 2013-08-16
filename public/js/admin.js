@@ -86,9 +86,57 @@ document.addEventListener( "DOMContentLoaded", function() {
     }
   ];
 
+  var escapeMap = {
+    '&': '&amp;',
+    '"': '&quot;',
+    "'": '&#39;',
+    "<": '&lt;',
+    ">": '&gt;'
+  },
+  reverseEscapeMap = {
+    '&amp;' : '&',
+    '&quot;': '"',
+    '&#39;' : "'",
+    '&lt;'  : "<",
+    '&gt;'  : ">"
+  };
+
+  function lookupChar( ch ) {
+    return escapeMap[ ch ];
+  }
+
+  function lookupReverseChar( ch ) {
+    return reverseEscapeMap[ ch ];
+  }
+
+  function escapeChars( str ) {
+    if ( !str ) {
+      return "";
+    }
+    return str.replace( /[&"'<>]/g, lookupChar );
+  }
+
+  function unescapeChars( str ) {
+    if ( !str ) {
+      return "";
+    }
+    return str.replace( /(&amp;|&quot;|&#39;|&lt;|&gt;)/g, lookupReverseChar );
+  }
+
   function trimItems( items ) {
     return items.map( function( item ) {
       return item.trim();
+    });
+  }
+
+  function sanitize( data ) {
+    return data.map(function( make ){
+      make.title = escapeChars( make.title );
+      make.description = escapeChars( make.description );
+      make.tags = make.tags.map(function( tag ) {
+        return escapeChars( tag );
+      });
+      return make;
     });
   }
 
@@ -141,7 +189,7 @@ document.addEventListener( "DOMContentLoaded", function() {
       .replace( "{{hits}}", total );
 
       dataView.beginUpdate();
-      dataView.setItems( data );
+      dataView.setItems( sanitize( data ) );
       dataView.endUpdate();
       grid.render();
     }
@@ -301,13 +349,20 @@ document.addEventListener( "DOMContentLoaded", function() {
   grid.onCellChange.subscribe(function ( e, data ) {
     var make = data.item;
     make.tags = Array.isArray( make.tags ) ? make.tags : trimItems( make.tags.split( "," ) );
+    make.tags = make.tags.map(function( tag ) {
+      return unescapeChars( tag );
+    });
+    make.title = unescapeChars( make.title );
+    make.description = unescapeChars( make.description );
+
     make.update( identity, function( err, updated ) {
       if ( err ) {
         errorSpan.classList.remove( "hidden" );
         errorSpan.textContent = "Error Updating! " + JSON.stringify( err );
         return;
       }
-      dataView.updateItem( data.item.id, make );
+
+      dataView.updateItem( data.item.id, sanitize( [ make ] )[ 0 ] );
     });
   });
 
