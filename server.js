@@ -112,6 +112,6 @@ if ( env.get( "NODE_ENV" ) !== "production" ) {
   app.get( "/search.html", routes.searchTest );
 }
 
-app.listen( env.get( "PORT", 3000 ), function() {
-  console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 3000 ));
+app.listen( env.get( "PORT", 5000 ), function() {
+  console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 5000 ));
 });
