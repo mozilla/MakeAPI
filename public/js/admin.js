@@ -5,6 +5,8 @@
 document.addEventListener( "DOMContentLoaded", function() {
   var Slick = window.Slick;
 
+  var isAdmin = +document.querySelector( "meta[name='is_collaborator']" ).getAttribute( "content" ) === 0;
+
   var FORMATTERS = {
     date: function( row, cell, val ) {
       var newDate;
@@ -24,40 +26,34 @@ document.addEventListener( "DOMContentLoaded", function() {
 
   COLUMNS = [
     {
-      id: "id",
-      name: "Click To Delete",
-      headerCssClass: "red-text",
-      field: "id",
-      minWidth: 150,
-      formatter: function ( r, c, val, def, datactx ) {
-        return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">Delete</button>';
-      }
-    },
-    { id: "url", name: "Url", field: "url",
-      editor: Slick.Editors.Text,
+      id: "url",
+      name: "Url",
+      field: "url",
+      width: 150,
       sortable: true,
       formatter: function( r, c, val, def, datactx ) {
         return '<a href="' + val + '" target="_blank">' + val + '</a>';
       }
     },
-    { id: "contentType", name: "Content Type", field: "contentType",
-      editor: Slick.Editors.Text,
+    {
+      id: "title",
+      name: "Title",
+      field: "title",
+      width: 150,
       sortable: true
     },
-    { id: "locale", name: "Locale", field: "locale",
-      editor: Slick.Editors.Text,
+    {
+      id: "description",
+      name: "Description",
+      field: "description",
+      width: 150,
       sortable: true
     },
-    { id: "title", name: "Title", field: "title",
-      editor: Slick.Editors.Text,
-      sortable: true
-    },
-    { id: "description", name: "Description", field: "description",
-      editor: Slick.Editors.Text,
-      sortable: true
-    },
-    { id: "thumbnail", name: "Thumbnail Url", field: "thumbnail",
-      editor: Slick.Editors.Text,
+    {
+      id: "thumbnail",
+      name: "Thumbnail Url",
+      field: "thumbnail",
+      width: 150,
       sortable: true,
       formatter: function( r, c, val, def, datactx ) {
         if ( !val ) {
@@ -66,25 +62,62 @@ document.addEventListener( "DOMContentLoaded", function() {
         return '<a href="' + val + '" target="_blank">' + val + '</a>';
       }
     },
-    { id: "username", name: "username", field: "username",
-      sortable: true },
-    { id: "tags", name: "Tags", field: "tags",
+    {
+      id: "username",
+      name: "Username",
+      field: "username",
+      width: 150,
+      sortable: true
+    },
+    {
+      id: "tags",
+      name: "Tags",
+      field: "tags",
       formatter: FORMATTERS.tags,
+      width: 150,
       editor: Slick.Editors.Text
     },
-    { id: "remixedFrom", name: "Remixed From", field: "remixedFrom",
-      sortable: true },
-    { id: "createdAt", name: "Created At", field: "createdAt",
+    {
+      id: "createdAt",
+      name: "Created At",
+      field: "createdAt",
       formatter: FORMATTERS.date,
-      editor: Slick.Editors.Date,
+      width: 150,
       sortable: true
     },
-    { id: "updatedAt", name: "Updated At", field: "updatedAt",
+    {
+      id: "updatedAt",
+      name: "Updated At",
+      field: "updatedAt",
       formatter: FORMATTERS.date,
-      editor: Slick.Editors.Date,
+      width: 150,
       sortable: true
     }
-  ];
+  ],
+
+  ADMIN_COL = {
+    id: "id",
+    name: "Del",
+    cssClass: "delete-col",
+    headerCssClass: "red-text",
+    field: "id",
+    maxWidth: 40,
+    minWidth: 40,
+    width: 40,
+    formatter: function ( r, c, val, def, datactx ) {
+      return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">X</button>';
+    }
+  };
+
+  if ( isAdmin  ) {
+    COLUMNS = COLUMNS.map(function( item ) {
+      if ( [ "title", "description", "thumbnail" ].indexOf( item.field ) !== -1 ) {
+        item.editor = Slick.Editors.Text;
+      }
+      return item;
+    });
+    COLUMNS.unshift( ADMIN_COL );
+  }
 
   var escapeMap = {
     '&': '&amp;',
@@ -302,7 +335,7 @@ document.addEventListener( "DOMContentLoaded", function() {
   };
 
   var csrfToken = document.querySelector( "meta[name=csrf_token]" ).getAttribute( "content" ),
-      make = window.Make({
+      make = new window.Make({
         apiURL: "/admin",
         csrf: csrfToken
       }),
@@ -317,7 +350,6 @@ document.addEventListener( "DOMContentLoaded", function() {
         autoEdit: false,
         editable: true,
         enableTextSelectionOnCells: true,
-        defaultColumnWidth: 150,
         topPanelHeight: 200
       }),
       pager = new MakePager({
@@ -436,15 +468,19 @@ document.addEventListener( "DOMContentLoaded", function() {
     }));
   }
 
-  createUser.addEventListener( "keypress", function( e ) {
-    if ( e.which === 13 ) {
-      e.preventDefault();
-      e.stopPropagation();
-      generateKeys();
-    }
-  }, false );
+  if ( isAdmin ) {
 
-  createUser.addEventListener( "click", generateKeys, false );
+
+    createUser.addEventListener( "keypress", function( e ) {
+      if ( e.which === 13 ) {
+        e.preventDefault();
+        e.stopPropagation();
+        generateKeys();
+      }
+    }, false );
+
+    createUser.addEventListener( "click", generateKeys, false );
+  }
 
   navigator.idSSO.watch({
     onlogin: function() {},

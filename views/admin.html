@@ -7,6 +7,7 @@
   <head>
     <title>Make Editor</title>
     <meta name="csrf_token" content="{{csrf}}" >
+    <meta name="is_collaborator" content="{{iscollaborator}}">
     <script src="js/external/jquery.min.js"></script>
     <script src="js/external/jquery-ui.min.js"></script>
     <script src="js/external/jquery.event.drag-2.2.js"></script>
@@ -92,27 +93,29 @@
         <span class="nav-page-total-setting selected" id="nav-100" data-value="100">100</span>
       </span>
     </div>
-    <hr />
-    <form class="form-horizontal">
-      <fieldset>
-        <div class="control-group">
-          <label class="control-label" for="app-contact">Contact Email:</label>
-          <div class="controls">
-            <input id="app-contact" name="app-contact" placeholder="Contact Email" class="input-large" type="text">
+    {% if iscollaborator == 0 %}
+      <hr />
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label" for="app-contact">Contact Email:</label>
+            <div class="controls">
+              <input id="app-contact" name="app-contact" placeholder="Contact Email" class="input-large" type="text">
+            </div>
           </div>
-        </div>
-        <div class="control-group">
-          <label class="control-label" for="add-user"></label>
-          <div class="controls">
-            <button id="add-user" type="button" name="add-user" class="btn btn-success">Add User</button>
+          <div class="control-group">
+            <label class="control-label" for="add-user"></label>
+            <div class="controls">
+              <button id="add-user" type="button" name="add-user" class="btn btn-success">Add User</button>
+            </div>
           </div>
-        </div>
-        <div class="control-group">
-          <label for="user-result" class="control-label"></label>
-          <textarea id="user-result" class="input-xlarge"></textarea>
-        </div>
-      </fieldset>
-    </form>
+          <div class="control-group">
+            <label for="user-result" class="control-label"></label>
+            <textarea id="user-result" class="input-xlarge"></textarea>
+          </div>
+        </fieldset>
+      </form>
+      {% endif %}
     <script src="{{audience}}/sso/include.js"></script>
   </body>
 </html>

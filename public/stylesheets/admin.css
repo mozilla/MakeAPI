@@ -27,11 +27,17 @@ div.data-table-area {
 }
 
 .delete-make-btn {
-  width: 100%;
+  width: 30px;
+  display: block;
+  margin: 0 auto;
 }
 
 .red-text {
   color: #ff0000;
+}
+
+.delete-col: {
+  width: 35px;
 }
 
 div.paging {
