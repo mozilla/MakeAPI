@@ -1,5 +1,7 @@
 # MakeAPI
 
+This project contains the server portion of the MakeAPI. If you want to consume the API, there is a client library available here: https://github.com/mozilla/makeapi-client
+
 ## Running the Server
 
 ### Prerequisites
