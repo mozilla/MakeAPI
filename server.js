@@ -24,9 +24,7 @@ var app = express(),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
     ApiUser = require( "./lib/models/apiUser" )( env, Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
-    csrfMiddleware = express.csrf(),
-    routes,
-    middleware;
+    csrfMiddleware = express.csrf();
 
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
@@ -37,7 +35,6 @@ app.use(express.favicon("public/images/favicon.ico", {
   maxAge: 31556952000
 }));
 
-app.use( express.logger( env.get( "NODE_ENV" ) === "production" ? "" : "dev" ) );
 if ( !!env.get( "FORCE_SSL" ) ) {
   app.use( helmet.hsts() );
   app.enable( "trust proxy" );
@@ -55,6 +52,13 @@ app.use( express.cookieSession({
   },
   proxy: true
 }));
+
+if ( env.get( "GRAYLOG_HOST" ) && env.get( "GRAYLOG_PORT" ) ) {
+  app.use( require( "./lib/logger" ).logRequests );
+} else {
+  app.use( express.logger( env.get( "NODE_ENV" ) === "production" ? "" : "dev" ) );
+}
+
 app.use( app.router );
 
 require( "./lib/loginapi" )( app, {
@@ -69,8 +73,8 @@ require( "./lib/loginapi" )( app, {
   }
 });
 
-routes = require( "./routes" )( Make, ApiUser, env );
-middleware = require( "./lib/middleware" )( Make, ApiUser, env );
+var routes = require( "./routes" )( Make, ApiUser, env ),
+    middleware = require( "./lib/middleware" )( Make, ApiUser, env );
 
 app.use( middleware.errorHandler );
 app.use( middleware.fourOhFourHandler );
