@@ -27,10 +27,11 @@ module.exports = function( qb ){
         args: [ { description: "This is a description" } ],
         expected: {
           "query": {
-            "query_string": {
-              "query": "This is a description",
-              "fields": [ "description" ],
-              "default_operator": "AND"
+            "match": {
+              "description": {
+                "query": "This is a description",
+                "operator": "and"
+              }
             }
           }
         }
@@ -40,10 +41,11 @@ module.exports = function( qb ){
         expected: {
           "not": {
             "query": {
-              "query_string": {
-                "query": "This is a description",
-                "fields": [ "description" ],
-                "default_operator": "AND"
+              "match": {
+                "description": {
+                  "query": "This is a description",
+                  "operator": "and"
+                }
               }
             }
           }
@@ -394,12 +396,11 @@ module.exports = function( qb ){
         args: [ { title: "This is a title" } ],
         expected: {
           "query": {
-            "query_string": {
-              "query": "This is a title",
-              "fields": [
-                "title"
-              ],
-              "default_operator": "AND"
+            "match": {
+              "title": {
+                "query": "This is a title",
+                "operator": "and"
+              }
             }
           }
         }
@@ -409,12 +410,11 @@ module.exports = function( qb ){
         expected: {
           "not": {
             "query": {
-              "query_string": {
-                "query": "This is a title",
-                "fields": [
-                  "title"
-                ],
-                "default_operator": "AND"
+              "match": {
+                "title": {
+                  "query": "This is a title",
+                  "operator": "and"
+                }
               }
             }
           }
