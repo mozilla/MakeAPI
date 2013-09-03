@@ -62,12 +62,11 @@ module.exports = function( qb ) {
       filters: [
         {
           query: {
-            query_string: {
-              query: "This is a title",
-              fields: [
-                "title"
-              ],
-              default_operator: "AND"
+            match: {
+              title: {
+                query: "This is a title",
+                operator: "and"
+              }
             }
           }
         }, {
