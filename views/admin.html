@@ -64,6 +64,17 @@
               <input id="search-tag" name="search-tag" title="PROTIP: empty === get all makes" placeholder="empty gets all makes" class="input-large" type="text">
             </div>
           </div>
+          <div class="control-group" >
+            <label class="control-label" for="sort-by-report">Sort By:</label>
+            <div class="controls">
+              <input id="sort-by-updated" value="updatedAt" name="sort-by" title="Select to sort by last updated time" type="radio" checked>
+              <label for="sort-by-updated" class="sort-label">&nbsp;Updated At</label><br />
+              <input id="sort-by-report" value="reports" name="sort-by" title="Select to sort bycreation most reports" type="radio">
+              <label for="sort-by-report" class="sort-label">&nbsp;Report Count</label><br />
+              <input id="sort-by-likes" value="likes" name="sort-by" title="Select to sort by total like count per make" type="radio">
+              <label for="sort-by-likes" class="sort-label">&nbsp;Like Count</label>
+            </div>
+          </div>
           <div class="control-group">
             <label class="control-label" for="search"></label>
             <div class="controls">

@@ -40,6 +40,12 @@ document.addEventListener( "DOMContentLoaded", function() {
     },
     title: function( r, c, val, def, datactx ) {
       return '<a href="' + datactx.url + '" target="_blank">' + val + '</a>';
+    },
+    reports: function( row, cell, val ) {
+      return val ? val.length : 0;
+    },
+    clearReports: function( row, cell, val, def, datactx ) {
+      return '<button onclick="clearReports(\'' + datactx.id + '\');" class="delete-reports-btn red-text">Clear</button>';
     }
   },
 
@@ -110,7 +116,7 @@ document.addEventListener( "DOMContentLoaded", function() {
     }
   ],
 
-  ADMIN_COL = {
+  ADMIN_COLS = [{
     id: "id",
     name: "Del",
     cssClass: "delete-col",
@@ -120,7 +126,19 @@ document.addEventListener( "DOMContentLoaded", function() {
     minWidth: 40,
     width: 40,
     formatter: FORMATTERS.del
-  };
+  }, {
+    id: "clearReports",
+    name: "Clear Reports",
+    field: "reports",
+    width: 115,
+    formatter: FORMATTERS.clearReports
+  }, {
+    id: "reportCount",
+    name: "Reports",
+    field: "reports",
+    width: 75,
+    formatter: FORMATTERS.reports
+  }];
 
   if ( isAdmin  ) {
     COLUMNS = COLUMNS.map(function( item ) {
@@ -129,7 +147,9 @@ document.addEventListener( "DOMContentLoaded", function() {
       }
       return item;
     });
-    COLUMNS.unshift( ADMIN_COL );
+    ADMIN_COLS.forEach( function( col ) {
+      COLUMNS.unshift( col );
+    });
   }
 
   var escapeMap = {
@@ -207,9 +227,10 @@ document.addEventListener( "DOMContentLoaded", function() {
         currentPage = 1,
         totalPages = 1;
 
-    function setQuery( type, query ) {
+    function setQuery( type, query, sort ) {
       currentQuery.type = type;
       currentQuery.query = query;
+      currentQuery.sort = sort;
     }
 
     function handleMakes( err, data, total, page ) {
@@ -241,7 +262,6 @@ document.addEventListener( "DOMContentLoaded", function() {
     }
 
     function goToPage( num ) {
-
       if ( currentQuery.type && currentQuery.query ) {
         if ( currentQuery.type === "tags" ) {
           currentQuery.query = trimItems( currentQuery.query.split( "," ) );
@@ -252,9 +272,11 @@ document.addEventListener( "DOMContentLoaded", function() {
       loadingElem.classList.remove( "spin-hidden" );
 
       make.limit( resultsPerPage )
-      .page( num )
-      .sortByField( "createdAt", "desc" )
-      .then(function( err, data, total ) {
+      .page( num );
+
+      make.sortByField( currentQuery.sort, "desc" );
+
+      make.then(function( err, data, total ) {
         loadingElem.classList.add( "spin-hidden" );
         handleMakes( err, data, total, num );
       });
@@ -353,6 +375,9 @@ document.addEventListener( "DOMContentLoaded", function() {
         csrf: csrfToken
       }),
       searchTypeSelector = document.querySelector( "#filter-type" ),
+      sortByUpdated = document.querySelector( "#sort-by-updated"),
+      sortByReports = document.querySelector( "#sort-by-report"),
+      sortByLikes = document.querySelector( "#sort-by-likes" ),
       searchValue = document.querySelector( "#search-tag" ),
       searchBtn = document.querySelector( "#search" ),
       gridArea = document.querySelector( "#data-table-area" ),
@@ -378,13 +403,24 @@ document.addEventListener( "DOMContentLoaded", function() {
         errorElement: errorSpan
       });
 
-  window.removeClick = function( id, dataViewId ){
+  window.removeClick = function( id ){
     make.remove( id, function( err ) {
       if ( err ) {
-        errorSpan.classList.remove( "hidden" ).textContent( "Error Deleting! " + JSON.stringify( err ) );
+        errorSpan.removeClass( "hidden" ).html( "Error Deleting! " + JSON.stringify( err ) );
+      } else {
+        dataView.deleteItem( id );
+        grid.invalidate();
+        grid.render();
       }
-      else {
-        dataView.deleteItem( dataViewId );
+    });
+  };
+
+  window.clearReports = function( id ) {
+    make.update( id, { reports:[] }, function( err, updatedMake ) {
+      if ( err ) {
+        errorSpan.removeClass( "hidden" ).html( "Error Deleting! " + JSON.stringify( err ) );
+      } else {
+        dataView.updateItem( id, updatedMake );
         grid.invalidate();
         grid.render();
       }
@@ -440,13 +476,17 @@ document.addEventListener( "DOMContentLoaded", function() {
   });
 
   function doSearch() {
-    pager.setQuery( searchTypeSelector.value, searchValue.value );
+    var sort = document.querySelector( "input[name=sort-by]:checked" ).value;
+    pager.setQuery( searchTypeSelector.value, searchValue.value, sort );
     errorSpan.classList.add( "hidden" );
     errorSpan.textContent = "";
     pager.goToPage( 1 );
   }
 
   searchBtn.addEventListener( "click", doSearch, false );
+  sortByReports.addEventListener( "change", doSearch, false );
+  sortByLikes.addEventListener( "change", doSearch, false );
+  sortByUpdated.addEventListener( "change", doSearch, false );
 
   // Press enter to search
   searchValue.addEventListener( "keypress", function( e ) {

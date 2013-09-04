@@ -26,10 +26,14 @@ div.data-table-area {
   display: none !important;
 }
 
-.delete-make-btn {
-  width: 30px;
+.delete-make-btn,
+.delete-reports-btn {
   display: block;
   margin: 0 auto;
+}
+
+.delete-make-btn {
+  width: 30px;
 }
 
 .red-text {
@@ -107,4 +111,13 @@ span.nav-page-total-setting {
 
 span.nav-page-total-setting.selected {
   color: #f00;
+}
+
+input[type=radio] {
+  display: inline-block;
+  float: left;
+}
+
+label.sort-label {
+  display: inline;
 }
