@@ -40,7 +40,11 @@ module.exports = function( makeModel, env ) {
     Make.publicFields.forEach( function( field ) {
       // only update if the field exists on the body
       if ( field in body ) {
-        make[ field ] = body[ field ];
+        if ( field === "likes" ) {
+          make.likes.push( body.likes );
+        } else {
+          make[ field ] = body[ field ];
+        }
       }
     });
 
@@ -55,7 +59,7 @@ module.exports = function( makeModel, env ) {
       make.updatedAt = Date.now();
     }
 
-    make.save(function( err, make ){
+    make.save(function( err, make ) {
       return handleSave( req, res, err, make, type );
     });
   }
