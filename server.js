@@ -24,25 +24,12 @@ var app = express(),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
     ApiUser = require( "./lib/models/apiUser" )( env, Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
-    csrfMiddleware = express.csrf(),
-    server;
+    csrfMiddleware = express.csrf();
 
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
 // Don't send the "X-Powered-By: Express" header
 app.disable( "x-powered-by" );
-
-// Setup butler, with host (graylog2 host) and facility (e.g., app name in loggins)
-var butler = require( "webmaker-butler" )({
-  host: env.get( "GRAYLOG_HOST" ) || "dev-no-host",
-  facility: env.get( "GRAYLOG_FACILITY" ) || "makeapi",
-  onCrash: function( err, req, res ) {
-    server.close();
-    res.statusCode = 500;
-    res.json( err );
-  }
-});
-app.use( butler.middleware );
 
 app.use(express.favicon("public/images/favicon.ico", {
   maxAge: 31556952000
@@ -90,16 +77,7 @@ require( "./lib/loginapi" )( app, {
 var routes = require( "./routes" )( Make, ApiUser, env ),
     middleware = require( "./lib/middleware" )( Make, ApiUser, env );
 
-// Handle 500s, reporting back to graylog via butler
-app.use( function( err, req, res, next ) {
-  if ( !err.status ) {
-    err.status = 500;
-  }
-
-  butler.reportError( err );
-  res.status( err.status );
-  res.json( err );
-});
+app.use( middleware.errorHandler );
 app.use( middleware.fourOhFourHandler );
 
 function corsOptions ( req, res ) {
@@ -141,6 +119,6 @@ if ( env.get( "NODE_ENV" ) !== "production" ) {
   app.get( "/search.html", routes.searchTest );
 }
 
-server = app.listen( env.get( "PORT", 3000 ), function() {
+app.listen( env.get( "PORT", 3000 ), function() {
   console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 3000 ));
 });
