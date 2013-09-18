@@ -5,7 +5,8 @@
 document.addEventListener( "DOMContentLoaded", function() {
   var Slick = window.Slick;
 
-  var isAdmin = +document.querySelector( "meta[name='is_collaborator']" ).getAttribute( "content" ) === 0;
+  var isAdmin = +document.querySelector( "meta[name='is_collaborator']" ).getAttribute( "content" ) === 0,
+      webmakerHostName = document.querySelector( "meta[name='webmaker_hostname']" ).getAttribute( "content" );
 
   var FORMATTERS = {
     date: function( row, cell, val ) {
@@ -21,6 +22,21 @@ document.addEventListener( "DOMContentLoaded", function() {
     },
     tags: function( row, cell, val ) {
       return Array.isArray( val ) ? val.join( "," ) : val;
+    },
+    username: function( row, cell, val ) {
+      return '<a href="' + webmakerHostName + '/u/' + val + '" target="_blank">' + val + '</a>';
+    },
+    url: function( r, c, val, def, datactx ) {
+      return '<a href="' + val + '" target="_blank">' + val + '</a>';
+    },
+    thumbnail: function( r, c, val, def, datactx ) {
+      if ( !val ) {
+        return "";
+      }
+      return '<a href="' + val + '" target="_blank">' + val + '</a>';
+    },
+    del: function ( r, c, val, def, datactx ) {
+      return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">X</button>';
     }
   },
 
@@ -31,9 +47,7 @@ document.addEventListener( "DOMContentLoaded", function() {
       field: "url",
       width: 150,
       sortable: true,
-      formatter: function( r, c, val, def, datactx ) {
-        return '<a href="' + val + '" target="_blank">' + val + '</a>';
-      }
+      formatter: FORMATTERS.url
     },
     {
       id: "title",
@@ -55,19 +69,15 @@ document.addEventListener( "DOMContentLoaded", function() {
       field: "thumbnail",
       width: 150,
       sortable: true,
-      formatter: function( r, c, val, def, datactx ) {
-        if ( !val ) {
-          return "";
-        }
-        return '<a href="' + val + '" target="_blank">' + val + '</a>';
-      }
+      formatter: FORMATTERS.thumbnail
     },
     {
       id: "username",
       name: "Username",
       field: "username",
       width: 150,
-      sortable: true
+      sortable: true,
+      formatter: FORMATTERS.username
     },
     {
       id: "tags",
@@ -104,9 +114,7 @@ document.addEventListener( "DOMContentLoaded", function() {
     maxWidth: 40,
     minWidth: 40,
     width: 40,
-    formatter: function ( r, c, val, def, datactx ) {
-      return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">X</button>';
-    }
+    formatter: FORMATTERS.del
   };
 
   if ( isAdmin  ) {
