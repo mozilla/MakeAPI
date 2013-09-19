@@ -37,7 +37,7 @@ module.exports = function( qb ) {
 
   return function() {
     tests.forEach(function( test ) {
-      qb.build( { page: test.page }, function( err, query ) {
+      qb.search( { page: test.page }, function( err, query ) {
         it( "err should be null", function() {
           assert.strictEqual( err, null );
         });

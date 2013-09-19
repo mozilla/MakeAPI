@@ -476,7 +476,7 @@ module.exports = function( qb ){
             assert.deepEqual( query.query.filtered.filter.bool.must[ 0 ], test.expected );
           });
         });
-        qb.build.apply( this, test.args );
+        qb.search.apply( this, test.args );
       });
     });
   };

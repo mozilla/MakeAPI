@@ -131,7 +131,7 @@ module.exports = function( qb ) {
           }
         });
       });
-      qb.build.apply( this, test.args );
+      qb.search.apply( this, test.args );
     });
   };
 };
