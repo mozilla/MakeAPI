@@ -157,6 +157,25 @@ module.exports = function( makeModel, env ) {
         doSearch( req, res, dsl );
       });
     },
+    authenticatedSearch: function( req, res ) {
+
+      if ( !req.query ) {
+        return searchError( res, "Malformed Request", 400 );
+      }
+
+      queryBuilder.authenticatedSearch( req.query, function( err, dsl ) {
+        if ( err ) {
+          if ( err.code === 404 ) {
+            // No user was found, no makes to search.
+            metrics.increment( "make.search.success" );
+            return res.json( { makes: [], total: 0 } );
+          } else {
+            return searchError( res, err, err.code );
+          }
+        }
+        doSearch( req, res, dsl );
+      });
+    },
     searchTest: function( req, res ) {
       res.render( "search.html" );
     },

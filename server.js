@@ -95,6 +95,7 @@ app.put( "/api/20130724/make/like/:id", middleware.hawkAuth, Mongo.isDbOnline, m
 app.put( "/api/20130724/make/unlike/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.unlike, routes.update );
 app.del( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
+app.get( "/api/20130724/make/authenticatedSearch", middleware.hawkAuth, Mongo.isDbOnline, middleware.crossOrigin, routes.authenticatedSearch );
 
 // 20130724 Admin API routes
 app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.collabAuth, middleware.fieldFilter, Mongo.isDbOnline, middleware.getMake, routes.update );
