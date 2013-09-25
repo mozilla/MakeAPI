@@ -157,6 +157,26 @@ module.exports = function( makeModel, env ) {
         doSearch( req, res, dsl );
       });
     },
+    // Added by Zak for metrics used to display data in the api
+      metricsAPI: function(req, res ){
+        
+          queryBuilder.build({"page":"","limit":"", "user":"","sort":"id"}, function(err, dsl){
+            if(err){
+                if(err.code ===404){
+                         //No Data found 
+                    //metrics.increment("make." 
+                }
+            }
+              doSearch(req,res,dsl);
+            
+          });
+          
+      },
+      metricsRemixAPI:function(req,res){
+          // Here I am passing in a date to get remixes from and passing in a null because I don't need it.
+        queryBuilder.remixedFrom("2013-9-19T14:12:12", null);
+      
+      },
     searchTest: function( req, res ) {
       res.render( "search.html" );
     },

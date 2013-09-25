@@ -115,6 +115,36 @@ app.get( "/js/make-api.js", function( req, res ) {
 
 app.get( "/healthcheck", routes.healthcheck );
 
+// Endpoint Make Metrics:
+
+app.get( "/metrics/makes/:id", function (req,res){  
+var id=req.params.id;
+    if(id=="all"|| id=="day"|| id=="week"){
+        // Using Elastic Search DSL Query
+        
+       // elasticalClient.get('twitter',  '1',    function(err, doc, res){
+       // res.json({"Data displayed: ":doc});
+       // });
+       
+        
+        
+    }else{
+        res.json({"Status":"Error: To view metrics you can only choose from 3 options: 1) all 2) day 3) week "});
+    }
+    
+});
+
+// Endpoint for Remix Metrics 
+app.get( "/metrics/remixes/:id", function (req,res){
+var id=req.params.id;
+    if(id=="all"|| id=="day"|| id=="week"){
+        res.json({"you put":id});
+    }else{
+        res.json({"Status":"Error: To view metrics you can only choose from 3 options: 1) all 2) day 3) week "});
+    }
+});
+
+
 if ( env.get( "NODE_ENV" ) !== "production" ) {
   app.get( "/search.html", routes.searchTest );
 }
