@@ -7,10 +7,19 @@ module.exports = function( qb ){
               match_all: {}
             },
             filter: {
-              missing: {
-                field: "deletedAt",
-                null_value: true
-              }
+              and: [
+                {
+                  missing: {
+                    field: "deletedAt",
+                    null_value: true
+                  }
+                },
+                {
+                  term: {
+                    published: true
+                  }
+                }
+              ]
             } 
           }
         },
@@ -62,6 +71,8 @@ module.exports = function( qb ){
           assert.strictEqual( err, null );
         });
         it( "built query should match the defined base query", function() {
+console.log("query", query);
+console.log("baseQuery", baseQuery);
           assert.deepEqual( query, baseQuery );
         });
       });
