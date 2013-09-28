@@ -1,0 +1,114 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Make API Metrics</title>
+    <meta name="csrf_token" content="{{csrf}}" >
+    <meta name="is_collaborator" content="{{iscollaborator}}">
+    <meta name="webmaker_hostname" content="{{audience}}">
+    <script src="js/external/jquery.min.js"></script>
+    <script src="js/external/jquery-ui.min.js"></script>
+    <script src="js/external/jquery.event.drag-2.2.js"></script>
+    <script src="js/external/slick.core.js"></script>
+    <script src="js/external/slick.grid.js"></script>
+    <script src="js/external/slick.editors.js"></script>
+    <script src="js/external/slick.dataview.js"></script>
+    <script src="js/make-api.js"></script>
+    <script src="js/admin.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/admin.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/font-awesome.min.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/slick.grid.css" >
+    <link rel="stylesheet" type="text/css" href="stylesheets/slick.pager.css" >
+    <link rel="stylesheet" href="{{login}}/css/nav.css" />
+  </head>
+  <body>
+
+    <div id="webmaker-nav">
+      <nav class="webmaker-nav-container">
+        <a id="logo" href="https://webmaker.org"><img src="{{login}}/img/webmaker-logo.png" alt="Mozilla Webmaker" /></a>
+        <ul class="webmaker-nav user-info">
+          <li class="user">
+            Hi <span id="identity" class="user-name-container"></span>
+          </li>
+          <li>
+            <iframe src="{{audience}}/sso/include.html" class="include-frame"></iframe>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="container">
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label" for="filter-type">Search By:</label>
+            <div class="controls">
+              <select id="filter-type" name="filter-type" class="input-xlarge">
+                <option value="title" selected>All</option>
+                <option value="user">Day</option>
+                <option value="description">Week</option>
+              </select>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="search"></label>
+            <div class="controls">
+              <button id="search" type="button" name="search" class="btn btn-success">Search</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <span class="error-message hidden red-text" id="error-message"></span>
+    <div class="data-table-area" id="data-table-area"></div>
+    <div class="paging">
+      <span class="paging-nav">
+        <span id="nav-first" class="nav-icon nav-icon-left icon-fast-backward" title="First Page"></span>
+        <span id="nav-previous" class="nav-icon icon-backward" title="Previous Page"></span>
+        <span id="nav-next" class="nav-icon icon-forward" title="Next Page"></span>
+        <span id="nav-last" class="nav-icon icon-fast-forward" title="Last Page"></span>
+        <span id="nav-status"  class="nav-status">Page 1 of 1</span>
+        <span class="nav-go-to">
+          <input type="number" id="nav-go-to-page">
+          <button class="nav-btn" id="nav-go-to-page-btn">Go</button>
+        </span>
+        <span class="nav-loading icon-spinner icon-spin spin-hidden" id="nav-loading"></span>
+      </span>
+      <span class="nav-paging-settings">
+        <span>Results per page: </span>
+        <span class="nav-page-total-setting" id="nav-25" data-value="25">25</span>
+        <span class="nav-page-total-setting" id="nav-50" data-value="50">50</span>
+        <span class="nav-page-total-setting selected" id="nav-100" data-value="100">100</span>
+      </span>
+    </div>
+    {% if iscollaborator == 0 %}
+      <hr />
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="control-group">
+            <label class="control-label" for="app-contact">Contact Email:</label>
+            <div class="controls">
+              <input id="app-contact" name="app-contact" placeholder="Contact Email" class="input-large" type="text">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="add-user"></label>
+            <div class="controls">
+              <button id="add-user" type="button" name="add-user" class="btn btn-success">Add User</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <label for="user-result" class="control-label"></label>
+            <textarea id="user-result" class="input-xlarge"></textarea>
+          </div>
+        </fieldset>
+      </form>
+      {% endif %}
+    <script src="{{audience}}/sso/include.js"></script>
+  </body>
+</html>

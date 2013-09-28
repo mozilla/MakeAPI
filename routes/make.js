@@ -158,19 +158,26 @@ module.exports = function( makeModel, env ) {
       });
     },
     // Added by Zak for metrics used to display data in the api
-      metricsAPI: function(req, res ){
+      metricsAPI: function(req, res, option ){
         
-          queryBuilder.build({"page":"","limit":"", "user":"","sort":"id"}, function(err, dsl){
-            if(err){
-                if(err.code ===404){
-                         //No Data found 
-                    //metrics.increment("make." 
-                }
-            }
-              doSearch(req,res,dsl);
-            
-          });
-          
+             if ( !req.query || req.query.from ) {
+        return searchError( res, "Malformed Request", 400 );
+      }
+
+          queryBuilder.build( option, function( err, dsl ) {
+    
+    //  queryBuilder.build( req.query, function( err, dsl ) {
+        if ( err ) {
+          if ( err.code === 404 ) {
+            // No user was found, no makes to search.
+            metrics.increment( "make.search.success" );
+            return res.json( { makes: [], total: 0 } );
+          } else {
+            return searchError( res, err, err.code );
+          }
+        }
+        doSearch( req, res, dsl );
+      });
       },
       metricsRemixAPI:function(req,res){
           // Here I am passing in a date to get remixes from and passing in a null because I don't need it.

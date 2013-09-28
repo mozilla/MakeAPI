@@ -17,7 +17,9 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
     healthcheck: makeRoutes.healthcheck,
     searchTest: makeRoutes.searchTest,
     admin: adminRoutes.admin,
+    metricAdmin: adminRoutes.metricAdmin,
     login: adminRoutes.login,
-    addUser: adminRoutes.addUser
+    addUser: adminRoutes.addUser,
+    metricsAPI: makeRoutes.metricsAPI
   };
 };

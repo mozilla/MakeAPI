@@ -104,7 +104,7 @@ app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
 // Routes relating to admin tools
 app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
-
+app.get( "/admin/metric", csrfMiddleware, middleware.collabAuth, routes.metricAdmin );
 // Admin tool path for generating Hawk Keys
 app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
 
@@ -120,14 +120,8 @@ app.get( "/healthcheck", routes.healthcheck );
 app.get( "/metrics/makes/:id", function (req,res){  
 var id=req.params.id;
     if(id=="all"|| id=="day"|| id=="week"){
-        // Using Elastic Search DSL Query
-        
-       // elasticalClient.get('twitter',  '1',    function(err, doc, res){
-       // res.json({"Data displayed: ":doc});
-       // });
-       
-        
-        
+        // Using Elastic Search DSL Query     
+      routes.metricsAPI(req,res,{"user":req.session.username,"metric":id,"contentType":"application/x-thimble","limit":50,"sortByField":"updatedAt,desc","page":1});      
     }else{
         res.json({"Status":"Error: To view metrics you can only choose from 3 options: 1) all 2) day 3) week "});
     }
