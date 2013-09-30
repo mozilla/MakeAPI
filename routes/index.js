@@ -11,7 +11,6 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
       res.render( "index.html" );
     },
     search: makeRoutes.search,
-    authenticatedSearch: makeRoutes.authenticatedSearch,
     create: makeRoutes.create,
     update: makeRoutes.update,
     remove: makeRoutes.remove,

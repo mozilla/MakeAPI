@@ -71,8 +71,6 @@ module.exports = function( qb ){
           assert.strictEqual( err, null );
         });
         it( "built query should match the defined base query", function() {
-console.log("query", query);
-console.log("baseQuery", baseQuery);
           assert.deepEqual( query, baseQuery );
         });
       });
