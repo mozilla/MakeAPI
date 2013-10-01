@@ -74,7 +74,8 @@ require( "./lib/loginapi" )( app, {
   }
 });
 
-var routes = require( "./routes" )( Make, ApiUser, env ),
+var routes = require( "./routes" )( Make, ApiUser, env ), 
+mroutes = require("./routes/metrics")(Make,ApiUser,env),
     middleware = require( "./lib/middleware" )( Make, ApiUser, env );
 
 app.use( middleware.errorHandler );
@@ -116,29 +117,12 @@ app.get( "/js/make-api.js", function( req, res ) {
 app.get( "/healthcheck", routes.healthcheck );
 
 // Endpoint Make Metrics:
-
-app.get( "/metrics/makes/:id", function (req,res){  
-var id=req.params.id;
-    if(id=="all"|| id=="day"|| id=="week"){
-        // Using Elastic Search DSL Query     
-     routes.metricsAPI(req,res,{"user":req.session.username,"metric":id,"contentType":"application/x-thimble","limit":50,"sortByField":"updatedAt,desc","page":1});      
-    }else{
-        res.json({"Status":"Error: To view metrics you can only choose from 3 options: 1) all 2) day 3) week "});
-    }
-    
-});
-
-// Endpoint for Remix Metrics 
-app.get( "/metrics/remixes/:id", function (req,res){
-var id=req.params.id;
-    if(id=="all"|| id=="day"|| id=="week"){
-        console.log("SERVER>JS: remix" + id.charAt(0).toUpperCase() + id.slice(1));
- routes.metricsAPI(req,res,{ "user":req.session.username,"metric":"remix"+ id.charAt(0).toUpperCase() + id.slice(1),"contentType":"application/x-thimble","limit":50,"sortByField":"updatedAt,desc","page":1}); 
-    } else {
-        res.json({"Status":"Error: To view metrics you can only choose from 3 options: 1) all 2) day 3) week "});
-    }
-});
-
+app.get("/metrics/makes/all",routes.makeAll);
+app.get("/metrics/makes/day",routes.makeDay);
+app.get("/metrics/makes/week",routes.makeWeek);
+app.get("/metrics/remix/all",routes.remixAll);
+app.get("/metrics/remix/day",routes.remixDay);
+app.get("/metrics/remix/week",routes.remixWeek);
 
 if ( env.get( "NODE_ENV" ) !== "production" ) {
   app.get( "/search.html", routes.searchTest );

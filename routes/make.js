@@ -157,18 +157,14 @@ module.exports = function( makeModel, env ) {
         doSearch( req, res, dsl );
       });
     },
-    // Added by Zak for metrics used to display data in the api
-      metricsAPI: function(req, res, option ){
+    metricsAPI: function(req, res, option ){
         
-             if ( !req.query || req.query.from ) {
+      if ( !req.query ) {
         return searchError( res, "Malformed Request", 400 );
       }
-
-          queryBuilder.build( option, function( err, dsl ) {
-    
-    //  queryBuilder.build( req.query, function( err, dsl ) {
+      queryBuilder.build( option, function( err, dsl ) {
         if ( err ) {
-          if ( err.code === 404 ) {
+          if ( err.code === 404 ) { console.log("err..");
             // No user was found, no makes to search.
             metrics.increment( "make.search.success" );
             return res.json( { makes: [], total: 0 } );
@@ -178,12 +174,7 @@ module.exports = function( makeModel, env ) {
         }
         doSearch( req, res, dsl );
       });
-      },
-      metricsRemixAPI:function(req,res){
-          // Here I am passing in a date to get remixes from and passing in a null because I don't need it.
-        queryBuilder.remixedFrom("2013-9-19T14:12:12", null);
-      
-      },
+    },
     searchTest: function( req, res ) {
       res.render( "search.html" );
     },
