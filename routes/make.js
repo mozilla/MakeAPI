@@ -164,7 +164,7 @@ module.exports = function( makeModel, env ) {
       }
       queryBuilder.build( option, function( err, dsl ) {
         if ( err ) {
-          if ( err.code === 404 ) { console.log("err..");
+          if ( err.code === 404 ) { 
             // No user was found, no makes to search.
             metrics.increment( "make.search.success" );
             return res.json( { makes: [], total: 0 } );
