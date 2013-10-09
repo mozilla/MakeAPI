@@ -105,7 +105,7 @@ app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
 // Routes relating to admin tools
 app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
-app.get( "/metric", csrfMiddleware, middleware.collabAuth, routes.metricAdmin );
+app.get( "/metric", csrfMiddleware, middleware.adminAuth, routes.metricAdmin );
 // Admin tool path for generating Hawk Keys
 app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
 
@@ -117,9 +117,11 @@ app.get( "/js/make-api.js", function( req, res ) {
 app.get( "/healthcheck", routes.healthcheck );
 
 // Endpoint Make Metrics:
+app.get("/metrics/makes",routes.makeAll);
 app.get("/metrics/makes/all",routes.makeAll);
 app.get("/metrics/makes/day",routes.makeDay);
 app.get("/metrics/makes/week",routes.makeWeek);
+app.get("/metrics/remix",routes.remixAll);
 app.get("/metrics/remix/all",routes.remixAll);
 app.get("/metrics/remix/day",routes.remixDay);
 app.get("/metrics/remix/week",routes.remixWeek);

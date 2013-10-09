@@ -5,7 +5,7 @@
 module.exports = function routesCtor( makeModel, apiUserModel, env ) {
   var makeRoutes = require( "./make" )( makeModel, env ),
       adminRoutes = require( "./admin" )( apiUserModel, env.get( "AUDIENCE" ), env.get( "LOGIN_SERVER" ) ),
-   metricRoutes= require("./metrics")(makeRoutes);
+      metricRoutes = require("./metrics")( makeRoutes );
   return {
     index: function( req, res ) {
       res.render( "index.html" );
@@ -21,11 +21,11 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
     login: adminRoutes.login,
     addUser: adminRoutes.addUser,
     metricsAPI: makeRoutes.metricsAPI,
-    makeAll:metricRoutes.makeAll,
-    makeDay:metricRoutes.makeDay,
-    makeWeek:metricRoutes.makeWeek,
-    remixAll:metricRoutes.remixAll,
-    remixDay:metricRoutes.remixDay,
-    remixWeek:metricRoutes.remixWeek
+    makeAll: metricRoutes.makeAll,
+    makeDay: metricRoutes.makeDay,
+    makeWeek: metricRoutes.makeWeek,
+    remixAll: metricRoutes.remixAll,
+    remixDay: metricRoutes.remixDay,
+    remixWeek: metricRoutes.remixWeek
   };
 };
