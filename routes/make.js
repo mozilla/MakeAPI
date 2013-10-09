@@ -157,8 +157,7 @@ module.exports = function( makeModel, env ) {
         doSearch( req, res, dsl );
       });
     },
-    metricsAPI: function(req, res, option ){
-        
+    metricsAPI: function( req, res, option ) {
       if ( !req.query ) {
         return searchError( res, "Malformed Request", 400 );
       }

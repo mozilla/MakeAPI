@@ -11,12 +11,7 @@
 
 ### Dependencies
 
-Warning: If you don't already have bower installed globally npm install will not work normally. To install bower globally the execute the following command.
-
-Execute `npm install -g bower` 
-
 Then execute `npm install` in the application directory:
-
 
 ### Running in Development mode
 

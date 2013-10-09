@@ -19,7 +19,7 @@ module.exports = function( apiUserModel, audience, login ) {
         iscollaborator: req.isCollab ? 1 : 0
       });
     },
-    metricAdmin:function(req,res){
+    metricAdmin: function( req, res ) {
       res.render( "metric.html", {
         email: req.session.email,
         audience: audience,
