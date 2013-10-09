@@ -54,7 +54,7 @@ module.exports = function( makeModel, env ) {
 
     // If createdAt doesn't exist, we know this is a Create, otherwise stamp updatedAt
     if ( !make.createdAt ) {
-      make.createdAt = Date.now();
+      make.createdAt = make.updatedAt = Date.now();
     } else {
       make.updatedAt = Date.now();
     }
