@@ -97,7 +97,6 @@ module.exports = function( makeModel, env ) {
           searchHit.username = "";
           searchHit.emailHash = "";
         }
-//ADDED
          cb( null, searchHit );
       });
     }, function done( err, mappedMakes ) {
