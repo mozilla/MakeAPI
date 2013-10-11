@@ -105,7 +105,7 @@ app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
 // Routes relating to admin tools
 app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
-app.get( "/metric", csrfMiddleware, middleware.adminAuth, routes.metricAdmin );
+app.get( "/admin/metric", csrfMiddleware, middleware.adminAuth, routes.metricAdmin );
 // Admin tool path for generating Hawk Keys
 app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
 

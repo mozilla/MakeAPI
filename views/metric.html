@@ -9,21 +9,21 @@
     <meta name="csrf_token" content="{{csrf}}" >
     <meta name="is_collaborator" content="{{iscollaborator}}">
     <meta name="webmaker_hostname" content="{{audience}}">
-    <script src="js/external/jquery.min.js"></script>
-    <script src="js/external/jquery-ui.min.js"></script>
-    <script src="js/external/jquery.event.drag-2.2.js"></script>
-    <script src="js/external/slick.core.js"></script>
-    <script src="js/external/slick.grid.js"></script>
-    <script src="js/external/slick.editors.js"></script>
-    <script src="js/external/slick.dataview.js"></script>
-    <script src="js/make-api.js"></script>
-    <script src="js/metric.js"></script>
-    <link rel="stylesheet" type="text/css" href="stylesheets/admin.css" >
-    <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui.min.css">
-    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
-    <link rel="stylesheet" type="text/css" href="stylesheets/font-awesome.min.css" >
-    <link rel="stylesheet" type="text/css" href="stylesheets/slick.grid.css" >
-    <link rel="stylesheet" type="text/css" href="stylesheets/slick.pager.css" >
+    <script src="/js/external/jquery.min.js"></script>
+    <script src="/js/external/jquery-ui.min.js"></script>
+    <script src="/js/external/jquery.event.drag-2.2.js"></script>
+    <script src="/js/external/slick.core.js"></script>
+    <script src="/js/external/slick.grid.js"></script>
+    <script src="/js/external/slick.editors.js"></script>
+    <script src="/js/external/slick.dataview.js"></script>
+    <script src="/js/make-api.js"></script>
+    <script src="/js/metric.js"></script>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/admin.css" >
+    <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui.min.css">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" >
+    <link rel="stylesheet" type="text/css" href="/stylesheets/font-awesome.min.css" >
+    <link rel="stylesheet" type="text/css" href="/stylesheets/slick.grid.css" >
+    <link rel="stylesheet" type="text/css" href="/stylesheets/slick.pager.css" >
     <link rel="stylesheet" href="{{login}}/css/nav.css" />
   </head>
   <body>
@@ -46,28 +46,22 @@
       <form class="form-horizontal">
         <fieldset>
           <div class="control-group">
-            <label class="control-label" for="filter-type">Filter:</label>
+            <label class="control-label" for="filter">Filter:</label>
             <div class="controls">
-              <select id="filter-type" name="filter-type" class="input-xlarge">
-                <option value="title" selected>All</option>
-                <option value="user">Day</option>
-                <option value="description">Week</option>
+              <select id="filter" name="filter" class="input-xlarge">
+                <option value="all" selected>All</option>
+                <option value="day">Day</option>
+                <option value="week">Week</option>
               </select>
             </div>
           </div>
             <div class="control-group">
-            <label class="control-label" for="filter-type">Type:</label>
+            <label class="control-label" for="type">Type:</label>
             <div class="controls">
-              <select id="filter-type" name="filter-type" class="input-xlarge">
-                <option value="Make" selected>Make</option>
-                <option value="Remix">Remix</option>
+              <select id="type" name="type" class="input-xlarge">
+                <option value="makes" selected>Make</option>
+                <option value="remix">Remix</option>
               </select>
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="search"></label>
-            <div class="controls">
-              <button id="search" type="button" name="search" class="btn btn-success">Search</button>
             </div>
           </div>
         </fieldset>
@@ -95,29 +89,6 @@
         <span class="nav-page-total-setting selected" id="nav-100" data-value="100">100</span>
       </span>
     </div>
-    {% if iscollaborator == 0 %}
-      <hr />
-      <form class="form-horizontal">
-        <fieldset>
-          <div class="control-group">
-            <label class="control-label" for="app-contact">Contact Email:</label>
-            <div class="controls">
-              <input id="app-contact" name="app-contact" placeholder="Contact Email" class="input-large" type="text">
-            </div>
-          </div>
-          <div class="control-group">
-            <label class="control-label" for="add-user"></label>
-            <div class="controls">
-              <button id="add-user" type="button" name="add-user" class="btn btn-success">Add User</button>
-            </div>
-          </div>
-          <div class="control-group">
-            <label for="user-result" class="control-label"></label>
-            <textarea id="user-result" class="input-xlarge"></textarea>
-          </div>
-        </fieldset>
-      </form>
-      {% endif %}
     <script src="{{audience}}/sso/include.js"></script>
   </body>
 </html>
