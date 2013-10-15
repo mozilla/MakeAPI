@@ -69,7 +69,7 @@ module.exports = function( makeModel, env ) {
 
     // Resolve each in series, to preserve order of the original Array
     async.mapSeries( results.hits, function eachHit( hit, cb ) {
-      loginApi.getUser( hit.email, function( err, user ) {
+      loginApi.getUserByEmail( hit.email, function( err, user ) {
         var searchHit = {};
 
         if ( err ) {

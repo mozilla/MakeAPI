@@ -3,7 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var qb = require( "../lib/queryBuilder" )({
-      getUser: function( user, cb ){
+      getUserByUsername: function( user, cb ){
         if ( user === "webmaker" || user === "webmaker@mozillafoundation.org" ) {
           return cb( null, { email: "webmaker@mozillafoundation.org" } );
         } else if ( user === "fakemaker" || user === "fakemaker@mozillafoundation.org" ) {

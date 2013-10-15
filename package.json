@@ -43,7 +43,7 @@
     "nunjucks": "0.1.9",
     "querystring": "0.2.0",
     "uuid": "1.4.1",
-    "webmaker-loginapi": "https://github.com/mozilla/node-webmaker-loginapi/tarball/v0.1.11"
+    "webmaker-loginapi": "https://github.com/mozilla/node-webmaker-loginapi/tarball/v0.1.14"
   },
   "devDependencies": {
     "grunt": "0.4.1",
