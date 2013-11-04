@@ -83,7 +83,7 @@ module.exports = function( makeModel, env ) {
           searchHit[ val ] = hit[ val ];
         });
 
-        // _id, createdAt and updatedAt are not apart of our public fields.
+        // _id, createdAt and updatedAt are not a part of our public fields.
         // We need to manually assign it to the object we are returning
         searchHit._id = hit._id;
         searchHit.createdAt = hit.createdAt;
@@ -116,10 +116,34 @@ module.exports = function( makeModel, env ) {
 
   function doSearch( req, res, searchData ) {
     Make.search( searchData, function( err, results ) {
+      var searchResults;
       if ( err ) {
         searchError( res, err, 500 );
       } else {
-        getUserNames( req, res, results );
+        searchResults = results.hits;
+        searchResults.hits = searchResults.hits.map(function( esRecord ) {
+          var source = esRecord._source;
+          return {
+            _id: esRecord._id,
+            author: source.author,
+            contentType: source.contentType,
+            contenturl: source.contenturl,
+            createdAt: source.createdAt,
+            description: source.description,
+            email: source.email,
+            thumbnail: source.thumbnail,
+            title: source.title,
+            updatedAt: source.updatedAt,
+            url: source.url,
+            deletedAt: source.deletedAt,
+            likes: source.likes,
+            remixedFrom: source.remixedFrom,
+            tags: source.tags,
+            published: source.published,
+            locale: source.locale
+          };
+        });
+        getUserNames( req, res, searchResults );
       }
     });
   }
