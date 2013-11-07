@@ -11,8 +11,7 @@
 
 ### Dependencies
 
-Execute `npm install` in the application directory:
-
+Then execute `npm install` in the application directory:
 
 ### Running in Development mode
 

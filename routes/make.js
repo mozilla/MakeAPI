@@ -97,7 +97,6 @@ module.exports = function( makeModel, env ) {
           searchHit.username = "";
           searchHit.emailHash = "";
         }
-
          cb( null, searchHit );
       });
     }, function done( err, mappedMakes ) {
@@ -108,13 +107,25 @@ module.exports = function( makeModel, env ) {
       res.json( { makes: mappedMakes, total: results.total } );
     });
   }
-
+  function getMetrics( req, res, results ){
+      metrics.increment( "make.search.success" );
+      res.json( {  count: results.total } );
+  }
   function doSearch( req, res, searchData ) {
     Make.search( searchData, function( err, results ) {
       if ( err ) {
         searchError( res, err, 500 );
       } else {
         getUserNames( req, res, results );
+      }
+    });
+  }
+  function doMetricsSearch( req, res, searchData ) {
+    Make.search( searchData, function( err, results ) {
+      if ( err ) {
+        searchError( res, err, 500 );
+      } else {
+        res.json( {  count: results.total } );
       }
     });
   }
@@ -155,6 +166,23 @@ module.exports = function( makeModel, env ) {
           }
         }
         doSearch( req, res, dsl );
+      });
+    },
+    metricsAPI: function( req, res, option ) {
+      if ( !req.query ) {
+        return searchError( res, "Malformed Request", 400 );
+      }
+      queryBuilder.build( option, function( err, dsl ) {
+        if ( err ) {
+          if ( err.code === 404 ) { 
+            // No user was found, no makes to search.
+            metrics.increment( "make.search.success" );
+            return res.json( { makes: [], total: 0 } );
+          } else {
+            return searchError( res, err, err.code );
+          }
+        }
+        doMetricsSearch( req, res, dsl );
       });
     },
     searchTest: function( req, res ) {
