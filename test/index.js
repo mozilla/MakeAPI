@@ -13,32 +13,5 @@ var qb = require( "../lib/queryBuilder" )({
       }
     });
 
-// pull in test modules
-var core = require( "./queryBuilder/core.unit" )( qb ),
-    size = require( "./queryBuilder/size.unit" )( qb ),
-    page = require( "./queryBuilder/page.unit" )( qb ),
-    sizeAndLimit = require( "./queryBuilder/limitSize.unit" )( qb ),
-    sort = require( "./queryBuilder/sort.unit" )( qb ),
-    user = require( "./queryBuilder/user.unit" )( qb ),
-    filterTests = require( "./queryBuilder/termFilters.unit" )( qb ),
-    complexQueries = require( "./queryBuilder/complexQueries.unit" )( qb );
-
-describe( "QueryBuilder: ", core.base );
-
-describe( "build() - bad args: ", core.badArgs );
-
-describe( "build() - empty query object: ", core.emptyQuery );
-
-describe( "build() - size(limit): ", size );
-
-describe( "build() - page: ", page );
-
-describe( "build() - size and limit: ", sizeAndLimit );
-
-describe( "build() - sort: ", sort );
-
-describe( "build() - user: ", user );
-
-describe( "build() - All Term filters: ", filterTests );
-
-describe( "build() - complexQueries: ", complexQueries );
+// execute search tests
+require( "./queryBuilder/search" )( qb );

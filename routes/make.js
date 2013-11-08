@@ -143,8 +143,7 @@ module.exports = function( makeModel, env ) {
       if ( !req.query ) {
         return searchError( res, "Malformed Request", 400 );
       }
-
-      queryBuilder.build( req.query, function( err, dsl ) {
+      queryBuilder.search( req.query, function( err, dsl ) {
         if ( err ) {
           if ( err.code === 404 ) {
             // No user was found, no makes to search.
@@ -156,9 +155,6 @@ module.exports = function( makeModel, env ) {
         }
         doSearch( req, res, dsl );
       });
-    },
-    searchTest: function( req, res ) {
-      res.render( "search.html" );
     },
     healthcheck: function( req, res ) {
       res.json({

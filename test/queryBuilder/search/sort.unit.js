@@ -11,7 +11,7 @@ module.exports = function( qb ) {
                 field: "deletedAt",
                 null_value: true
               }
-            } 
+            }
           }
         },
         size: 10,
@@ -35,7 +35,7 @@ module.exports = function( qb ) {
       ];
 
   return function() {
-    qb.build( { sortByField: 1 }, function( err, query ) {
+    qb.search( { sortByField: 1 }, function( err, query ) {
       it( "err should be null", function() {
         assert.strictEqual( err, null );
       });
@@ -47,7 +47,7 @@ module.exports = function( qb ) {
       });
     });
 
-    qb.build( { sortByField: "Invalid" }, function( err, query ) {
+    qb.search( { sortByField: "Invalid" }, function( err, query ) {
       it( "err should be null", function() {
         assert.strictEqual( err, null );
       });
@@ -59,7 +59,7 @@ module.exports = function( qb ) {
       });
     });
 
-    qb.build( { sortByField: { "invalid": "arg" } }, function( err, query ) {
+    qb.search( { sortByField: { "invalid": "arg" } }, function( err, query ) {
       it( "err should be null", function() {
         assert.strictEqual( err, null );
       });
@@ -73,7 +73,7 @@ module.exports = function( qb ) {
 
     validSortFields.forEach(function( field ) {
       validDirections.forEach( function( direction ) {
-        qb.build( { sortByField: direction ? field + direction : field }, function( err, query ) {
+        qb.search( { sortByField: direction ? field + direction : field }, function( err, query ) {
           it( "err should be null", function() {
             assert.strictEqual( err, null );
           });

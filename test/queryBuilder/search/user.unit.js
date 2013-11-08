@@ -34,7 +34,7 @@ module.exports = function( qb ){
 
   return function() {
     // normally would 404, but I fake a server error here.
-    qb.build( { user: "nonsense" }, function( err, query ) {
+    qb.search( { user: "nonsense" }, function( err, query ) {
       it( "err should be defined", function() {
         assert( err );
         assert.strictEqual( err.code, 500 );
@@ -46,7 +46,7 @@ module.exports = function( qb ){
     });
 
     fourOhFours.forEach(function( user ) {
-      qb.build( { user: user }, function( err, query ) {
+      qb.search( { user: user }, function( err, query ) {
         it( "err should be defined", function() {
           assert( err );
           assert.strictEqual( err.code, 404 );
@@ -58,7 +58,7 @@ module.exports = function( qb ){
     });
 
     userData.forEach(function( test ) {
-      qb.build( { user: test.user }, function( err, query ) {
+      qb.search( { user: test.user }, function( err, query ) {
         it( "err should be undefined", function() {
           assert.strictEqual( err, null );
         });
