@@ -24,12 +24,23 @@ var app = express(),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
     ApiUser = require( "./lib/models/apiUser" )( env, Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
-    csrfMiddleware = express.csrf();
+    csrfMiddleware = express.csrf(),
+    messina,
+    logger;
 
 // Enable template rendering with nunjucks
 nunjucksEnv.express( app );
 // Don't send the "X-Powered-By: Express" header
 app.disable( "x-powered-by" );
+
+if ( env.get( "ENABLE_GELF_LOGS" ) ) {
+  messina = require( "messina" );
+  logger = messina( "Make-API-" + env.get( "NODE_ENV" ) || "development" );
+  logger.init();
+  app.use( logger.middleware() );
+} else {
+  app.use( express.logger() );
+}
 
 app.use(express.favicon("public/images/favicon.ico", {
   maxAge: 31556952000
@@ -53,12 +64,6 @@ app.use( express.cookieSession({
   },
   proxy: true
 }));
-
-if ( env.get( "GRAYLOG_HOST" ) && env.get( "GRAYLOG_PORT" ) ) {
-  app.use( require( "./lib/logger" ).logRequests );
-} else {
-  app.use( express.logger( env.get( "NODE_ENV" ) === "production" ? "" : "dev" ) );
-}
 
 app.use( app.router );
 
