@@ -14,6 +14,7 @@ module.exports = function( makeModel, env ) {
       hawkModule = require( "../lib/hawk" )(),
       metrics = require( "../lib/metrics" )( env ),
       queryBuilder = require( "../lib/queryBuilder" )( loginApi ),
+      sanitize = require( "../lib/sanitizer" ),
       async = require( "async" ),
       version = require( "../package" ).version;
 
@@ -42,6 +43,8 @@ module.exports = function( makeModel, env ) {
       if ( field in body ) {
         if ( field === "likes" ) {
           make.likes.push( body.likes );
+        } else if ( field === "tags" ) {
+          make.tags = body.tags.map( sanitize );
         } else {
           make[ field ] = body[ field ];
         }
@@ -85,6 +88,8 @@ module.exports = function( makeModel, env ) {
         searchHit._id = hit._id;
         searchHit.createdAt = hit.createdAt;
         searchHit.updatedAt = hit.updatedAt;
+
+        searchHit.tags = searchHit.tags.map( sanitize );
 
         if ( user ) {
           // Attach the Maker's username and return the result
