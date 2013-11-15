@@ -5,7 +5,7 @@
 $(function() {
   var submit = $("#submit"),
       identity = $("meta[name=persona-email]").attr("content") || null,
-      csrfToken = $("meta[name=csrf_token]").attr("content");
+      csrfToken = $("meta[name=csrf-token]").attr("content");
 
   submit.click(function() {
     navigator.idSSO.request();
@@ -17,7 +17,7 @@ $(function() {
 
       request.open( "POST", "/persona/verify", true );
       request.setRequestHeader( "Content-Type", "application/json" );
-      request.setRequestHeader( "x-csrf-token", csrfToken );
+      request.setRequestHeader( "X-CSRF-Token", csrfToken ); // express.js uses a non-standard name for csrf-token
       request.addEventListener( "loadend", function() {
         try {
           var data = JSON.parse( this.response );
