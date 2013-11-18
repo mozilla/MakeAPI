@@ -342,7 +342,7 @@ document.addEventListener( "DOMContentLoaded", function() {
     return this;
   };
 
-  var csrfToken = document.querySelector( "meta[name=csrf_token]" ).getAttribute( "content" ),
+  var csrfToken = document.querySelector( "meta[name=csrf-token]" ).getAttribute( "content" ),
       make = new window.Make({
         apiURL: "/admin",
         csrf: csrfToken
@@ -451,7 +451,7 @@ document.addEventListener( "DOMContentLoaded", function() {
     var request = new XMLHttpRequest();
 
     request.open( "POST", "/admin/api/user", true );
-    request.setRequestHeader( "x-csrf-token", csrfToken );
+    request.setRequestHeader( "X-CSRF-Token", csrfToken ); // express.js uses a non-standard name for csrf-token
     request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
     request.onreadystatechange = function() {
       var response,
@@ -496,7 +496,7 @@ document.addEventListener( "DOMContentLoaded", function() {
       var request = new XMLHttpRequest();
 
       request.open( "POST", "/persona/logout", true );
-      request.setRequestHeader( "x-csrf-token", csrfToken );
+      request.setRequestHeader( "X-CSRF-Token", csrfToken ); // express.js uses a non-standard name for csrf-token
       request.addEventListener( "loadend", function() {
         window.location.replace( "./login" );
       }, false);
