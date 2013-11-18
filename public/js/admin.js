@@ -85,7 +85,8 @@ document.addEventListener( "DOMContentLoaded", function() {
       field: "tags",
       formatter: FORMATTERS.tags,
       width: 150,
-      editor: Slick.Editors.Text
+      editor: Slick.Editors.Text,
+      sortable: true
     },
     {
       id: "createdAt",
@@ -417,7 +418,21 @@ document.addEventListener( "DOMContentLoaded", function() {
   });
 
   grid.onSort.subscribe(function( e, data ) {
-    dataView.fastSort( data.sortCol.field, data.sortAsc );
+    if ( data.sortCol.field === "tags" ) {
+      // When sorting by tag, sort each array individually and then compare the first element of each Array.
+      dataView.sort(function( a, b ) {
+        a.tags.sort();
+        b.tags.sort();
+        if ( !a.tags[ 0 ] ) {
+          return 1;
+        } else if ( !b.tags[ 0 ] ) {
+          return 0;
+        }
+        return (a.tags[ 0 ] > b.tags[ 0 ]) ? 1 : -1;
+      }, data.sortAsc );
+    } else {
+      dataView.fastSort( data.sortCol.field, data.sortAsc );
+    }
   });
 
   function doSearch() {
