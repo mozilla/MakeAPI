@@ -10,7 +10,8 @@
       sort = require( "./sort.unit" )( qb ),
       user = require( "./user.unit" )( qb ),
       filterTests = require( "./termFilters.unit" )( qb ),
-      complexQueries = require( "./complexQueries.unit" )( qb );
+      complexQueries = require( "./complexQueries.unit" )( qb ),
+      tagFacets =  require( "./tagFacets.unit" )( qb );
 
   describe( "QueryBuilder: ", core.base );
 
@@ -31,5 +32,7 @@
   describe( "build() - All Term filters: ", filterTests );
 
   describe( "build() - complexQueries: ", complexQueries );
+
+  describe( "build() - tag facets: ", tagFacets );
 
 };

@@ -12,6 +12,7 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
     },
     search: makeRoutes.search,
     remixCount: makeRoutes.remixCount,
+    autocomplete: makeRoutes.autocomplete,
     create: makeRoutes.create,
     update: makeRoutes.update,
     remove: makeRoutes.remove,
