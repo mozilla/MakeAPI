@@ -15,7 +15,6 @@ module.exports = function( makeModel, env ) {
       metrics = require( "../lib/metrics" )( env ),
       queryBuilder = require( "../lib/queryBuilder" )( loginApi ),
       sanitize = require( "../lib/sanitizer" ),
-      async = require( "async" ),
       version = require( "../package" ).version;
 
   function searchError( res, err, code ) {
@@ -67,50 +66,48 @@ module.exports = function( makeModel, env ) {
     });
   }
 
-  function getUserNames( req, res, results ) {
-    var tasks = [];
+  function mapUsernames( makes, callback ) {
+    var emails = makes.slice().map(function( hit ) {
+      return hit._source.email;
+    });
 
-    // Resolve each in series, to preserve order of the original Array
-    async.mapSeries( results.hits, function eachHit( hit, cb ) {
-      loginApi.getUserByEmail( hit.email, function( err, user ) {
-        var searchHit = {};
+    loginApi.getUsernamesByEmails( emails, function( err, mappedUsers ) {
+      if ( err ) {
+        return callback( err );
+      }
 
-        if ( err ) {
-          return cb( err );
-        }
+      makes = makes.map(function( esMake ) {
+        var safeMake = {},
+            source = esMake._source,
+            userData = mappedUsers[ source.email ];
 
         Make.publicFields.forEach(function( val ) {
-          searchHit[ val ] = hit[ val ];
+          safeMake[ val ] = source[ val ];
         });
 
         // _id, createdAt and updatedAt are not a part of our public fields.
         // We need to manually assign it to the object we are returning
-        searchHit._id = hit._id;
-        searchHit.createdAt = hit.createdAt;
-        searchHit.updatedAt = hit.updatedAt;
+        safeMake._id = esMake._id;
+        safeMake.createdAt = source.createdAt;
+        safeMake.updatedAt = source.updatedAt;
 
-        searchHit.tags = searchHit.tags.map( sanitize );
+        safeMake.tags = source.tags.map( sanitize );
 
-        if ( user ) {
+        if ( userData ) {
           // Attach the Maker's username and return the result
-          searchHit.username = user.username;
-          searchHit.emailHash = user.emailHash;
+          safeMake.username = userData.username;
+          safeMake.emailHash = userData.emailHash;
         } else {
           // The user account was likely deleted.
           // We need cascading delete, so that this code will only be hit on rare circumstances
           // cron jobs can be used to clean up anything that slips through the cracks.
-          searchHit.username = "";
-          searchHit.emailHash = "";
+          safeMake.username = "";
+          safeMake.emailHash = "";
         }
-
-         cb( null, searchHit );
+        return safeMake;
       });
-    }, function done( err, mappedMakes ) {
-      if ( err ) {
-        return searchError( res, err, 500 );
-      }
-      metrics.increment( "make.search.success" );
-      res.json( { makes: mappedMakes, total: results.total } );
+
+      callback( null, makes );
     });
   }
 
@@ -121,30 +118,13 @@ module.exports = function( makeModel, env ) {
         searchError( res, err, 500 );
       } else {
         searchResults = results.hits;
-        searchResults.hits = searchResults.hits.map(function( esRecord ) {
-          var source = esRecord._source;
-          return {
-            _id: esRecord._id,
-            author: source.author,
-            contentType: source.contentType,
-            contenturl: source.contenturl,
-            createdAt: source.createdAt,
-            description: source.description,
-            email: source.email,
-            thumbnail: source.thumbnail,
-            title: source.title,
-            updatedAt: source.updatedAt,
-            url: source.url,
-            deletedAt: source.deletedAt,
-            likes: source.likes,
-            reports: source.reports,
-            remixedFrom: source.remixedFrom,
-            tags: source.tags,
-            published: source.published,
-            locale: source.locale
-          };
+        mapUsernames( searchResults.hits, function( err, mappedMakes ) {
+          if ( err ) {
+            return searchError( res, err, 500 );
+          }
+          metrics.increment( "make.search.success" );
+          res.json( { makes: mappedMakes, total: searchResults.total } );
         });
-        getUserNames( req, res, searchResults );
       }
     });
   }
