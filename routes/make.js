@@ -139,7 +139,7 @@ module.exports = function( makeModel, env ) {
             likes: source.likes,
             remixedFrom: source.remixedFrom,
             tags: source.tags,
-            published: source.published,
+            isListed: source.isListed,
             locale: source.locale
           };
         });
