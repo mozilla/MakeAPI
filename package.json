@@ -28,7 +28,7 @@
   "license": "MPL-2.0",
   "dependencies": {
     "async": "0.2.9",
-    "express": "3.0.6",
+    "express": "3.4.5",
     "habitat": "0.4.1",
     "hawk": "1.0.0",
     "helmet": "0.0.11",

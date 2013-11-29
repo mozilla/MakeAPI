@@ -15,7 +15,7 @@ module.exports = function( apiUserModel, audience, login ) {
         email: req.session.email,
         audience: audience,
         login: login,
-        csrf: req.session._csrf,
+        csrf: req.csrfToken(),
         iscollaborator: req.isCollab ? 1 : 0
       });
     },
@@ -24,7 +24,7 @@ module.exports = function( apiUserModel, audience, login ) {
         email: req.session.email,
         audience: audience,
         login: login,
-        csrf: req.session._csrf
+        csrf: req.csrfToken()
       });
     },
     addUser: function( req, res ) {
