@@ -7,10 +7,19 @@ module.exports = function( qb ) {
               match_all: {}
             },
             filter: {
-              missing: {
-                field: "deletedAt",
-                null_value: true
-              }
+              and: [
+                {
+                  missing: {
+                    field: "deletedAt",
+                    null_value: true
+                  }
+                },
+                {
+                  term: {
+                    isListed: true
+                  }
+                }
+              ]
             }
           }
         },
