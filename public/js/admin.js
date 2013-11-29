@@ -16,7 +16,7 @@ document.addEventListener( "DOMContentLoaded", function() {
         newDate = val ? new Date( val ) : "N/A";
       } catch( e ) {
         newDate = Date.now();
-        errorSpan.removeClass( "hidden" ).html( "Bad Date Value. Falling back to current date and time." );
+        document.querySelector( "#error-message" ).classList.remove( "hidden" ).textContent( "Bad Date Value. Falling back to current date and time." );
       }
       return newDate;
     },
@@ -27,7 +27,7 @@ document.addEventListener( "DOMContentLoaded", function() {
       return '<a href="' + webmakerHostName + '/u/' + val + '" target="_blank">' + val + '</a>';
     },
     url: function( r, c, val, def, datactx ) {
-      return '<a href="' + val + '" target="_blank">' + val + '</a>';
+      return '<a href="' + val + '/remix" target="_blank">Remix</a>';
     },
     thumbnail: function( r, c, val, def, datactx ) {
       if ( !val ) {
@@ -37,13 +37,16 @@ document.addEventListener( "DOMContentLoaded", function() {
     },
     del: function ( r, c, val, def, datactx ) {
       return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">X</button>';
+    },
+    title: function( r, c, val, def, datactx ) {
+      return '<a href="' + datactx.url + '" target="_blank">' + val + '</a>';
     }
   },
 
   COLUMNS = [
     {
       id: "url",
-      name: "Url",
+      name: "Remix Link",
       field: "url",
       width: 150,
       sortable: true,
@@ -51,10 +54,11 @@ document.addEventListener( "DOMContentLoaded", function() {
     },
     {
       id: "title",
-      name: "Title",
+      name: "Title & Link",
       field: "title",
       width: 150,
-      sortable: true
+      sortable: true,
+      formatter: FORMATTERS.title
     },
     {
       id: "description",
@@ -377,7 +381,7 @@ document.addEventListener( "DOMContentLoaded", function() {
   window.removeClick = function( id, dataViewId ){
     make.remove( id, function( err ) {
       if ( err ) {
-        errorSpan.removeClass( "hidden" ).html( "Error Deleting! " + JSON.stringify( err ) );
+        errorSpan.classList.remove( "hidden" ).textContent( "Error Deleting! " + JSON.stringify( err ) );
       }
       else {
         dataView.deleteItem( dataViewId );
