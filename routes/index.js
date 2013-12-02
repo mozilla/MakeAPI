@@ -8,7 +8,7 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
 
   return {
     index: function( req, res ) {
-      res.render( "index.html" );
+      res.send( "Hello world!" );
     },
     search: makeRoutes.search,
     create: makeRoutes.create,

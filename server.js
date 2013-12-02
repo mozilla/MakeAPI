@@ -91,6 +91,8 @@ function corsOptions ( req, res ) {
   res.send( 200 );
 }
 
+app.get( "/", routes.index );
+
 app.options( "/api/20130724/make/search", corsOptions );
 
 // 20130724 API Routes (Hawk Authentication)
