@@ -46,6 +46,10 @@ app.use(express.favicon("public/images/favicon.ico", {
   maxAge: 31556952000
 }));
 
+app.use( helmet.iexss() );
+app.use( helmet.contentTypeOptions() );
+app.use( helmet.xframe() );
+
 if ( !!env.get( "FORCE_SSL" ) ) {
   app.use( helmet.hsts() );
   app.enable( "trust proxy" );
