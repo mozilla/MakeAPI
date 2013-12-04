@@ -76,52 +76,138 @@ The QueryBuilder's mocha test suite can be run by executing `npm test`. NOTE: yo
 
 ## API:
 
-<table>
-  <tr>
-    <th>HTTP Method</th>
-    <th>Path</th>
-    <th>Action</th>
-    <th>Notes</th>
-    <th>Auth Required</th>
-  </tr>
-  <tr>
-    <th>POST</th>
-    <td>/api/make</td>
-    <td>Create Make</td>
-    <td>
-      If post data contains a valid Make, it creates one and returns it with the _id.
-      Post Data should be a JSON object specifying the id of the authenticated webmaker creating the Make<br />
-      <code>{ "maker": "username", make: { ... } } </code>
-    </td>
-    <td><strong>Yes</strong></td>
-  </tr>
-  <tr>
-    <th>PUT</th>
-    <td>/api/make/:id</td>
-    <td>Update a Make</td>
-    <td>The Make must already exist. This is an implementation of optimistic locking.
-    Post Data should be a JSON object specifying the id of the authenticated webmaker updating the Make and a flag indicating if the user has admin priveliges.<br />
-      <code>{ "maker": "username", make: { ... } }
-    </td>
-    <td><strong>Yes</strong></td>
-  </tr>
-  <tr>
-    <th>DELETE</th>
-    <td>/api/make/:id</td>
-    <td>Deletes a Make</td>
-    <td>The effect is that of a delete operation, though the Make is actually only marked as deleted using the <code>deletedAt</code> timestamp.
-    Post Data should be a JSON object specifying the id of the authenticated webmaker deleting the Make and a flag indicating if the user has admin priveliges.<br />
-      <code>{ "maker": "username" }</td>
-    <td><strong>Yes</strong></td>
-  </tr>
-  <tr>
-    <th>GET</th>
-    <td>/api/makes/search</td>
-    <td>Find makes by search criteria</td>
-    <td><p>Searches for makes using <a href="http://www.elasticsearch.org">elasticsearch</a>. The Query String of your request must be stringified and escaped JSON, and must use <a href="http://www.elasticsearch.org/guide/reference/query-dsl/">elastic search's Query DSL</a>. e.g. <code>/api/makes/search/?s=URLENCODEDSEARCHSTRING</code></p></td>
-    <td><strong>No</strong></td>
-  </tr>
-</table>
+## POST [/api/20130724/make]
+### Create a make
++ Headers
+    + authorization - Hawk compatible authorization header
+        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Body
+
+        {
+            make: {
+                // required fields
+                email: "fake@123.com",
+                url: "http://notarealurl.com/make_asdf.html",
+                contentType: "application/x-applicationName",
+                title: "title of make",
+                // optional fields
+                contenturl: "http://realMakeURL.com/notbehindaproxy",
+                locale: "en_CA",
+                description: "description of make",
+                thumbnail: "http://fakeimageURL.com/img123.gif",
+                author: "anonymous person",
+                tags: [
+                    "foo",
+                    "bar"
+                ],
+                remixedFrom: "OBJECTIDOFANOTHERMAKE"
+            }
+        }
++ Response 200 {application/json}
+
+        {
+            // The created Make in JSON format
+        }
+
+## PUT [/api/20130724/make/{id}]
+### Update a make
++ Headers
+    + authorization - Hawk compatible authorization header
+        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Parameters
+    + id (string) ... ID of the Make to be updated
++ Body
+
+        {
+            make: {
+                // any combination of fields to be updated (see create Route for fields)
+            }
+        }
++ Response 200 {application/json}
+
+        {
+            // The updated Make in JSON format
+        }
+
+## DELETE [/api/20130724/make/{id}]
+### Delete a make
++ Headers
+    + authorization - Hawk compatible authorization header
+        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Parameters
+    + id (string) ... ID of the Make to be updated
++ Response 200 {application/json}
+
+        {
+            // The Deleted Make in JSON format
+        }
+
+## GET [/api/20130724/make/search]
+### Search for makes
++ Query Params
+    + author (string) - Author Name
+    + user (string) - Webmaker Username
+    + tags (string) - Comma separated string of tags
+    + tagPrefix (string) - String representing the beginning of a tag
+    + url (string) - Url of the make
+    + contentType (string) - The contentType of the make
+    + remixedFrom (string) - Object ID of a Make
+    + id (string) - Object ID of a make
+    + title (string) - Title of a make
+    + description (string) - Description of a Make
+    + limit (number) - Number of make results to return (MAX)
+    + page (number) - Page number to request. i.e. 1000 results, 10 per page, show page 15
+    + sortByField (string) - A make field on which to sort search results by.
+    + or (string) - define to be any truthy value to have fields match on an "OR" basis. i.e. title is "a" or has the tag "b"
++ Response 200 {application/json}
+
+        {
+            makes: [
+                // Array of Make Objects that matched search results
+            ],
+            total: {number} // total number of make records that matched your query (useful for building paginated UI)
+        }
+
+## PUT [/api/20130724/make/like/{id}]
+### Adds a Webmaker User ID to a Makes likes array
++ Headers
+    + authorization - Hawk compatible authorization header
+        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Parameters
+    + id (string) ... Id of the Make to add a like to
++ Body
+
+        {
+            maker: "makerUsername"
+        }
++ Response 200 {application/json}
+
+        {
+            // The just-liked Make in JSON format
+        }
+
+## PUT [/api/20130724/make/unlike/{id}]
+### Removes a Webmaker User ID from the Makes likes array
++ Headers
+    + authorization - Hawk compatible authorization header
+        + 'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Parameters
+    + id (string) ... Id of the Make to remove a like from
++ Body
+
+        {
+            maker: "makerUsername"
+        }
++ Response 200 {application/json}
+
+        {
+            // The just-unliked Make in JSON format
+        }
 
 
 ### Consuming the API
@@ -130,13 +216,3 @@ The [makeapi-client](https://github.com/mozilla/makeapi-client) should be used t
 Documentation can be found [here](https://github.com/mozilla/makeapi-client/blob/master/README.md)
 
 **The Make API Does not sanitize Data it receives or outputs, so it is up to consumer applications to sanitize data appropriately.**
-
-### Deleting all fake data
-
-Clear elastic search:
-
-`curl -XDELETE "http://localhost:9200"`
-
-Find your mongo files and clear them. For example, if your `makeapi.1`, etc. are in `/data/db/`, run:
-
-`rm /data/db/makeapi.*`
