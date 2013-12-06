@@ -115,7 +115,7 @@ module.exports = function( makeModel, env ) {
     Make.search( searchData, function( err, results ) {
       var searchResults;
       if ( err ) {
-        searchError( res, err, 500 );
+        searchError( res, "The query produced invalid ElasticSearch DSL. Query URL: " + req.url, 500 );
       } else {
         searchResults = results.hits;
         mapUsernames( searchResults.hits, function( err, mappedMakes ) {

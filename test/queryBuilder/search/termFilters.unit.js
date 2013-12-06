@@ -60,6 +60,271 @@ module.exports = function( qb ){
       {
         args: [ { id: "{!}randomidstring" } ],
         expected: { "not": { "query": { "field": { "_id": "randomidstring" } } } }
+      },
+      {
+        args: [ { id: "id,id2" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2"
+            ]
+          }
+        }
+      },
+      {
+        args: [ { id: "id,id2,id3" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2",
+              "id3"
+            ]
+          }
+        }
+      },
+      {
+        args: [ { id: "or,id" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id"
+            ],
+            "execution": "or"
+          }
+        }
+      },
+      {
+        args: [ { id: "or,id,id2" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2"
+            ],
+            "execution": "or"
+          }
+        }
+      },
+      {
+        args: [ { id: "or,id,id2,id3" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2",
+              "id3"
+            ],
+            "execution": "or"
+          }
+        }
+      },
+      {
+        args: [ { id: "and,id" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id"
+            ],
+            "execution": "and"
+          }
+        }
+      },
+      {
+        args: [ { id: "and,id,id2" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2"
+            ],
+            "execution": "and"
+          }
+        }
+      },
+      {
+        args: [ { id: "and,id,id2,id3" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2",
+              "id3"
+            ],
+            "execution": "and"
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}id,id2" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id",
+                "id2"
+              ]
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}id,id2,id3" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id",
+                "id2",
+                "id3"
+              ]
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}or,id" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id"
+              ],
+              "execution": "or"
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}or,id,id2" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id",
+                "id2"
+              ],
+              "execution": "or"
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}or,id,id2,id3" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id",
+                "id2",
+                "id3"
+              ],
+              "execution": "or"
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}and,id" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id"
+              ],
+              "execution": "and"
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}and,id,id2" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id",
+                "id2"
+              ],
+              "execution": "and"
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "{!}and,id,id2,id3" } ],
+        expected: {
+          "not": {
+            "terms": {
+              "_id": [
+                "id",
+                "id2",
+                "id3"
+              ],
+              "execution": "and"
+            }
+          }
+        }
+      },
+      {
+        args: [ { id: "   id,   id2   " } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2"
+            ]
+          }
+        }
+      },
+      {
+        args: [ { id: "   id,id2,   id3" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2",
+              "id3"
+            ]
+          }
+        }
+      },
+      {
+        args: [ { id: "or,   id" } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id"
+            ],
+            "execution": "or"
+          }
+        }
+      },
+      {
+        args: [ { id: "or   ,id,   id2    " } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2"
+            ],
+            "execution": "or"
+          }
+        }
+      },
+      {
+        args: [ { id: "or,    id,  id2  ,id3         " } ],
+        expected: {
+          "terms": {
+            "_id": [
+              "id",
+              "id2",
+              "id3"
+            ],
+            "execution": "or"
+          }
+        }
       }
     ],
     remixedFrom: [
@@ -472,7 +737,7 @@ module.exports = function( qb ){
           it( "query should be defined", function(){
             assert( query );
           });
-          it( "user filter should exist", function() {
+          it( "term[s] filter should exist", function() {
             assert.deepEqual( query.query.filtered.filter.bool.must[ 0 ], test.expected );
           });
         });
