@@ -39,7 +39,7 @@ if ( env.get( "ENABLE_GELF_LOGS" ) ) {
   logger.init();
   app.use( logger.middleware() );
 } else {
-  app.use( express.logger() );
+  app.use( express.logger( "dev" ) );
 }
 
 app.use(express.favicon("public/images/favicon.ico", {
@@ -105,6 +105,8 @@ app.put( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middle
 app.put( "/api/20130724/make/like/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.like, routes.update );
 app.put( "/api/20130724/make/unlike/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.unlike, routes.update );
 app.del( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
+app.put( "/api/20130724/make/report/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.report, routes.update );
+app.put( "/api/20130724/make/cancelReport/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.cancelReport, routes.update );
 app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
 
 // 20130724 Admin API routes

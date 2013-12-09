@@ -137,6 +137,7 @@ module.exports = function( makeModel, env ) {
             url: source.url,
             deletedAt: source.deletedAt,
             likes: source.likes,
+            reports: source.reports,
             remixedFrom: source.remixedFrom,
             tags: source.tags,
             published: source.published,
@@ -168,7 +169,6 @@ module.exports = function( makeModel, env ) {
       });
     },
     search: function( req, res ) {
-
       if ( !req.query ) {
         return searchError( res, "Malformed Request", 400 );
       }
