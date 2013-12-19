@@ -106,6 +106,42 @@
         <span class="nav-page-total-setting selected" id="nav-100" data-value="100">100</span>
       </span>
     </div>
+    <hr />
+    <form class="form-horizontal">
+      <fieldset>
+        <h3 class="remix-count-header"> Remix Count </h3>
+        <div class="control-group">
+          <label class="control-label" for="remix-count-id">Make ID:</label>
+          <div class="controls">
+            <input id="remix-count-id" disabled="true" name="id" placeholder="CLICK AN ID IN THE TABLE ABOVE" class="input-xlarge" type="text">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="remix-count-from">From:</label>
+          <div class="controls">
+            <input id="remix-count-from" type="text" name="remix-count-from" class="input-large"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="remix-count-to">To:</label>
+          <div class="controls">
+            <input id="remix-count-to" type="text" name="remix-count-to" class="input-large"></input>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="get-count"></label>
+          <div class="controls">
+            <button id="get-count" type="button" name="get-count" class="btn btn-success">Get Remix Count</button>
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Count:</label>
+          <div class="controls">
+          <label class="control-label" id="remix-count-result"></label>
+          </div>
+        </div>
+      </fieldset>
+    </form>
     {% if iscollaborator == 0 %}
       <hr />
       <form class="form-horizontal">
