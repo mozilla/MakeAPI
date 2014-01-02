@@ -108,11 +108,13 @@ app.del( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middle
 app.put( "/api/20130724/make/report/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.report, routes.update );
 app.put( "/api/20130724/make/cancelReport/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.cancelReport, routes.update );
 app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
+app.get( "/api/20130724/make/remixCount", middleware.crossOrigin, routes.remixCount );
 
 // 20130724 Admin API routes
 app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.collabAuth, middleware.fieldFilter, Mongo.isDbOnline, middleware.getMake, routes.update );
 app.del( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
 app.get( "/admin/api/20130724/make/search", Mongo.isDbOnline, routes.search );
+app.get( "/admin/api/20130724/make/remixCount", routes.remixCount );
 
 // Routes relating to admin tools
 app.get( "/login", csrfMiddleware, routes.login );
