@@ -169,27 +169,16 @@ module.exports = function( makeModel, env ) {
       if ( !req.query || !req.query.id ) {
         return searchError( res, "Malformed Request", 400 );
       }
-      var makeId = req.query.id,
+      var id = req.query.id,
           from = req.query.from || 0,
           to = req.query.to || Date.now();
 
-      queryBuilder.search({
-        remixedFrom: makeId
-      }, function( err, dsl ) {
+      queryBuilder.remixCount( id, from, to, function( err, dsl ) {
         if ( err ) {
           return searchError( res, err, err.code );
         }
         Make.search( dsl, function( err, results ) {
-          results = results.hits.hits || [];
-          var remixCount = 0;
-          results.forEach(function( make ) {
-            make = make._source;
-            if ( make.createdAt < +from || make.createdAt > +to ) {
-              return;
-            }
-            remixCount++;
-          });
-          return res.json({ count: remixCount });
+          return res.json({ count: results.hits.total });
         });
       });
     },
