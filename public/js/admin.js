@@ -577,7 +577,6 @@ document.addEventListener( "DOMContentLoaded", function() {
   });
 
   function getDate( input ) {
-    console.log( input.datepicker( "getDate" ).toTimeString() );
     return input.datepicker( "getDate" ).getTime();
   }
 
@@ -603,8 +602,10 @@ document.addEventListener( "DOMContentLoaded", function() {
     }
     make.remixCount(
       remixIdInput.value,
-      remixFromInput.datepicker( "getDate" ).setHours( 0, 0, 0 ),
-      remixToInput.datepicker( "getDate" ).setHours( 23, 59, 59 ),
+      {
+        from: remixFromInput.datepicker( "getDate" ).setHours( 0, 0, 0 ),
+        to: remixToInput.datepicker( "getDate" ).setHours( 23, 59, 59 )
+      },
       function ( err, res ){
         if ( err ) {
           errorSpan.classList.remove( "hidden" );
