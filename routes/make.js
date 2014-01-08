@@ -54,10 +54,10 @@ module.exports = function( makeModel, env ) {
       make.email = body.email;
     }
 
-    // if 'owner' exists, this is an update, so pass over. 'owner' should never change over the life of a make.
-    if ( !make.owner ) {
+    // if 'ownerApp' exists, this is an update, so pass over. 'ownerApp' should never change over the life of a make.
+    if ( !make.ownerApp ) {
       // assign the make the public key [uuid] of the app that authenticated with the makeAPI
-      make.owner = req.credentials.user;
+      make.ownerApp = req.credentials.user;
     }
 
     // If createdAt doesn't exist, we know this is a Create, otherwise stamp updatedAt
