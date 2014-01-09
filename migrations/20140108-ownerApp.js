@@ -32,11 +32,11 @@ dbh = require( "../lib/mongoose" )( env, function( err ) {
   }
 
   var Make = require( "../lib/models/make" )( env, dbh.mongoInstance() ),
-      stream = Make.find({ "contentType": contentType }).stream(),
+      stream = Make.find({
+        "contentType": contentType,
+        "ownerApp": null
+      }).stream(),
       queue = async.queue(function( doc, done ) {
-        if ( doc.ownerApp ) {
-          return done();
-        }
         doc.ownerApp = publicKey;
         doc.save(function( err ) {
           if ( err ) {
