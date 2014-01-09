@@ -3,7 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // Invoke by calling:
-// node generateKeys <email@address.com:STRING> <NumberOfKeys:INT>
+// node generateKeys <email@address.com:STRING> <NumberOfKeys:INT> <isAdmin:BOOL>
 
 var habitat = require( "habitat" ),
     uuid = require( "uuid" ),
@@ -14,7 +14,8 @@ habitat.load();
 
 var env = new habitat(),
     contactEmail = process.argv[ 2 ],
-    numPairs = +process.argv[ 3 ];
+    numPairs = +process.argv[ 3 ],
+    isAdmin = process.argv[ 4 ] === "true";
 
 if ( !contactEmail || typeof contactEmail !== "string" || isNaN( numPairs ) || !numPairs ) {
   console.log( "Invalid CONTACT_EMAIL or NUM_KEY_PAIRS" );
@@ -35,7 +36,8 @@ dbh = require( "../lib/mongoose" )( env, function( err ) {
       contact: contactEmail,
       privatekey: uuid.v4(),
       publickey: uuid.v4(),
-      revoked: false
+      revoked: false,
+      admin: !!isAdmin
     }));
 
   }
@@ -47,7 +49,8 @@ dbh = require( "../lib/mongoose" )( env, function( err ) {
       }
       console.log( "Keys generated for " + contactEmail
                    + " PRIVATEKEY: " + user.privatekey
-                   + " PUBLICKEY: " + user.publickey  );
+                   + " PUBLICKEY: " + user.publickey
+                   + " Is Admin: " + isAdmin ? "true" : "false" );
       cb();
     });
   }, function done( err ) {
