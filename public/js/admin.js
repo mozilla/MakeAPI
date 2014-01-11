@@ -46,6 +46,9 @@ document.addEventListener( "DOMContentLoaded", function() {
     },
     clearReports: function( row, cell, val, def, datactx ) {
       return '<button onclick="clearReports(\'' + datactx.id + '\');" class="delete-reports-btn red-text">Clear</button>';
+    },
+    id: function( r, c, val ) {
+      return '<span title="Click to set as remix count ID" class="make-id" onclick="updateRemixId(\'' + val + '\');">' + val + '<span>';
     }
   },
 
@@ -113,6 +116,12 @@ document.addEventListener( "DOMContentLoaded", function() {
       formatter: FORMATTERS.date,
       width: 150,
       sortable: true
+    }, {
+      id: "id",
+      name: "ID",
+      field: "id",
+      width: 275,
+      formatter:FORMATTERS.id
     }
   ],
 
@@ -406,7 +415,8 @@ document.addEventListener( "DOMContentLoaded", function() {
   window.removeClick = function( id ){
     make.remove( id, function( err ) {
       if ( err ) {
-        errorSpan.removeClass( "hidden" ).html( "Error Deleting! " + JSON.stringify( err ) );
+        errorSpan.classlist.remove( "hidden" );
+        errorspan.textContent = "Error Deleting! " + JSON.stringify( err );
       } else {
         dataView.deleteItem( id );
         grid.invalidate();
@@ -418,7 +428,8 @@ document.addEventListener( "DOMContentLoaded", function() {
   window.clearReports = function( id ) {
     make.update( id, { reports:[] }, function( err, updatedMake ) {
       if ( err ) {
-        errorSpan.removeClass( "hidden" ).html( "Error Deleting! " + JSON.stringify( err ) );
+        errorSpan.classlist.remove( "hidden" );
+        errorSpan.textContent = "Error Deleting! " + JSON.stringify( err );
       } else {
         dataView.updateItem( id, updatedMake );
         grid.invalidate();
@@ -537,7 +548,6 @@ document.addEventListener( "DOMContentLoaded", function() {
 
   if ( isAdmin ) {
 
-
     createUser.addEventListener( "keypress", function( e ) {
       if ( e.which === 13 ) {
         e.preventDefault();
@@ -548,6 +558,65 @@ document.addEventListener( "DOMContentLoaded", function() {
 
     createUser.addEventListener( "click", generateKeys, false );
   }
+
+  // Remix Counter
+
+  var remixIdInput = document.querySelector( "#remix-count-id" ),
+      remixFromInput = $("#remix-count-from"),
+      remixToInput = $( "#remix-count-to" ),
+      getRemixCountBtn = document.querySelector( "#get-count" ),
+      remixCountResult = document.querySelector( "#remix-count-result" );
+
+  window.updateRemixId = function( id ) {
+    remixIdInput.value = id;
+  };
+
+  $.datepicker.setDefaults({
+    dateFormat: "dd-mm-yy",
+    contrainInput: true
+  });
+
+  function getDate( input ) {
+    return input.datepicker( "getDate" ).getTime();
+  }
+
+  remixFromInput.datepicker({
+    onClose: function( dateString, p ) {
+      if ( getDate( remixFromInput ) > getDate( remixToInput ) ) {
+        remixToInput.datepicker( "setDate", dateString );
+      }
+    }
+  }).datepicker( "setDate", "-1d" );
+
+  remixToInput.datepicker({
+    onClose: function( dateString, p ) {
+      if ( getDate( remixToInput ) < getDate( remixFromInput ) ) {
+        remixFromInput.datepicker( "setDate", dateString );
+      }
+    }
+  }).datepicker( "setDate", new Date( Date.now() ) );
+
+  getRemixCountBtn.addEventListener( "click", function() {
+    if ( !remixIdInput.value ) {
+      return;
+    }
+    make.remixCount(
+      remixIdInput.value,
+      {
+        from: remixFromInput.datepicker( "getDate" ).setHours( 0, 0, 0 ),
+        to: remixToInput.datepicker( "getDate" ).setHours( 23, 59, 59 )
+      },
+      function ( err, res ){
+        if ( err ) {
+          errorSpan.classList.remove( "hidden" );
+          errorSpan.textContent = "Error! " + JSON.stringify( err );
+          return;
+        }
+        errorSpan.classList.add( "hidden" );
+        remixCountResult.textContent = res.count;
+      }
+    );
+  }, false );
 
   navigator.idSSO.watch({
     onlogin: function() {},

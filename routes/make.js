@@ -54,6 +54,12 @@ module.exports = function( makeModel, env ) {
       make.email = body.email;
     }
 
+    // if 'ownerApp' exists, this is an update, so pass over. 'ownerApp' should never change over the life of a make.
+    if ( !make.ownerApp ) {
+      // assign the make the public key [uuid] of the app that authenticated with the makeAPI
+      make.ownerApp = req.credentials.user;
+    }
+
     // If createdAt doesn't exist, we know this is a Create, otherwise stamp updatedAt
     if ( !make.createdAt ) {
       make.createdAt = make.updatedAt = Date.now();
@@ -197,6 +203,23 @@ module.exports = function( makeModel, env ) {
           }
         }
         doSearch( req, res, dsl );
+      });
+    },
+    remixCount: function( req, res ) {
+      if ( !req.query || !req.query.id ) {
+        return searchError( res, "Malformed Request", 400 );
+      }
+      var id = req.query.id,
+          from = req.query.from || 0,
+          to = req.query.to || Date.now();
+
+      queryBuilder.remixCount( id, from, to, function( err, dsl ) {
+        if ( err ) {
+          return searchError( res, err, err.code );
+        }
+        Make.search( dsl, function( err, results ) {
+          return res.json({ count: results.hits.total });
+        });
       });
     },
     healthcheck: function( req, res ) {

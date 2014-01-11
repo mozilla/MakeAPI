@@ -194,6 +194,18 @@ All the environment variables are listed and detailed here: [https://github.com/
             // The just-unliked Make in JSON format
         }
 
+#### GET [/api/20130724/make/remixCount]
+##### Count remixes of a given project for a given time range
++ Query Params
+    + id - Make ID
+    + from - Unix Timestamp
+    + to - Unix Timestamp
++ Response 200 {application/json}
+
+        {
+            count: <int>
+        }
+
 
 ## 4. Testing
 ### How to test

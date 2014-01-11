@@ -121,3 +121,19 @@ input[type=radio] {
 label.sort-label {
   display: inline;
 }
+
+.ui-datepicker {
+  background: #FFF;
+}
+
+span.make-id {
+  cursor: pointer;
+}
+
+.remix-count-header {
+  text-align: center;
+}
+
+#remix-count-result {
+  font-size: 1.5em;
+}

@@ -46,6 +46,7 @@ module.exports = function( apiUserModel, audience, login ) {
       newUser.privatekey = uuid.v4();
       newUser.publickey = uuid.v4();
       newUser.revoked = false;
+      newUser.admin = false;
 
       var user = new ApiUser( newUser );
 

@@ -1,6 +1,6 @@
 {
   "name": "makeapi",
-  "version": "1.1.4",
+  "version": "1.1.10",
   "description": "MakeAPI for Webmaker",
   "main": "./lib/api.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "habitat": "0.4.1",
     "hawk": "1.0.0",
     "helmet": "0.1.2",
-    "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.13",
+    "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.14",
     "messina": "0.1.1",
     "mongoose": "3.5.2",
     "mongoose-validator": "0.2.1",
