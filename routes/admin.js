@@ -16,7 +16,6 @@ module.exports = function( apiUserModel, audience, login ) {
         audience: audience,
         login: login,
         csrf: req.csrfToken(),
-        iscollaborator: req.isCollab ? 1 : 0
       });
     },
     metricAdmin: function( req, res ) {
@@ -25,7 +24,6 @@ module.exports = function( apiUserModel, audience, login ) {
          audience: audience,
          login: login,
          csrf: req.csrfToken(),
-         iscollaborator: req.isCollab ? 1 : 0
        });
      },
     login: function( req, res ) {

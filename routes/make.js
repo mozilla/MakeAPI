@@ -118,7 +118,7 @@ module.exports = function( makeModel, env ) {
   }
 
   function getMetrics( req, res, results ){
-       metrics.increment( "make.search.success" );
+       metrics.increment( "make.metrics.success" );
        res.json( {  count: results.total } );
   }
 
@@ -169,7 +169,7 @@ module.exports = function( makeModel, env ) {
               return searchError( res, err, err.code );
            }
          }
-		 
+
          doMetricsSearch( req, res, dsl );
        });
     },
