@@ -16,9 +16,16 @@ module.exports = function( apiUserModel, audience, login ) {
         audience: audience,
         login: login,
         csrf: req.csrfToken(),
-        iscollaborator: req.isCollab ? 1 : 0
       });
     },
+    metricAdmin: function( req, res ) {
+       res.render( "metrics.html", {
+         email: req.session.email,
+         audience: audience,
+         login: login,
+         csrf: req.csrfToken(),
+       });
+     },
     login: function( req, res ) {
       res.render( "login.html", {
         email: req.session.email,

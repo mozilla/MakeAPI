@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+ <html>
+   <head>
+     <title>Make API Metrics</title>
+     <meta name="csrf_token" content="{{csrf}}" >
+     <meta name="webmaker_hostname" content="{{audience}}">
+     <script src="/js/external/jquery.min.js"></script>
+     <script src="/js/make-api.js"></script>
+     <script src="/js/metrics.js"></script>
+     <link rel="stylesheet" type="text/css" href="/stylesheets/admin.css" >
+     <link rel="stylesheet" type="text/css" href="/stylesheets/jquery-ui.min.css">
+     <link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" >
+     <link rel="stylesheet" href="{{login}}/css/nav.css" />
+   </head>
+   <body>
+
+     <div id="webmaker-nav">
+       <nav class="webmaker-nav-container">
+         <a id="logo" href="https://webmaker.org"><img src="{{login}}/img/webmaker-logo.png" alt="Mozilla Webmaker" /></a>
+         <ul class="webmaker-nav user-info">
+           <li class="user">
+             Hi <span id="identity" class="user-name-container"></span>
+           </li>
+           <li>
+             <iframe src="{{audience}}/sso/include.html" class="include-frame"></iframe>
+           </li>
+         </ul>
+       </nav>
+     </div>
+
+     <div class="container">
+		 <!-- DISPLAYING METRIC DATA -->
+		 <ul id="metriclist" style="list-style-type:none;">
+
+		 </ul>
+
+     </div>
+
+     <script src="{{audience}}/sso/include.js"></script>
+   </body>
+ </html>

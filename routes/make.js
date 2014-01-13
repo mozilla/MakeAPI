@@ -117,6 +117,11 @@ module.exports = function( makeModel, env ) {
     });
   }
 
+  function getMetrics( req, res, results ){
+       metrics.increment( "make.metrics.success" );
+       res.json( {  count: results.total } );
+  }
+
   function doSearch( req, res, searchData ) {
     Make.search( searchData, function( err, results ) {
       var searchResults;
@@ -135,9 +140,38 @@ module.exports = function( makeModel, env ) {
     });
   }
 
+   function doMetricsSearch( req, res, searchData ) {
+     Make.search( searchData, function( err, results ) {
+       if ( err ) {
+         searchError( res, err, 500 );
+       } else {
+         res.json( {  count: results.hits.total } );
+       }
+     });
+   }
+
   return {
     create: function( req, res ) {
       updateFields( req, res, new Make(), req.body, "create" );
+    },
+    metricsAPI: function( req, res, option ) {
+       if ( !req.query ) {
+         return searchError( res, "Malformed Request", 400 );
+       }
+       queryBuilder.search( option, function( err, dsl ) {
+
+         if ( err ) {
+           if ( err.code === 404 ) {
+             // No user was found, no makes to search.
+             metrics.increment( "make.search.success" );
+             return res.json( { makes: [], total: 0 } );
+           } else {
+              return searchError( res, err, err.code );
+           }
+         }
+
+         doMetricsSearch( req, res, dsl );
+       });
     },
     update: function( req, res ) {
       updateFields( req, res, req.make, req.body, "update" );

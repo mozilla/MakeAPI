@@ -84,6 +84,7 @@ require( "./lib/loginapi" )( app, {
 });
 
 var routes = require( "./routes" )( Make, ApiUser, env ),
+    mroutes = require( "./routes/metrics" )( Make, ApiUser, env ),
     middleware = require( "./lib/middleware" )( Make, ApiUser, env );
 
 app.use( middleware.errorHandler );
@@ -130,6 +131,17 @@ app.get( "/js/make-api.js", function( req, res ) {
 });
 
 app.get( "/healthcheck", routes.healthcheck );
+// Endpoint Make Metrics
+app.get( "/admin/metric", csrfMiddleware, middleware.adminAuth, routes.metricAdmin );
+app.get( "/metrics/makes", routes.makeAll );
+app.get( "/metrics/makes/all", routes.makeAll );
+app.get( "/metrics/makes/day", routes.makeDay );
+app.get( "/metrics/makes/week", routes.makeWeek );
+app.get( "/metrics/remix", routes.remixAll );
+app.get( "/metrics/remix/all", routes.remixAll );
+app.get( "/metrics/remix/day", routes.remixDay );
+app.get( "/metrics/remix/week", routes.remixWeek );
+
 
 app.listen( env.get( "PORT", 3000 ), function() {
   console.log( "MakeAPI server listening ( Probably http://localhost:%d )", env.get( "PORT", 3000 ));
