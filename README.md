@@ -206,6 +206,22 @@ All the environment variables are listed and detailed here: [https://github.com/
             count: <int>
         }
 
+#### GET [/api/20130724/make/tags]
+##### Returns an array of tags that can be used to auto-complete the query parameter
++ Query Params
+    + t (string) - A string to run the auto-complete request on
+    + s (number) - A number representing how many results to return. Default is 10, Max is 1000
++ Response
+
+        {
+            tags: [
+                {
+                    term: "tag", // tag suggestion
+                    count: {num} // number of occurences detected
+                }
+            ],
+            total: {num} // number of suggestions found. May not equal the length of the tags array.
+        }
 
 ## 4. Testing
 ### How to test

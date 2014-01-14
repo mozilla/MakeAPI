@@ -17,8 +17,8 @@ module.exports = function( makeModel, env ) {
       sanitize = require( "../lib/sanitizer" ),
       version = require( "../package" ).version;
 
-  function searchError( res, err, code ) {
-    metrics.increment( "make.search.error" );
+  function error( res, err, type, code ) {
+    metrics.increment( "make." + type + ".error" );
     res.json( code, { error: err } );
   }
 
@@ -112,7 +112,6 @@ module.exports = function( makeModel, env ) {
         }
         return safeMake;
       });
-
       callback( null, makes );
     });
   }
@@ -121,12 +120,12 @@ module.exports = function( makeModel, env ) {
     Make.search( searchData, function( err, results ) {
       var searchResults;
       if ( err ) {
-        searchError( res, "The query produced invalid ElasticSearch DSL. Query URL: " + req.url, 500 );
+        error( res, "The query produced invalid ElasticSearch DSL. Query URL: " + req.url, "search", 500 );
       } else {
         searchResults = results.hits;
         mapUsernames( searchResults.hits, function( err, mappedMakes ) {
           if ( err ) {
-            return searchError( res, err, 500 );
+            return error( res, err, "search", 500 );
           }
           metrics.increment( "make.search.success" );
           res.json( { makes: mappedMakes, total: searchResults.total } );
@@ -156,7 +155,7 @@ module.exports = function( makeModel, env ) {
     },
     search: function( req, res ) {
       if ( !req.query ) {
-        return searchError( res, "Malformed Request", 400 );
+        return error( res, "Malformed Request", "search", 400 );
       }
       queryBuilder.search( req.query, function( err, dsl ) {
         if ( err ) {
@@ -165,7 +164,7 @@ module.exports = function( makeModel, env ) {
             metrics.increment( "make.search.success" );
             return res.json( { makes: [], total: 0 } );
           } else {
-            return searchError( res, err, err.code );
+            return error( res, err, "search", err.code );
           }
         }
         doSearch( req, res, dsl );
@@ -173,7 +172,7 @@ module.exports = function( makeModel, env ) {
     },
     remixCount: function( req, res ) {
       if ( !req.query || !req.query.id ) {
-        return searchError( res, "Malformed Request", 400 );
+        return error( res, "Malformed Request", "remixCount", 400 );
       }
       var id = req.query.id,
           from = req.query.from || 0,
@@ -181,11 +180,28 @@ module.exports = function( makeModel, env ) {
 
       queryBuilder.remixCount( id, from, to, function( err, dsl ) {
         if ( err ) {
-          return searchError( res, err, err.code );
+          return error( res, err, "remixCount", err.code );
         }
         Make.search( dsl, function( err, results ) {
           return res.json({ count: results.hits.total });
         });
+      });
+    },
+    autocomplete: function( req, res ) {
+      if ( !req.query.t ) {
+        return error( res, "Autocomplete term required", "autocomplete", 400 );
+      }
+      var query = queryBuilder.autocomplete( req.query.t, req.query.s );
+      Make.search( query, function( err, results ) {
+        if ( err ) {
+          error( res, err, "autocomplete", 500 );
+        } else {
+          metrics.increment( "make.autocomplete.success" );
+          res.json({
+            tags: results.facets.tags.terms,
+            total: results.facets.tags.terms.length
+          });
+        }
       });
     },
     healthcheck: function( req, res ) {
