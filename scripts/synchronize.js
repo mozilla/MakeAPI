@@ -1,3 +1,4 @@
+var async = require( "async" );
 var Habitat = require( "habitat" );
 
 Habitat.load();
@@ -12,24 +13,32 @@ var db = require( "../lib/mongoose" )( config, function( err ) {
 
   var Make = require( "../lib/models/make" )( config, db.mongoInstance() );
 
-  // Synchronize existing makes with Elastic Search
-  var syncCount = 0;
-  var syncStream = Make.synchronize();
-  console.log( "Started MongoDB synchronization with ES" );
-  syncStream.on( "data" , function() {
-    syncCount++;
-    if ( syncCount % 1000 === 0 ) {
-      console.log( "Synced %d makes", syncCount );
-    }
+  var q = async.queue( function( doc, done ) {
+    doc.index( done );
+  }, 4);
+  q.drain = function() {
+    console.log( "Done indexing %d records from Mongo", indexedRecords );
+    db.mongoInstance().connection.close();
+  };
+
+  var indexedRecords = 0;
+  var stream = Make.find({}).stream();
+  stream.on( "data", function( doc ) {
+    q.push( doc, function( err ) {
+      if ( err ) {
+        throw err;
+      }
+
+      indexedRecords++;
+      if ( indexedRecords % 100 === 0 ) {
+        console.log( "Indexed %d records", indexedRecords );
+      }
+    });
   });
-  syncStream.on( "error" , function( err ) {
-    console.log( "Failed to synchronize MongoDB with ES, shutting down" );
-    console.log( err );
-    process.exit( 1) ;
+  stream.on( "error", function ( err ) {
+    throw err;
   });
-  syncStream.on( "close", function() {
-    console.log( "Synchronized %d makes", syncCount );
-    console.log( "Synchronization complete" );
+  stream.on( "end", function() {
+    console.log( "Done streaming records from Mongo" );
   });
 });
-
