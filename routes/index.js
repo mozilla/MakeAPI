@@ -11,6 +11,7 @@ module.exports = function routesCtor( makeModel, apiUserModel, env ) {
       res.send( "Hello world!" );
     },
     search: makeRoutes.search,
+    protectedSearch: makeRoutes.protectedSearch,
     remixCount: makeRoutes.remixCount,
     autocomplete: makeRoutes.autocomplete,
     create: makeRoutes.create,

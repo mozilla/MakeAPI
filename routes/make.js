@@ -116,22 +116,36 @@ module.exports = function( makeModel, env ) {
     });
   }
 
-  function doSearch( req, res, searchData ) {
-    Make.search( searchData, function( err, results ) {
-      var searchResults;
+  function doSearch( req, res, authenticated ) {
+    // Build Query DSL
+    // authenticated indicates whether or not to include makes where published===false
+    queryBuilder.search( req.query, function( err, dsl ) {
       if ( err ) {
-        error( res, "The query produced invalid ElasticSearch DSL. Query URL: " + req.url, "search", 500 );
-      } else {
-        searchResults = results.hits;
-        mapUsernames( searchResults.hits, function( err, mappedMakes ) {
-          if ( err ) {
-            return error( res, err, "search", 500 );
-          }
+        if ( err.code === 404 ) {
+          // No user was found, no makes to search.
           metrics.increment( "make.search.success" );
-          res.json( { makes: mappedMakes, total: searchResults.total } );
-        });
+          return res.json( { makes: [], total: 0 } );
+        } else {
+          return error( res, err, "search", err.code );
+        }
       }
-    });
+      // Instruct mongoostastic to run the DSL against the Elastic Search endpoint
+      Make.search( dsl, function( err, results ) {
+        var searchResults;
+        if ( err ) {
+          error( res, "The query produced invalid ElasticSearch DSL. Query URL: " + req.url, "search", 500 );
+        } else {
+          searchResults = results.hits;
+          mapUsernames( searchResults.hits, function( err, mappedMakes ) {
+            if ( err ) {
+              return error( res, err, "search", 500 );
+            }
+            metrics.increment( "make.search.success" );
+            res.json( { makes: mappedMakes, total: searchResults.total } );
+          });
+        }
+      });
+    }, authenticated );
   }
 
   return {
@@ -157,18 +171,13 @@ module.exports = function( makeModel, env ) {
       if ( !req.query ) {
         return error( res, "Malformed Request", "search", 400 );
       }
-      queryBuilder.search( req.query, function( err, dsl ) {
-        if ( err ) {
-          if ( err.code === 404 ) {
-            // No user was found, no makes to search.
-            metrics.increment( "make.search.success" );
-            return res.json( { makes: [], total: 0 } );
-          } else {
-            return error( res, err, "search", err.code );
-          }
-        }
-        doSearch( req, res, dsl );
-      });
+      doSearch( req, res, false );
+    },
+    protectedSearch: function( req, res ) {
+      if ( !req.query ) {
+        return error( res, "Malformed Request", "search", 400 );
+      }
+      doSearch( req, res, true );
     },
     remixCount: function( req, res ) {
       if ( !req.query || !req.query.id ) {
