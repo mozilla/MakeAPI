@@ -381,7 +381,9 @@ document.addEventListener( "DOMContentLoaded", function() {
   var csrfToken = document.querySelector( "meta[name=csrf-token]" ).getAttribute( "content" ),
       make = new window.Make({
         apiURL: "/admin",
-        csrf: csrfToken
+        csrf: csrfToken,
+        // fake Hawk creds
+        hawk: {}
       }),
       searchTypeSelector = document.querySelector( "#filter-type" ),
       sortByUpdated = document.querySelector( "#sort-by-updated"),
