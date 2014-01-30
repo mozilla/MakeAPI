@@ -1,0 +1,6 @@
+{
+  "name": "makeapi.webmaker.org",
+  "dependencies": {
+    "nav-global": "https://github.com/admix/nav-global/archive/v0.1.1.tar.gz"
+  }
+}
