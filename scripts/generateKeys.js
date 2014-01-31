@@ -47,16 +47,14 @@ dbh = require( "../lib/mongoose" )( env, function( err ) {
       if ( err ) {
         return cb( err );
       }
-      console.log( "Keys generated for " + contactEmail
-                   + " PRIVATEKEY: " + user.privatekey
-                   + " PUBLICKEY: " + user.publickey
-                   + " Is Admin: " + isAdmin ? "true" : "false" );
+      console.log( "Keys generated for %s\nPRIVATEKEY: %s\nPUBLICKEY: %s\nadmin: %s",
+                   contactEmail, user.privatekey, user.publickey, isAdmin );
       cb();
     });
   }, function done( err ) {
     if ( err ) {
       console.log( "Something went horribly wrong saving: ", err );
-      process.exit( 1 );
+      return process.exit( 1 );
     }
     process.exit();
   });
