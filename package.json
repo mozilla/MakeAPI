@@ -46,6 +46,7 @@
     "webmaker-loginapi": "https://github.com/mozilla/node-webmaker-loginapi/tarball/v0.1.19"
   },
   "devDependencies": {
+    "bower": "~1.2.8",
     "grunt": "0.4.1",
     "grunt-contrib-csslint": "0.1.2",
     "grunt-contrib-jshint": "0.4.3",
