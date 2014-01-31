@@ -4,7 +4,8 @@
   "description": "MakeAPI for Webmaker",
   "main": "./lib/api.js",
   "scripts": {
-    "test": "grunt && mocha --reporter spec"
+    "test": "grunt && mocha --reporter spec",
+    "postinstall": "bower install"
   },
   "repository": {
     "type": "git",
