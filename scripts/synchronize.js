@@ -15,7 +15,7 @@ var db = require( "../lib/mongoose" )( config, function( err ) {
 
   var q = async.queue( function( doc, done ) {
     doc.index( done );
-  }, 4);
+  }, 2);
   q.drain = function() {
     console.log( "Done indexing %d records from Mongo", indexedRecords );
     db.mongoInstance().connection.close();
