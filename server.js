@@ -123,6 +123,7 @@ app.get( "/admin/api/20130724/make/remixCount", routes.remixCount );
 // Routes relating to admin tools
 app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
+app.get( "/gallery", routes.gallery );
 
 // Admin tool path for generating Hawk Keys
 app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );

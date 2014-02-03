@@ -19,6 +19,9 @@ module.exports = function( apiUserModel, audience, login ) {
         iscollaborator: req.isCollab ? 1 : 0
       });
     },
+    gallery: function( req, res ) {
+      res.render( "gallery.html" );
+    },
     login: function( req, res ) {
       res.render( "login.html", {
         email: req.session.email,

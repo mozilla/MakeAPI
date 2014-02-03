@@ -1,0 +1,21 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Gallery Generator</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/makeGallery.css" >
+  </head>
+  <body>
+    <div id="make-gallery"></div>
+    <script src="js/make-api.js"></script>
+    <script src="js/gallery/03022014/makeGallery.js"></script>
+    <script type="text/javascript">
+      var gallery = new MakeGallery({ title: "wat"}, "#make-gallery", {
+        apiURL: "http://localhost:2000"
+      });
+    </script>
+  </body>
+</html>
