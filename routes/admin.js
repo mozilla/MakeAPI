@@ -8,9 +8,9 @@
 
 var env = require( "../lib/environment" );
 
-module.exports = function( apiUserModel ) {
+module.exports = function( apiAppModel ) {
   var uuid = require( "uuid" ),
-      ApiUser = apiUserModel,
+      App = apiAppModel,
       audience = env.get( "AUDIENCE" ),
       login = env.get( "LOGIN_SERVER" ),
       personaHostname = env.get( "PERSONA_HOSTNAME", "https://login.persona.org" );
@@ -35,25 +35,25 @@ module.exports = function( apiUserModel ) {
         personaHostname: personaHostname
       });
     },
-    addUser: function( req, res ) {
-      var newUser = req.body;
+    addApp: function( req, res ) {
+      var newApp = req.body;
 
-      if ( !newUser.contact ) {
+      if ( !newApp.contact || !newApp.domain ) {
         return res.json( 400, { error: "Missing data" } );
       }
 
-      newUser.privatekey = uuid.v4();
-      newUser.publickey = uuid.v4();
-      newUser.revoked = false;
-      newUser.admin = false;
+      newApp.privatekey = uuid.v4();
+      newApp.publickey = uuid.v4();
+      newApp.revoked = false;
+      newApp.admin = false;
 
-      var user = new ApiUser( newUser );
+      var app = new App( newApp );
 
-      user.save(function( err, user ) {
+      app.save(function( err, app ) {
         if ( err ) {
           res.json( 500, { error: err } );
         } else {
-          res.json( { user: user } );
+          res.json( { app: app } );
         }
       });
     }

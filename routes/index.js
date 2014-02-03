@@ -4,9 +4,9 @@
 
 var env = require( "../lib/environment" );
 
-module.exports = function routesCtor( makeModel, apiUserModel ) {
+module.exports = function routesCtor( makeModel, apiAppModel ) {
   var makeRoutes = require( "./make" )( makeModel ),
-      adminRoutes = require( "./admin" )( apiUserModel );
+      adminRoutes = require( "./admin" )( apiAppModel );
 
   return {
     index: function( req, res ) {
@@ -22,6 +22,6 @@ module.exports = function routesCtor( makeModel, apiUserModel ) {
     healthcheck: makeRoutes.healthcheck,
     admin: adminRoutes.admin,
     login: adminRoutes.login,
-    addUser: adminRoutes.addUser
+    addApp: adminRoutes.addApp
   };
 };
