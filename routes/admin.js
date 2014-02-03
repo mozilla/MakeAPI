@@ -8,7 +8,7 @@
 
 module.exports = function( apiAppModel, audience, login ) {
   var uuid = require( "uuid" ),
-      app = apiAppModel;
+      App = apiAppModel;
 
   return {
     admin: function( req, res ) {
@@ -40,7 +40,7 @@ module.exports = function( apiAppModel, audience, login ) {
       newApp.revoked = false;
       newApp.admin = false;
 
-      var app = new ApiApp( newApp );
+      var app = new App( newApp );
 
       app.save(function( err, app ) {
         if ( err ) {
