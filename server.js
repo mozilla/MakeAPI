@@ -22,7 +22,7 @@ var app = express(),
     env = new habitat(),
     Mongo = require( "./lib/mongoose" )( env ),
     Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
-    ApiUser = require( "./lib/models/apiUser" )( env, Mongo.mongoInstance() ),
+    ApiApp = require( "./lib/models/apiApp" )( env, Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
     csrfMiddleware = express.csrf(),
     messina,
@@ -83,8 +83,8 @@ require( "./lib/loginapi" )( app, {
   }
 });
 
-var routes = require( "./routes" )( Make, ApiUser, env ),
-    middleware = require( "./lib/middleware" )( Make, ApiUser, env );
+var routes = require( "./routes" )( Make, ApiApp, env ),
+    middleware = require( "./lib/middleware" )( Make, ApiApp, env );
 
 app.use( middleware.errorHandler );
 app.use( middleware.fourOhFourHandler );
@@ -125,7 +125,7 @@ app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
 
 // Admin tool path for generating Hawk Keys
-app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
+app.post( "/admin/api/app", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addApp );
 
 // Serve makeapi-client.js over http
 app.get( "/js/make-api.js", function( req, res ) {
