@@ -1,29 +1,192 @@
+body {
+  background: #e3eaee;
+  padding: 0px;
+  margin: 0px;
+}
+
+@font-face {
+  font-family: 'Open Sans Light';
+  src: url('http://www.webmaker.org/resources/fonts/opensans-light-webfont.woff') format('woff'),url('http://www.webmaker.org/resources/fonts/opensans-light-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .make-gallery {
+  font-size: 100%;
+  overflow: auto;
+  padding: 0 1em 1em 0;
 }
 
-.make-node {
+.make-gallery .make-node {
+  font-family:  "Open Sans Light","Helvetica Neue", Arial, sans-serif;
+  -moz-box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
+  padding: 1em 0 0 1em;
+  float: left;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 
-.make-link {
+@media (min-width: 400px) {
+  .make-node {
+    width: 50%;
+  }
 }
 
-.make-thumbnail {
+@media (min-width: 600px) {
+  .make-node {
+    width: 33.3%;
+  }
+}
+@media (min-width: 800px) {
+  .make-node {
+    width: 25%;
+  }
 }
 
-.make-details {
+.make-gallery .make-thumbnail {
+  height: 240px;
+  background-position: center;
+  background-size: cover;
+  background-color: white;
 }
 
-.make-details-link {
+.make-gallery .make-thumbnail:hover {
+  opacity: .8;
 }
 
-.make-details-user {
+.make-gallery h1 {
+  font-size: 20px;
+  font-weight: normal;
+  margin: 0 0 10px 0;
+  padding: 0;
 }
 
-.make-tag-container {
+.make-gallery .make-details-link {
+  color: #555;
+  text-decoration: none;
 }
 
-.make-tag {
+.make-gallery .make-details-user {
+  color: #333;
+  text-decoration: none;
+  font-family: "Open Sans", "Helvetica Neue", Arial, sans-serif;
 }
 
-.make-remix {
+.make-gallery .make-details-user:hover {
+  text-decoration: underline;
+  color: #27aae1;
 }
+
+.make-gallery .make-meta {
+  font-size: .9em;
+  padding: 0;
+  margin: 0 0 15px 0;
+  overflow: auto;
+}
+
+.make-gallery .make-description {
+  color: #999;
+  font-size: 1em;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+
+.make-gallery .make-details {
+  background: white;
+  padding: 1.2em;
+  color: #999;
+  box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
+}
+
+.make-gallery .make-user-avatar {
+  float: left;
+  margin-right: 6px;
+  -webkit-border-radius: 44px;
+  -moz-border-radius: 44px;
+  border-radius: 44px;
+}
+
+.make-gallery .make-details-link:hover {
+  color: #27aae1;
+  text-decoration: underline;
+}
+
+.make-gallery .make-tags {
+  font-size: .9em;
+}
+
+.make-gallery .make-tags a {
+  color: #27aae1;
+  text-decoration: none;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.make-gallery .make-tags a:after {
+  content: ",";
+}
+
+.make-gallery .make-tags a:last-child:after {
+  content: "";
+}
+
+.make-gallery .make-tags a:only-child:after {
+  content: "";
+}
+
+
+.make-gallery .button-container {
+  margin-top: 20px;
+  position: relative;
+}
+
+.make-gallery .make-remix {
+  background: #3fb58e;
+  color: white;
+  text-decoration: none;
+  padding: 0.6em 0.9em 0.7em 2.4em;
+  font-size: .9em;
+  display: inline-block;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.make-gallery .make-like {
+  background: #3fb58e;
+  color: white;
+  text-decoration: none;
+  padding: 0.6em 0.9em 0.7em 0.9em;
+  font-size: .9em;
+  display: inline-block;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+  display: none;
+}
+
+.make-gallery .make-like .icon-like {
+  left: .6em;
+  top: .5em;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/images/remix-icon.png);
+  position: absolute;
+}
+
+
+.make-gallery .make-remix .icon-remix {
+  left: .6em;
+  top: .5em;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/images/remix-icon.png);
+  position: absolute;
+}
+.make-gallery .make-remix:hover {
+  background: #85d5ba;
+}
+

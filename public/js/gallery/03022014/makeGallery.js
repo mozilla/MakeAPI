@@ -24,38 +24,110 @@
   }
 
   function makeDetails( make ) {
-    var details = makeElem( "div", "make-details" ),
-      link = makeElem( "a", "make-details-link", {
-        href: make.url
-      }),
-      user = makeElem( "div", "make-details-user", {
-        textContent: make.username
-      }),
-      remix = makeElem( "a", "make-remix", {
-        href: make.remixUrl || make.url
-      }),
-      tags = makeTags( make );
 
-    details.appendChild( link );
-    details.appendChild( user );
-    details.appendChild( tags );
-    details.appendChild( remix );
+    console.log(make);
+
+    var details = makeElem( "div", "make-details" );
+
+
+    // var createdAt = makeElem( "div", "make-details-link");
+    // createdAt.innerHTML = "Created " + make.createdAt;
+
+    // var link = makeElem( "a", "make-details-link");
+    // link.setAttribute("href",make.url);
+    // link.innerHTML = make.title;
+
+
+
+    console.log(user);
+
+    //
+    // var remix = makeElem( "a", "make-remix");
+    // remix.setAttribute("href", make.remixUrl || make.url);
+    // remix.innerHTML = "REMIX";
+    //
+    // tags = makeTags(make);
+
+    // details.appendChild(link);
+    // details.appendChild(createdAt);
+    // details.appendChild(user);
+    // details.appendChild(tags);
+    // details.appendChild(remix);
     return details;
   }
 
   function generateNode(make) {
-    var node = makeElem( "div", "make-node" ),
-      link = makeElem( "a", "make-link", {
-        href: make.url
-      }),
-      thumb = makeElem( "div", "make-thumbnail", {
-        style: make.thumbnail ? "background-image: url(" +  make.thumbnail + ");" : ""
-      }),
-      details = makeDetails( make );
 
-    node.appendChild( link );
-    node.appendChild( thumb );
-    node.appendChild( details );
+
+    var node = document.querySelector(".make-node:first-child").cloneNode("true");
+
+    var thumbLink = node.querySelector(".make-link");
+    thumbLink.setAttribute("href",make.url);
+
+    var thumb = node.querySelector(".make-thumbnail");
+    thumb.style.backgroundImage = "url(" + make.thumbnail + ")";
+
+
+    var link = node.querySelector("h1 a");
+    link.setAttribute("href",make.url)
+    link.innerHTML  = make.title;
+
+    var user = node.querySelector(".make-details-user");
+    user.innerHTML =  make.username;
+
+    //Timestamp
+    var createdAt = node.querySelector(".make-details-timestamp");
+    var createdTime = new Date(make.createdAt);
+    var currentTime = new Date().getTime();
+    var timeDelta = currentTime - createdTime;
+    var day = 1000* 60 * 60 * 24;
+
+    var days = Math.floor(timeDelta/day);
+    var months = Math.floor(days/31);
+    var years = Math.floor(months/12);
+
+    var dateString;
+
+    if(days > 50) {
+      if(months > 12) {
+        dateString = years + " years";
+      } else {
+        dateString = months + " months";
+      }
+    } else {
+      dateString = days + " days";
+    }
+    createdAt.innerHTML = dateString;
+
+    //Descripiton
+    var description = node.querySelector(".make-description");
+    description.innerHTML =  make.description;
+
+    //Like count
+    var likesWrapper = node.querySelector(".make-likes");
+    var likeCount = node.querySelector(".make-likes-count");
+    likeCount.innerHTML = make.likes.length;
+    if(make.likes.length == 0) {
+      likesWrapper.style.display = "none";
+    }
+    if(make.likes.length > 2) {
+      likesWrapper.innerHTML = likesWrapper.innerHTML + "s";
+    }
+
+    //Remix Button
+    var remix = node.querySelector(".make-remix");
+    remix.setAttribute("href",make.remixurl);
+
+
+    //Generate tags
+    var makeTags = node.querySelector(".make-tags");
+    for(var i = 0; i < make.tags.length; i++){
+      console.log(make.tags[i]);
+      var tag = document.createElement("a");
+      tag.classList.add("make-tag");
+      tag.innerHTML = make.tags[i];
+      makeTags.appendChild(tag);
+    }
 
     return node;
   }
