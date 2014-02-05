@@ -1,7 +1,5 @@
 body {
-  background: #e3eaee;
-  padding: 0px;
-  margin: 0px;
+  background: #EEE;
 }
 
 @font-face {
@@ -26,6 +24,10 @@ body {
   -moz-box-sizing: border-box;
 }
 
+.make-gallery .make-node:first-child {
+  display: none;
+}
+
 @media (min-width: 400px) {
   .make-node {
     width: 50%;
@@ -48,6 +50,7 @@ body {
   background-position: center;
   background-size: cover;
   background-color: white;
+  border-bottom: solid 1px #EEE;
 }
 
 .make-gallery .make-thumbnail:hover {
@@ -104,6 +107,8 @@ body {
   -webkit-border-radius: 44px;
   -moz-border-radius: 44px;
   border-radius: 44px;
+  height: 44px;
+  width: 44px;
 }
 
 .make-gallery .make-details-link:hover {
@@ -119,11 +124,21 @@ body {
   color: #27aae1;
   text-decoration: none;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
+  display: inline-block;
+}
+
+.make-gallery .make-tags a:hover {
+  text-decoration: underline;
 }
 
 .make-gallery .make-tags a:after {
   content: ",";
 }
+
+.make-gallery .make-tags a:before {
+  content: "#";
+}
+
 
 .make-gallery .make-tags a:last-child:after {
   content: "";
@@ -139,40 +154,35 @@ body {
   position: relative;
 }
 
+.make-gallery .button-container a {
+  display: inline-block;
+  position: relative;
+  font-size: .9em;
+  padding: 0.6em 0.9em 0.7em 2.4em;
+  text-decoration: none;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}
+
 .make-gallery .make-remix {
   background: #3fb58e;
+  border: solid 2px #3fb58e;
   color: white;
-  text-decoration: none;
-  padding: 0.6em 0.9em 0.7em 2.4em;
-  font-size: .9em;
-  display: inline-block;
-  font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-.make-gallery .make-like {
-  background: #3fb58e;
+.make-gallery .button-container .make-like {
   color: white;
-  text-decoration: none;
-  padding: 0.6em 0.9em 0.7em 0.9em;
-  font-size: .9em;
-  display: inline-block;
-  font-family: "Open Sans", "Helvetica Neue", sans-serif;
-  display: none;
-}
-
-.make-gallery .make-like .icon-like {
-  left: .6em;
-  top: .5em;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-size: 12px;
+  padding: .6em 1.2em .7em 1.2em;
+  background-size: 20px;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(/images/remix-icon.png);
-  position: absolute;
+  background-image: url(/images/make-like-icon-outline.png);
+  border: solid 2px rgba(190,70,41,.2);
 }
 
+.make-gallery .button-container .make-like:hover {
+  background-image: url(/images/make-like-icon.png);
+  border: solid 2px rgba(190,70,41,.5);
+}
 
 .make-gallery .make-remix .icon-remix {
   left: .6em;

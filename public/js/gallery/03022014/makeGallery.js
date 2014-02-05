@@ -17,91 +17,84 @@
 
   function makeTags( make ) {
     var container = makeElem( "div", "make-tag-container" );
-    make.rawTags.forEach(function( tag ) {
+    make.rawTags.forEach(function(tag) {
       container.appendChild( makeElem( "a", "make-tag" ) );
     });
     return container;
   }
 
-  function makeDetails( make ) {
 
-    console.log(make);
-
-    var details = makeElem( "div", "make-details" );
-
-
-    // var createdAt = makeElem( "div", "make-details-link");
-    // createdAt.innerHTML = "Created " + make.createdAt;
-
-    // var link = makeElem( "a", "make-details-link");
-    // link.setAttribute("href",make.url);
-    // link.innerHTML = make.title;
-
-
-
-    console.log(user);
-
-    //
-    // var remix = makeElem( "a", "make-remix");
-    // remix.setAttribute("href", make.remixUrl || make.url);
-    // remix.innerHTML = "REMIX";
-    //
-    // tags = makeTags(make);
-
-    // details.appendChild(link);
-    // details.appendChild(createdAt);
-    // details.appendChild(user);
-    // details.appendChild(tags);
-    // details.appendChild(remix);
-    return details;
-  }
-
-  function generateNode(make) {
-
+  function generateNode(make,clientConfig) {
 
     var node = document.querySelector(".make-node:first-child").cloneNode("true");
+    var hidden = clientConfig.hidden || [];
 
-    var thumbLink = node.querySelector(".make-link");
-    thumbLink.setAttribute("href",make.url);
-
+    //Thumbnail Image
     var thumb = node.querySelector(".make-thumbnail");
-    thumb.style.backgroundImage = "url(" + make.thumbnail + ")";
-
-
-    var link = node.querySelector("h1 a");
-    link.setAttribute("href",make.url)
-    link.innerHTML  = make.title;
-
-    var user = node.querySelector(".make-details-user");
-    user.innerHTML =  make.username;
-
-    //Timestamp
-    var createdAt = node.querySelector(".make-details-timestamp");
-    var createdTime = new Date(make.createdAt);
-    var currentTime = new Date().getTime();
-    var timeDelta = currentTime - createdTime;
-    var day = 1000* 60 * 60 * 24;
-
-    var days = Math.floor(timeDelta/day);
-    var months = Math.floor(days/31);
-    var years = Math.floor(months/12);
-
-    var dateString;
-
-    if(days > 50) {
-      if(months > 12) {
-        dateString = years + " years";
+    if(hidden.indexOf("thumbnail") < 0) {
+      var thumbLink = node.querySelector(".make-link");
+      thumbLink.setAttribute("href", make.url);
+      if(make.thumbnail) {
+        thumb.style.backgroundImage = "url(" + make.thumbnail + ")";
       } else {
-        dateString = months + " months";
+        thumb.style.backgroundImage = "url(/images/chef.png)";
       }
     } else {
-      dateString = days + " days";
+      thumb.parentNode.removeChild(thumb);
     }
-    createdAt.innerHTML = dateString;
+
+    //Title link
+    var link = node.querySelector("h1 a");
+    if(hidden.indexOf("title") <0 ) {
+      link.setAttribute("href",make.url)
+      link.innerHTML  = make.title;
+    } else {
+      link.parentNode.removeChild(link);
+    }
+
+    var user = node.querySelector(".make-details-user");
+    if(hidden.indexOf("user") < 0){
+      user.innerHTML =  make.username;
+    } else {
+      user.parentNode.removeChild(user);
+    }
+
+    //Created At
+    var createdAt = node.querySelector(".make-details-timestamp");
+    if(hidden.indexOf("created-at") < 0){
+      var createdTime = new Date(make.createdAt);
+      var currentTime = new Date().getTime();
+      var timeDelta = currentTime - createdTime;
+      var day = 1000* 60 * 60 * 24;
+
+      var days = Math.floor(timeDelta/day);
+      var months = Math.floor(days/31);
+      var years = Math.floor(months/12);
+
+      var dateString;
+
+      if(days > 50) {
+        if(months > 12) {
+          dateString = years + " years";
+        } else {
+          dateString = months + " months";
+        }
+      } else {
+        dateString = days + " days";
+      }
+      createdAt.innerHTML = dateString;
+
+    } else {
+      createdAt.parentNode.removeChild(createdAt);
+    }
 
     //Descripiton
     var description = node.querySelector(".make-description");
-    description.innerHTML =  make.description;
+    if(hidden.indexOf("description") < 0){
+      description.innerHTML = make.description;
+    } else {
+      description.parentNode.removeChild(description);
+    }
 
     //Like count
     var likesWrapper = node.querySelector(".make-likes");
@@ -116,29 +109,72 @@
 
     //Remix Button
     var remix = node.querySelector(".make-remix");
-    remix.setAttribute("href",make.remixurl);
+    if(hidden.indexOf("remix-button") < 0){
+      remix.setAttribute("href",make.remixurl);
+    } else {
+      remix.parentNode.removeChild(remix);
+    }
 
+    //Remix Button
+    var like = node.querySelector(".make-like");
+    if(hidden.indexOf("like-button") < 0){
+
+    } else {
+      like.parentNode.removeChild(like);
+    }
+
+
+    var avatar = node.querySelector(".make-user-avatar");
+    if(hidden.indexOf("author-picture") < 0){
+      var avatarSrc = "http://www.gravatar.com/avatar/" + make.emailHash + "?s=44&d=http%3A%2F%2Fwww.gravatar.com%2Fuserimage%2F4746804%2Fc340ce541cf962e553df23e779b4d1a8.jpg%3Fsize%3D44";
+      avatar.setAttribute("src", avatarSrc);
+    } else {
+      avatar.parentNode.removeChild(avatar);
+    }
 
     //Generate tags
     var makeTags = node.querySelector(".make-tags");
-    for(var i = 0; i < make.tags.length; i++){
-      console.log(make.tags[i]);
-      var tag = document.createElement("a");
-      tag.classList.add("make-tag");
-      tag.innerHTML = make.tags[i];
-      makeTags.appendChild(tag);
+    if(hidden.indexOf("tags") < 0) {
+      for(var i = 0; i < make.tags.length; i++){
+        var tag = document.createElement("a");
+        tag.classList.add("make-tag");
+        tag.innerHTML = make.tags[i];
+        tag.setAttribute("href","#");
+        makeTags.appendChild(tag);
+        makeTags.innerHTML = makeTags.innerHTML + " ";
+      }
+    } else {
+      makeTags.parentNode.removeChild(makeTags);
     }
+
 
     return node;
   }
 
-  function build( rootElement, makes ) {
-    makes.forEach(function( make ) {
-      rootElement.appendChild( generateNode( make ) );
+  function build( rootElement, makes,clientConfig) {
+    makes.forEach(function(make) {
+      rootElement.appendChild(generateNode(make,clientConfig));
     });
+    fixHeights(rootElement)
   }
 
-  function MakeGallery( query, element, clientConfig ) {
+  function fixHeights(rootElement){
+
+    var makeEls = rootElement.querySelectorAll(".make-node");
+    var tallest = 0;
+    for(var i = 0; i < makeEls.length; i++){
+      if(makeEls[i].offsetHeight > tallest){
+        tallest = makeEls[i].offsetHeight;
+      }
+    }
+
+    for(var i = 0; i < makeEls.length; i++){
+        makeEls[i].style.height = tallest + "px";
+    }
+
+  }
+
+  function MakeGallery(query, element, clientConfig) {
 
     var self = this;
 
@@ -161,7 +197,7 @@
       }
 
       if ( count ) {
-        build( self.element, makes );
+        build( self.element, makes, clientConfig );
       } else {
         // what do we do for no makes?
       }

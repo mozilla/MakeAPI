@@ -24,7 +24,7 @@
           <p class="make-meta">
             <img class="make-user-avatar" src="https://secure.gravatar.com/avatar/d6f7196aeffb84e4ba59e82560826be3?s=44&amp;d=https%3A%2F%2Fstuff.webmaker.org%2Favatars%2Fwebmaker-avatar-44x44.png">
             Created by <a href="#" class="make-details-user">@flukeout</a>
-            <span class="make-details-timestamp">5 months</span> ago<span class="make-likes">, <span class="make-likes-count">3</span> like</span>
+            <br/><span class="make-details-timestamp">5 months</span> ago<span class="make-likes">, <span class="make-likes-count">3</span> like</span>
           </p>
 
           <p class="make-description">
@@ -35,12 +35,14 @@
           </div>
 
           <div class="button-container">
+
             <a href="#" class="make-remix">
               <span class="icon-remix"></span>
               Remix
             </a>
+
             <a href="#" class="make-like">
-              <span class="icon-like"></span>
+              &nbsp;
             </a>
           </div>
 
@@ -51,8 +53,9 @@
     <script src="js/make-api.js"></script>
     <script src="js/gallery/03022014/makeGallery.js"></script>
     <script type="text/javascript">
-      var gallery = new MakeGallery({ title: "mozfest"}, ".make-gallery", {
-        apiURL: "https://makeapi.webmaker.org"
+      var gallery = new MakeGallery({title: "Mozfest"}, ".make-gallery", {
+        apiURL: "https://makeapi.webmaker.org",
+        hidden : ["thumbnail","title","user","created-at","description","author-picture","tags","remix-button","like-button"]
       });
     </script>
   </body>
