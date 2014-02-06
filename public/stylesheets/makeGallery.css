@@ -3,12 +3,18 @@ body {
 }
 
 @font-face {
-  font-family: 'Open Sans Light';
-  src: url('http://www.webmaker.org/resources/fonts/opensans-light-webfont.woff') format('woff'),url('http://www.webmaker.org/resources/fonts/opensans-light-webfont.ttf') format('truetype');
-  font-weight: normal;
+  font-family: "Open Sans Light";
   font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/opensans-light-webfont.woff") format("woff"), url("/fonts/opensans-light-webfont.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-weight: normal;
+  src: url("/fonts/opensans-regular-webfont.woff") format("woff"), url("/fonts/opensans-regular-webfont.ttf") format("truetype");
+}
 .make-gallery {
   font-size: 100%;
   overflow: auto;
@@ -17,40 +23,30 @@ body {
 
 .make-gallery .make-node {
   font-family:  "Open Sans Light","Helvetica Neue", Arial, sans-serif;
-  -moz-box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
   padding: 1em 0 0 1em;
   float: left;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
 }
 
-.make-gallery .make-node:first-child {
-  display: none;
-}
-
-@media (min-width: 400px) {
-  .make-node {
-    width: 50%;
-  }
-}
-
-@media (min-width: 600px) {
-  .make-node {
-    width: 33.3%;
-  }
-}
-@media (min-width: 800px) {
-  .make-node {
-    width: 25%;
-  }
+.make-gallery .make-node-inner {
+  background: white;
+  -moz-box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
+  box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
+  -webkit-box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
+  position: relative;
 }
 
 .make-gallery .make-thumbnail {
-  height: 240px;
+  height: 200px;
   background-position: center;
   background-size: cover;
   background-color: white;
   border-bottom: solid 1px #EEE;
+}
+
+.make-gallery .default-thumbnail {
+  background-image: url("/images/chef.png");
 }
 
 .make-gallery .make-thumbnail:hover {
@@ -62,6 +58,7 @@ body {
   font-weight: normal;
   margin: 0 0 10px 0;
   padding: 0;
+  line-height: 28px;
 }
 
 .make-gallery .make-details-link {
@@ -96,9 +93,8 @@ body {
 
 .make-gallery .make-details {
   background: white;
-  padding: 1.2em;
+  padding: 1em 1em 1.5em 1em;
   color: #999;
-  box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2);
 }
 
 .make-gallery .make-user-avatar {
@@ -148,25 +144,53 @@ body {
   content: "";
 }
 
-
 .make-gallery .button-container {
-  margin-top: 20px;
-  position: relative;
+  padding: 0em 1em 1em 1em;
 }
 
 .make-gallery .button-container a {
   display: inline-block;
   position: relative;
   font-size: .9em;
-  padding: 0.6em 0.9em 0.7em 2.4em;
+  padding: 0.6em 0.9em 0.6em 2.4em;
   text-decoration: none;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .make-gallery .make-remix {
   background: #3fb58e;
-  border: solid 2px #3fb58e;
+  border-bottom: solid 2px #228363;
   color: white;
+  -webkit-border-radius: 2px;
+}
+
+.make-gallery .make-remix .icon-remix {
+  left: .6em;
+  top: 6px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/images/remix-icon.png);
+  position: absolute;
+}
+
+.make-gallery .make-remix:hover {
+  background: #4bc79e;
+}
+
+.make-gallery .make-remix:active {
+  background: #3fb58e;
+  border-top: solid 2px #228363;
+  border-bottom: none;
+  background: #2f9b77;
+  border-top: solid 2px #208161;
+}
+
+.make-gallery .make-remix:active .icon-remix {
+  top: 7px;
 }
 
 .make-gallery .button-container .make-like {
@@ -184,19 +208,34 @@ body {
   border: solid 2px rgba(190,70,41,.5);
 }
 
-.make-gallery .make-remix .icon-remix {
-  left: .6em;
-  top: .5em;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background-size: 12px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-image: url(/images/remix-icon.png);
-  position: absolute;
+
+
+
+.make-gallery .make-like {
+  display: none !important;
 }
-.make-gallery .make-remix:hover {
-  background: #85d5ba;
+
+.make-gallery .make-node {
+  width: 20%;
+}
+
+.make-gallery[data-cols="1"] .make-node {
+  width: 100%;
+}
+
+.make-gallery[data-cols="2"] .make-node {
+  width: 50%;
+}
+
+.make-gallery[data-cols="3"] .make-node {
+  width: 33.3%;
+}
+
+.make-gallery[data-cols="4"] .make-node {
+  width: 25%;
+}
+
+.make-gallery[data-cols="5"] .make-node {
+  width: 20%;
 }
 

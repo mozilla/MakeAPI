@@ -1,32 +1,64 @@
 (function() {
 
+  var makeHTML = '' +
+' <div class="make-node">' +
+' <div class="make-node-inner">' +
+'    <a href="#" class="make-link">' +
+'      <div class="make-thumbnail"></div>' +
+'    </a>' +
+'    <div class="make-details">' +
+'      <h1>' +
+'        <a href="#" class="make-details-link"></a>' +
+'      </h1>' +
+'      <p class="make-meta">' +
+'        <img class="make-user-avatar">' +
+'        <span class="make-meta-author">Created by <a href="#" class="make-details-user">@flukeout</a></span>' +
+'        <span class="make-meta-timestamp"><span class="make-details-timestamp"></span> ago</span>' +
+'        <span class="make-likes">,'+
+'         <span class="make-likes-count"></span> like</span>' +
+'        </span>'+
+'     </p>' +
+'     <p class="make-description"></p>' +
+'      <div class="make-tags"></div>' +
+'      </div>' +
+'      <div class="button-container">' +
+'        <a href="#" class="make-remix">' +
+'          <span class="icon-remix"></span>' +
+'          Remix' +
+'        </a>' +
+'        <a href="#" class="make-like">' +
+'          &nbsp;' +
+'        </a>' +
+'      </div>' +
+'    </div>';
+
+  var galleryElement;
+  var resizeDelay = 25;
+  var default_profileBaseURL = "https://webmaker.org/u/";
   var DEFAULT_LIMIT = 10;
-
   var MakeAPI = window.Make;
+  var fallbackAvatar = "https://i1.wp.com/stuff.webmaker.org/avatars/webmaker-avatar-44x44.png";
 
-  function makeElem( type, className, attributes ) {
-    var elem = document.createElement( type );
-    elem.className = className;
-    if ( attributes ) {
-      Object.keys( attributes ).forEach(function( attrName ) {
-        elem.setAttribute( attrName, attributes[ attrName ] );
-      });
+  var delayer;
+  window.onresize = function resizeTracker() {
+    if(delayer) {
+      window.clearTimeout(delayer);
     }
-    return elem;
-  }
-
-  function makeTags( make ) {
-    var container = makeElem( "div", "make-tag-container" );
-    make.rawTags.forEach(function(tag) {
-      container.appendChild( makeElem( "a", "make-tag" ) );
-    });
-    return container;
-  }
-
+    delayer = window.setTimeout(fixHeights,resizeDelay);
+  };
 
   function generateNode(make,clientConfig) {
 
-    var node = document.querySelector(".make-node:first-child").cloneNode("true");
+    // var stuffToKeep = {
+    //   "thumbnail" : function(blam){
+    //
+    //   }, etc...
+    // }
+    // Later iterate over the array of things to keep and run the above.!
+
+    var node = document.createElement("div");
+    node.innerHTML = makeHTML;
+    node = node.querySelector(".make-node");
     var hidden = clientConfig.hidden || [];
 
     //Thumbnail Image
@@ -34,10 +66,16 @@
     if(hidden.indexOf("thumbnail") < 0) {
       var thumbLink = node.querySelector(".make-link");
       thumbLink.setAttribute("href", make.url);
+      console.log(make.thumbnail);
       if(make.thumbnail) {
         thumb.style.backgroundImage = "url(" + make.thumbnail + ")";
       } else {
-        thumb.style.backgroundImage = "url(/images/chef.png)";
+        if(clientConfig.fallbackThumbnail) {
+          thumb.style.backgroundImage = "url("+clientConfig.fallbackThumbnail+")";
+        } else {
+          thumb.classList.add("default-thumbnail");
+        }
+
       }
     } else {
       thumb.parentNode.removeChild(thumb);
@@ -52,16 +90,19 @@
       link.parentNode.removeChild(link);
     }
 
-    var user = node.querySelector(".make-details-user");
-    if(hidden.indexOf("user") < 0){
+    if(hidden.indexOf("created-by") < 0){
+      var user = node.querySelector(".make-details-user");
       user.innerHTML =  make.username;
+      var userURL = clientConfig.profileBaseURL || default_profileBaseURL;
+      user.setAttribute("href",userURL + make.username);
     } else {
-      user.parentNode.removeChild(user);
+      var userWrapper = node.querySelector(".make-meta-author");
+      userWrapper.parentNode.removeChild(userWrapper);
     }
 
     //Created At
-    var createdAt = node.querySelector(".make-details-timestamp");
     if(hidden.indexOf("created-at") < 0){
+      var createdAt = node.querySelector(".make-details-timestamp");
       var createdTime = new Date(make.createdAt);
       var currentTime = new Date().getTime();
       var timeDelta = currentTime - createdTime;
@@ -85,6 +126,7 @@
       createdAt.innerHTML = dateString;
 
     } else {
+      var createdAt = node.querySelector(".make-meta-timestamp");
       createdAt.parentNode.removeChild(createdAt);
     }
 
@@ -123,10 +165,12 @@
       like.parentNode.removeChild(like);
     }
 
-
     var avatar = node.querySelector(".make-user-avatar");
     if(hidden.indexOf("author-picture") < 0){
-      var avatarSrc = "http://www.gravatar.com/avatar/" + make.emailHash + "?s=44&d=http%3A%2F%2Fwww.gravatar.com%2Fuserimage%2F4746804%2Fc340ce541cf962e553df23e779b4d1a8.jpg%3Fsize%3D44";
+      if(!clientConfig.fallbackAvatar) {
+        clientConfig.fallbackAvatar = fallbackAvatar;
+      }
+      var avatarSrc = "http://www.gravatar.com/avatar/" + make.emailHash + "?s=44&d=" + encodeURIComponent(clientConfig.fallbackAvatar);
       avatar.setAttribute("src", avatarSrc);
     } else {
       avatar.parentNode.removeChild(avatar);
@@ -139,14 +183,13 @@
         var tag = document.createElement("a");
         tag.classList.add("make-tag");
         tag.innerHTML = make.tags[i];
-        tag.setAttribute("href","#");
+        tag.setAttribute("href","https://webmaker.org/t/" + make.tags[i]);
         makeTags.appendChild(tag);
         makeTags.innerHTML = makeTags.innerHTML + " ";
       }
     } else {
       makeTags.parentNode.removeChild(makeTags);
     }
-
 
     return node;
   }
@@ -155,27 +198,72 @@
     makes.forEach(function(make) {
       rootElement.appendChild(generateNode(make,clientConfig));
     });
-    fixHeights(rootElement)
+    fixHeights();
   }
 
-  function fixHeights(rootElement){
+  function countRowItems(){
+    //Calculate items per row on hardcoded value vs container width
+    var makeEls = galleryElement.querySelectorAll(".make-node");
+    var lastTop;
+    var itemsPerRow = 0;
 
-    var makeEls = rootElement.querySelectorAll(".make-node");
-    var tallest = 0;
     for(var i = 0; i < makeEls.length; i++){
-      if(makeEls[i].offsetHeight > tallest){
-        tallest = makeEls[i].offsetHeight;
+      var elPos = makeEls[i].getBoundingClientRect();
+      var xPos = elPos.top;
+      if(!lastTop) {
+        lastTop = xPos;
       }
+      if(xPos > lastTop){
+        lastTop = xPos;
+        return itemsPerRow;
+      }
+      itemsPerRow++;
     }
+  }
+
+  function fixHeights(){
+
+    var galleryWidth = galleryElement.offsetWidth;
+    var columnCount = Math.floor(galleryWidth / 250);
+    galleryElement.setAttribute("data-cols",columnCount);
+
+    var makeEls = galleryElement.querySelectorAll(".make-node");
+    var lastTop;
+    var tallest = 0;
+    var itemsPerRow = countRowItems();
+    var rowItem = 0;
+    var currentRow = 1;
 
     for(var i = 0; i < makeEls.length; i++){
-        makeEls[i].style.height = tallest + "px";
+
+      makeEl = makeEls[i];
+      makeDetails = makeEl.querySelector(".make-details");
+      makeDetails.style.height = "";
+
+      var height = makeDetails.offsetHeight;
+
+      if (height > tallest){
+        tallest = height - 50;
+      }
+
+      if(rowItem >= parseInt(itemsPerRow-1)) {
+        for(var j = (i-itemsPerRow+1); j < i+1; j ++ ){
+          makeEls[j].querySelector(".make-details").style.height = tallest + "px";
+        }
+        tallest = 0;
+        rowItem = -1;
+        currentRow++;
+      }
+
+      rowItem++;
+
     }
 
   }
 
   function MakeGallery(query, element, clientConfig) {
 
+    galleryElement = document.querySelector(element);
     var self = this;
 
     this.element = typeof element === "string" ? document.querySelector( element ) : element;

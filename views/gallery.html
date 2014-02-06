@@ -5,58 +5,32 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Gallery Generator</title>
+    <title>Make Gallery</title>
     <link rel="stylesheet" type="text/css" href="stylesheets/makeGallery.css" >
-  </head>
-  <body>
-    <div class="make-gallery">
-
-      <div class="make-node">
-
-        <a href="http://farm6.staticflickr.com/5150/5883733093_bcc7db3bf2_z.jpg" class="make-link">
-          <div style="background-image: url(http://farm6.staticflickr.com/5150/5883733093_bcc7db3bf2_z.jpg);" class="make-thumbnail"></div>
-        </a>
-
-        <div class="make-details">
-          <h1>
-            <a href="#" class="make-details-link">This is a pretty sweet make!</a>
-          </h1>
-          <p class="make-meta">
-            <img class="make-user-avatar" src="https://secure.gravatar.com/avatar/d6f7196aeffb84e4ba59e82560826be3?s=44&amp;d=https%3A%2F%2Fstuff.webmaker.org%2Favatars%2Fwebmaker-avatar-44x44.png">
-            Created by <a href="#" class="make-details-user">@flukeout</a>
-            <br/><span class="make-details-timestamp">5 months</span> ago<span class="make-likes">, <span class="make-likes-count">3</span> like</span>
-          </p>
-
-          <p class="make-description">
-            This is a make! It was made by someone awesome for a cool purpose.
-          </p>
-
-          <div class="make-tags">
-          </div>
-
-          <div class="button-container">
-
-            <a href="#" class="make-remix">
-              <span class="icon-remix"></span>
-              Remix
-            </a>
-
-            <a href="#" class="make-like">
-              &nbsp;
-            </a>
-          </div>
-
-        </div>
-    </div>
-
-    </div>
     <script src="js/make-api.js"></script>
     <script src="js/gallery/03022014/makeGallery.js"></script>
+  </head>
+  <body>
+
+    <div class="make-gallery"></div>
+
     <script type="text/javascript">
-      var gallery = new MakeGallery({title: "Mozfest"}, ".make-gallery", {
-        apiURL: "https://makeapi.webmaker.org",
-        hidden : ["thumbnail","title","user","created-at","description","author-picture","tags","remix-button","like-button"]
+      var gallery = new MakeGallery(
+        {
+          tagPrefix: "moz",
+          limit: 30
+        },
+        ".make-gallery", {
+        apiURL: "https://makeapi.webmaker.org"
       });
     </script>
+
   </body>
 </html>
+
+<!--
+// limit : 4,
+// hidden : ["thumbnail","title","created-by","created-at","description","author-picture","tags","remix-button","likes"],
+// fallbackThumbnail : "http://i.imgur.com/FgPkC7M.gif"
+// fallbackAvatar : "http://zachbussey.com/wp-content/uploads/2011/02/Cute-Kitten.jpg"
+-->
