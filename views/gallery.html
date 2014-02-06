@@ -5,17 +5,32 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Gallery Generator</title>
+    <title>Make Gallery</title>
     <link rel="stylesheet" type="text/css" href="stylesheets/makeGallery.css" >
-  </head>
-  <body>
-    <div id="make-gallery"></div>
     <script src="js/make-api.js"></script>
     <script src="js/gallery/03022014/makeGallery.js"></script>
+  </head>
+  <body>
+
+    <div class="make-gallery"></div>
+
     <script type="text/javascript">
-      var gallery = new MakeGallery({ title: "wat"}, "#make-gallery", {
-        apiURL: "http://localhost:2000"
+      var gallery = new MakeGallery(
+        {
+          tagPrefix: "moz",
+          limit: 30
+        },
+        ".make-gallery", {
+        apiURL: "https://makeapi.webmaker.org"
       });
     </script>
+
   </body>
 </html>
+
+<!--
+// limit : 4,
+// hidden : ["thumbnail","title","created-by","created-at","description","author-picture","tags","remix-button","likes"],
+// fallbackThumbnail : "http://i.imgur.com/FgPkC7M.gif"
+// fallbackAvatar : "http://zachbussey.com/wp-content/uploads/2011/02/Cute-Kitten.jpg"
+-->
