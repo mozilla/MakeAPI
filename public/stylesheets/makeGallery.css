@@ -34,7 +34,7 @@
 }
 
 .make-gallery .default-thumbnail {
-  background-image: url("/images/chef.png");
+  background-image: url("../images/chef.png");
 }
 
 .make-gallery .make-thumbnail:hover {
@@ -151,6 +151,7 @@
   border-bottom: solid 2px #228363;
   color: white;
   -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
   font-weight: normal;
 }
 
@@ -163,7 +164,7 @@
   background-size: 12px;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(/images/remix-icon.png);
+  background-image: url(../images/remix-icon.png);
   position: absolute;
 }
 
@@ -189,12 +190,12 @@
   background-size: 20px;
   background-repeat: no-repeat;
   background-position: center;
-  background-image: url(/images/make-like-icon-outline.png);
+  background-image: url(../images/make-like-icon-outline.png);
   border: solid 2px rgba(190,70,41,.2);
 }
 
 .make-gallery .button-container .make-like:hover {
-  background-image: url(/images/make-like-icon.png);
+  background-image: url(../images/make-like-icon.png);
   border: solid 2px rgba(190,70,41,.5);
 }
 
