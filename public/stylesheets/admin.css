@@ -137,3 +137,7 @@ span.make-id {
 #remix-count-result {
   font-size: 1.5em;
 }
+
+.webmaker-logout:hover {
+  cursor: pointer;
+}

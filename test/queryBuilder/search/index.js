@@ -8,7 +8,6 @@
       page = require( "./page.unit" )( qb ),
       sizeAndLimit = require( "./limitSize.unit" )( qb ),
       sort = require( "./sort.unit" )( qb ),
-      user = require( "./user.unit" )( qb ),
       filterTests = require( "./termFilters.unit" )( qb ),
       complexQueries = require( "./complexQueries.unit" )( qb ),
       tagFacets =  require( "./tagFacets.unit" )( qb );
@@ -26,8 +25,6 @@
   describe( "build() - size and limit: ", sizeAndLimit );
 
   describe( "build() - sort: ", sort );
-
-  describe( "build() - user: ", user );
 
   describe( "build() - All Term filters: ", filterTests );
 

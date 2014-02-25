@@ -6,9 +6,15 @@
 
 "use strict";
 
-module.exports = function( apiUserModel, audience, login ) {
+var env = require( "../lib/environment" );
+
+module.exports = function( apiUserModel ) {
   var uuid = require( "uuid" ),
-      ApiUser = apiUserModel;
+      ApiUser = apiUserModel,
+      audience = env.get( "AUDIENCE" ),
+      login = env.get( "LOGIN_SERVER" ),
+      personaHostname = env.get( "PERSONA_HOSTNAME", "https://login.persona.org" );
+
   return {
     admin: function( req, res ) {
       res.render( "admin.html", {
@@ -16,7 +22,8 @@ module.exports = function( apiUserModel, audience, login ) {
         audience: audience,
         login: login,
         csrf: req.csrfToken(),
-        iscollaborator: req.isCollab ? 1 : 0
+        iscollaborator: req.isCollab ? 1 : 0,
+        personaHostname: personaHostname
       });
     },
     login: function( req, res ) {
@@ -24,7 +31,8 @@ module.exports = function( apiUserModel, audience, login ) {
         email: req.session.email,
         audience: audience,
         login: login,
-        csrf: req.csrfToken()
+        csrf: req.csrfToken(),
+        personaHostname: personaHostname
       });
     },
     addUser: function( req, res ) {

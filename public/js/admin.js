@@ -246,6 +246,7 @@ document.addEventListener( "DOMContentLoaded", function() {
       if ( err || !data ) {
         errorElem.classList.remove( "hidden" );
         errorElem.textContent = "Error retrieving data: " + err;
+        return;
       } else if ( !data.length  ) {
         if ( total ) {
           return goToPage( Math.ceil( total / resultsPerPage ) );
@@ -620,17 +621,17 @@ document.addEventListener( "DOMContentLoaded", function() {
     );
   }, false );
 
-  navigator.idSSO.watch({
-    onlogin: function() {},
-    onlogout: function() {
-      var request = new XMLHttpRequest();
 
-      request.open( "POST", "/persona/logout", true );
-      request.setRequestHeader( "X-CSRF-Token", csrfToken ); // express.js uses a non-standard name for csrf-token
-      request.addEventListener( "loadend", function() {
-        window.location.replace( "./login" );
-      }, false);
-      request.send();
-    }
+  var auth = new window.WebmakerAuthClient({
+    csrfToken: csrfToken
   });
+
+  auth.on("logout", function() {
+    window.location.replace( "./login" );
+  });
+
+  $( ".webmaker-logout" ).click( auth.logout );
+
+  auth.verify();
+
 }, false );
