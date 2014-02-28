@@ -30,9 +30,11 @@
   "dependencies": {
     "async": "0.2.9",
     "express": "3.4.5",
-    "habitat": "0.4.1",
+    "habitat": "1.1.0",
     "hawk": "1.0.0",
     "helmet": "0.1.2",
+    "hyperquest": "0.2.0",
+    "less-middleware": "0.1.15",
     "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.17",
     "messina": "0.1.1",
     "mongoose": "3.5.2",
@@ -43,7 +45,7 @@
     "nunjucks": "0.1.9",
     "querystring": "0.2.0",
     "uuid": "1.4.1",
-    "webmaker-loginapi": "https://github.com/mozilla/node-webmaker-loginapi/tarball/v0.1.19"
+    "webmaker-auth": "0.0.11"
   },
   "devDependencies": {
     "bower": "~1.2.8",

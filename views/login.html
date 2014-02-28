@@ -10,6 +10,15 @@
     <meta name="persona-email" content="{{email}}">
     <meta name="csrf-token" content="{{csrf}}" >
     <link rel="stylesheet" href="/bower/nav-global/nav.css" />
+    <link rel="stylesheet" href="/bower/persona-btn/persona-btn.css" />
+    <style type="text/css" media="screen">
+      .webmaker-logout:hover {
+        cursor: pointer;
+      }
+      #err-message {
+        color: red;
+      }
+    </style>
   </head>
   <body>
     <div id="webmaker-nav">
@@ -20,20 +29,23 @@
             Hi <span id="identity" class="user-name-container"></span>
           </li>
           <li>
-            <iframe src="{{audience}}/sso/include.html" class="include-frame"></iframe>
+            <div class="webmaker-login persona-button">
+                <span class="text">Sign in</span><span class="tip"></span>
+            </div>
+            <span class="webmaker-logout" style="display: none;">Sign out</span>
           </li>
         </ul>
       </nav>
     </div>
     <span style="text-align: center;">
       <h1>Make Editor Login</h1>
-      <h2>Sign in with your Webmaker account above</h2>
+      <h2>Sign in with your Webmaker account Above</h2>
       <br />
       <p id="err-message" class="help-block hidden"></p>
     </span>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="{{audience}}/sso/include.js"></script>
-    <script src="{{login}}/js/sso-ux.js"></script>
+    <script src="{{personaHostname}}/include.js"></script>
+    <script src="js/external/jquery.min.js"></script>
+    <script src="bower/webmaker-auth-client/dist/webmaker-auth-client.min.js"></script>
     <script src="js/login.js"></script>
   </body>
 </html>

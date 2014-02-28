@@ -2,9 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-module.exports = function routesCtor( makeModel, apiUserModel, env ) {
-  var makeRoutes = require( "./make" )( makeModel, env ),
-      adminRoutes = require( "./admin" )( apiUserModel, env.get( "AUDIENCE" ), env.get( "LOGIN_SERVER" ) );
+var env = require( "../lib/environment" );
+
+module.exports = function routesCtor( makeModel, apiUserModel ) {
+  var makeRoutes = require( "./make" )( makeModel ),
+      adminRoutes = require( "./admin" )( apiUserModel );
 
   return {
     index: function( req, res ) {

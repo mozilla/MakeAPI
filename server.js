@@ -9,22 +9,26 @@ if ( process.env.NEW_RELIC_ENABLED ) {
 
 // Bring in all your require modules
 var express = require( "express" ),
-    habitat = require( "habitat" ),
     helmet = require( "helmet" ),
     nunjucks = require( "nunjucks" ),
-    path = require( "path" );
-
-// Load config from ".env"
-habitat.load();
+    path = require( "path" ),
+    WebmakerAuth = require( "webmaker-auth" );
 
 // Generate app variables
 var app = express(),
-    env = new habitat(),
-    Mongo = require( "./lib/mongoose" )( env ),
-    Make = require( "./lib/models/make" )( env, Mongo.mongoInstance() ),
-    ApiUser = require( "./lib/models/apiUser" )( env, Mongo.mongoInstance() ),
+    env = require( "./lib/environment" ),
+    Mongo = require( "./lib/mongoose" )(),
+    Make = require( "./lib/models/make" )( Mongo.mongoInstance() ),
+    ApiUser = require( "./lib/models/apiUser" )( Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
     csrfMiddleware = express.csrf(),
+    webmakerAuth = new WebmakerAuth({
+      loginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
+      secretKey: env.get( "SESSION_SECRET" ),
+      forceSSL: env.get( "FORCE_SSL" ),
+      domain: env.get( "DOMAIN" )
+    }),
+    lessMiddleware = require( "less-middleware" ),
     messina,
     logger;
 
@@ -58,33 +62,27 @@ app.use( express.compress() );
 app.use( express.static( path.join( __dirname + "/public" ) ) );
 app.use( express.json() );
 app.use( express.urlencoded() );
-app.use( express.cookieParser() );
-app.use( express.cookieSession({
-  key: "makeapi.sid",
-  secret: env.get( "SESSION_SECRET" ),
-  cookie: {
-    maxAge: 2678400000, // 31 days. Persona saves session data for 1 month
-    secure: !!env.get( "FORCE_SSL" )
-  },
-  proxy: true
+app.use( webmakerAuth.cookieParser() );
+app.use( webmakerAuth.cookieSession() );
+
+var optimize = env.get( "NODE_ENV" ) !== "development",
+  tmpDir = path.join( require("os").tmpDir(), "makeapi.webmaker.org" );
+app.use(lessMiddleware({
+  once: optimize,
+  debug: !optimize,
+  dest: tmpDir,
+  src: path.resolve( __dirname, "public" ),
+  compress: optimize,
+  yuicompress: optimize,
+  optimization: optimize ? 0 : 2,
+  sourceMap: !optimize
 }));
+app.use(express.static(tmpDir));
 
 app.use( app.router );
 
-require( "./lib/loginapi" )( app, {
-  loginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
-  audience: env.get( "AUDIENCE" ),
-  middleware: csrfMiddleware,
-  verifyResponse: function( res, data ) {
-    if ( !data.user.isAdmin && !data.user.isCollaborator ) {
-      return res.json({ status: "failure", reason: "You are not authorised to view this page." });
-    }
-    res.json({ status: "okay", email: data.user.email });
-  }
-});
-
-var routes = require( "./routes" )( Make, ApiUser, env ),
-    middleware = require( "./lib/middleware" )( Make, ApiUser, env );
+var routes = require( "./routes" )( Make, ApiUser ),
+    middleware = require( "./lib/middleware" )( Make, ApiUser );
 
 app.use( middleware.errorHandler );
 app.use( middleware.fourOhFourHandler );
@@ -98,6 +96,10 @@ function corsOptions ( req, res ) {
 app.get( "/", routes.index );
 
 app.options( "/api/20130724/make/search", corsOptions );
+
+app.post('/verify',csrfMiddleware, webmakerAuth.handlers.verify);
+app.post('/authenticate',csrfMiddleware, webmakerAuth.handlers.authenticate);
+app.post('/logout',csrfMiddleware, webmakerAuth.handlers.logout);
 
 // 20130724 API Routes (Hawk Authentication)
 app.post( "/api/20130724/make", middleware.hawkAuth, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
@@ -117,7 +119,7 @@ app.get( "/api/20130724/make/tags", Mongo.isDbOnline, middleware.crossOrigin, ro
 // 20130724 Admin API routes
 app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.collabAuth, middleware.fieldFilter, Mongo.isDbOnline, middleware.getMake, routes.update );
 app.del( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
-app.get( "/admin/api/20130724/make/protectedSearch", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.protectedSearch );
+app.get( "/admin/api/20130724/make/protectedSearch", csrfMiddleware, middleware.collabAuth, Mongo.isDbOnline, routes.protectedSearch );
 app.get( "/admin/api/20130724/make/remixCount", routes.remixCount );
 
 // Routes relating to admin tools

@@ -9,15 +9,6 @@
     <meta name="csrf-token" content="{{csrf}}" >
     <meta name="is_collaborator" content="{{iscollaborator}}">
     <meta name="webmaker_hostname" content="{{audience}}">
-    <script src="js/external/jquery.min.js"></script>
-    <script src="js/external/jquery-ui.min.js"></script>
-    <script src="js/external/jquery.event.drag-2.2.js"></script>
-    <script src="js/external/slick.core.js"></script>
-    <script src="js/external/slick.grid.js"></script>
-    <script src="js/external/slick.editors.js"></script>
-    <script src="js/external/slick.dataview.js"></script>
-    <script src="js/make-api.js"></script>
-    <script src="js/admin.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/admin.css" >
     <link rel="stylesheet" type="text/css" href="stylesheets/jquery-ui.min.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.min.css" >
@@ -25,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/slick.grid.css" >
     <link rel="stylesheet" type="text/css" href="stylesheets/slick.pager.css" >
     <link rel="stylesheet" href="/bower/nav-global/nav.css" />
+    <link rel="stylesheet" href="/bower/persona-btn/persona-btn.css" />
   </head>
   <body>
 
@@ -36,7 +28,7 @@
             Hi <span id="identity" class="user-name-container"></span>
           </li>
           <li>
-            <iframe src="{{audience}}/sso/include.html" class="include-frame"></iframe>
+            <span class="webmaker-logout">Sign out</span>
           </li>
         </ul>
       </nav>
@@ -165,6 +157,16 @@
         </fieldset>
       </form>
       {% endif %}
-    <script src="{{audience}}/sso/include.js"></script>
+    <script src="{{personaHostname}}/include.js"></script>
+    <script src="js/external/jquery.min.js"></script>
+    <script src="js/external/jquery-ui.min.js"></script>
+    <script src="js/external/jquery.event.drag-2.2.js"></script>
+    <script src="js/external/slick.core.js"></script>
+    <script src="js/external/slick.grid.js"></script>
+    <script src="js/external/slick.editors.js"></script>
+    <script src="js/external/slick.dataview.js"></script>
+    <script src="js/make-api.js"></script>
+    <script src="bower/webmaker-auth-client/dist/webmaker-auth-client.min.js"></script>
+    <script src="js/admin.js"></script>
   </body>
 </html>
