@@ -26,7 +26,7 @@ var app = express(),
       loginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
       secretKey: env.get( "SESSION_SECRET" ),
       forceSSL: env.get( "FORCE_SSL" ),
-      domain: env.get( "DOMAIN" )
+      domain: env.get( "COOKIE_DOMAIN" )
     }),
     lessMiddleware = require( "less-middleware" ),
     messina,
