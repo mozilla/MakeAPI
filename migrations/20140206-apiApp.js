@@ -4,13 +4,11 @@
  * node migrations/20140206-apiApp <existingContact>::<domain> <existingContact>::<domain> ...
  */
 
-var habitat = require( "habitat" ),
-    async = require( "async" ),
+var async = require( "async" ),
+    env = require( "../lib/environment" ),
     validate = require( "mongoose-validator" ).validate,
     slicedArgs = process.argv.slice( 2 ),
-    mongoStreamEnded = false,
-    env,
-    mongoose;
+    mongoStreamEnded = false;
 
 var domainMap = {};
 
@@ -45,57 +43,52 @@ function getApiUser( mongoose ) {
       type: Boolean,
       required: true,
       "default": false
+    },
+    domain: {
+      type: String,
+      required: true,
     }
   }));
 }
 
-habitat.load();
-env = new habitat();
+var dbh = require( "../lib/mongoose" )(),
+    ApiApp = require( "../lib/models/apiApp" )( dbh.mongoInstance() ),
+    ApiUser = getApiUser( dbh.mongoInstance() ),
+    stream = ApiUser.find().stream(),
+    queue = async.queue(function( doc, done ) {
 
-dbh = require( "../lib/mongoose" )( env, function( err ) {
-  if ( err ) {
-    console.log( err );
-    process.exit( 1 );
+      var app = new ApiApp({
+        contact: doc.contact,
+        privatekey: doc.privatekey,
+        publickey: doc.publickey,
+        domain: domainMap[ doc.contact ],
+        revoked: doc.revoked,
+        admin: doc.admin
+      });
+
+      app.save(function( err ) {
+        if ( err ) {
+          console.log( "Failure saving document:" );
+          console.log( app );
+          console.log( err );
+          process.exit( 1 );
+        }
+        done();
+      });
+    }, 4 );// concurrency of 4
+
+queue.drain = function() {
+  if ( mongoStreamEnded ) {
+    console.log( "completed!" );
+    process.exit( 0 );
   }
+};
 
-  var ApiApp = require( "../lib/models/apiApp" )( env, dbh.mongoInstance() ),
-      ApiUser = getApiUser( dbh.mongoInstance() ),
-      stream = ApiUser.find().stream(),
-      queue = async.queue(function( doc, done ) {
-
-        var app = new ApiApp({
-          contact: doc.contact,
-          privatekey: doc.privatekey,
-          publickey: doc.publickey,
-          domain: domainMap[ doc.contact ],
-          revoked: doc.revoked,
-          admin: doc.admin
-        });
-
-        app.save(function( err ) {
-          if ( err ) {
-            console.log( "Failure saving document:" );
-            console.log( app );
-            console.log( err );
-            process.exit( 1 );
-          }
-          done();
-        });
-      }, 4 );// concurrency of 4
-
-  queue.drain = function() {
-    if ( mongoStreamEnded ) {
-      console.log( "completed!" );
-      process.exit( 0 );
-    }
-  };
-
-  stream.on( "data", function onData( doc ) {
-    queue.push( doc );
-  }).on( "error", function( err ) {
-    console.log( err );
-    process.exit( 1 );
-  }).on( "end", function() {
-    mongoStreamEnded = true;
-  });
+stream.on( "data", function onData( doc ) {
+  queue.push( doc );
+}).on( "error", function( err ) {
+  console.log( err );
+  process.exit( 1 );
+}).on( "end", function() {
+  mongoStreamEnded = true;
 });
