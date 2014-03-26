@@ -28,27 +28,27 @@ dbh = require( "../lib/mongoose" )( env, function( err ) {
     process.exit( 1 );
   }
 
-  var ApiUser = require( "../lib/models/apiUser" )( env, dbh.mongoInstance() ),
-      users = [];
+  var ApiApp = require( "../lib/models/apiApp" )( env, dbh.mongoInstance() ),
+      apps = [];
 
   for ( var i = 0; i < numPairs; i++ ) {
-    users.push( new ApiUser({
+    apps.push( new ApiApp({
       contact: contactEmail,
       privatekey: uuid.v4(),
       publickey: uuid.v4(),
       revoked: false,
-      admin: !!isAdmin
+      admin: !!isAdmin // This means "Internal Webmaker"
     }));
 
   }
 
-  async.eachSeries( users, function( user, cb ) {
-    user.save(function( err, user ){
+  async.eachSeries( apps, function( app, cb ) {
+    app.save(function( err, app ){
       if ( err ) {
         return cb( err );
       }
       console.log( "Keys generated for %s\nPRIVATEKEY: %s\nPUBLICKEY: %s\nadmin: %s",
-                   contactEmail, user.privatekey, user.publickey, isAdmin );
+                   contactEmail, app.privatekey, app.publickey, isAdmin );
       cb();
     });
   }, function done( err ) {
