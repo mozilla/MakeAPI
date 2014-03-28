@@ -19,7 +19,7 @@ var app = express(),
     env = require( "./lib/environment" ),
     Mongo = require( "./lib/mongoose" )(),
     Make = require( "./lib/models/make" )( Mongo.mongoInstance() ),
-    ApiUser = require( "./lib/models/apiUser" )( Mongo.mongoInstance() ),
+    apiApp = require( "./lib/models/apiApp" )( Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
     csrfMiddleware = express.csrf(),
     webmakerAuth = new WebmakerAuth({
@@ -81,8 +81,8 @@ app.use(express.static(tmpDir));
 
 app.use( app.router );
 
-var routes = require( "./routes" )( Make, ApiUser ),
-    middleware = require( "./lib/middleware" )( Make, ApiUser );
+var routes = require( "./routes" )( Make, apiApp ),
+    middleware = require( "./lib/middleware" )( Make, apiApp );
 
 app.use( middleware.errorHandler );
 app.use( middleware.fourOhFourHandler );
@@ -127,7 +127,7 @@ app.get( "/login", csrfMiddleware, routes.login );
 app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
 
 // Admin tool path for generating Hawk Keys
-app.post( "/admin/api/user", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addUser );
+app.post( "/admin/api/app", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addApp );
 
 // Serve makeapi-client.js over http
 app.get( "/js/make-api.js", function( req, res ) {

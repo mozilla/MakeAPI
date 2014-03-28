@@ -517,13 +517,14 @@ document.addEventListener( "DOMContentLoaded", function() {
   pager.goToPage( 1 );
 
   var contactEmail = document.querySelector( "#app-contact"),
-      createUser = document.querySelector( "#add-user" ),
-      createResult = document.querySelector( "#user-result" );
+      domain = document.querySelector( "#app-domain" ),
+      createApp = document.querySelector( "#add-app" ),
+      createResult = document.querySelector( "#app-result" );
 
   function generateKeys() {
     var request = new XMLHttpRequest();
 
-    request.open( "POST", "/admin/api/user", true );
+    request.open( "POST", "/admin/api/app", true );
     request.setRequestHeader( "X-CSRF-Token", csrfToken ); // express.js uses a non-standard name for csrf-token
     request.setRequestHeader( "Content-Type", "application/json; charset=utf-8" );
     request.onreadystatechange = function() {
@@ -545,13 +546,14 @@ document.addEventListener( "DOMContentLoaded", function() {
       }
     };
     request.send(JSON.stringify({
-      contact: contactEmail.value
+      contact: contactEmail.value,
+      domain: domain.value
     }));
   }
 
   if ( isAdmin ) {
 
-    createUser.addEventListener( "keypress", function( e ) {
+    createApp.addEventListener( "keypress", function( e ) {
       if ( e.which === 13 ) {
         e.preventDefault();
         e.stopPropagation();
@@ -559,7 +561,7 @@ document.addEventListener( "DOMContentLoaded", function() {
       }
     }, false );
 
-    createUser.addEventListener( "click", generateKeys, false );
+    createApp.addEventListener( "click", generateKeys, false );
   }
 
   // Remix Counter
