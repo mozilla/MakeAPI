@@ -7,6 +7,7 @@
 "use strict";
 
 var hyperquest = require( "hyperquest" ),
+    async = require( "async" ),
     url = require( "url" ),
     env = require( "../lib/environment" );
 
@@ -75,8 +76,30 @@ module.exports = function( makeModel ) {
     });
   }
 
-  function mapUsernames( makes, callback ) {
-    var emails = makes.slice().map(function( hit ) {
+  function buildQuery( requestQuery, authenticated, callback ) {
+    queryBuilder.search( requestQuery, function( err, dsl ) {
+      if ( err ) {
+        if ( err.code === 404 ) {
+          // A non-existant user means we can assume the search will return 0 makes
+          return callback( err );
+        }
+        return callback( new Error( "Failed to build the Query") );
+      }
+      callback( null, dsl, requestQuery );
+    }, authenticated );
+  }
+
+  function makeSearch( dsl, requestQuery, callback ) {
+    Make.search( dsl, function( err, results ) {
+      if ( err ) {
+        return callback( new Error( "The query produced invalid ElasticSearch DSL" ) );
+      }
+      callback( null, results.hits.hits, requestQuery, results.total );
+    });
+  }
+
+  function mapUsernames( searchResults, requestQuery, total, callback ) {
+    var emails = searchResults.slice().map(function( hit ) {
       return hit._source.email;
     }).filter(function( email, pos, self ) {
       return self.indexOf( email ) === pos;
@@ -89,12 +112,12 @@ module.exports = function( makeModel ) {
     });
 
     get.on("error", function( err ) {
-      callback( LOGINAPI_ERR + "Login API request failed" );
+      callback( new Error( LOGINAPI_ERR + "Login API request failed" ) );
     });
 
     get.on( "response", function( resp ) {
       if ( resp.statusCode !== 200 ) {
-        return callback( LOGINAPI_ERR + "Received a status code of " + resp.statusCode );
+        return callback( new Error( LOGINAPI_ERR + "Received a status code of " + resp.statusCode ) );
       }
       var bodyParts = [],
           bytes = 0;
@@ -110,10 +133,10 @@ module.exports = function( makeModel ) {
         try {
           mappedUsers = JSON.parse( responseBody );
         } catch( exception ) {
-          return callback( LOGINAPI_ERR + "Unable to parse Login API response body" );
+          return callback( new Error( LOGINAPI_ERR + "Unable to parse Login API response body" ) );
         }
 
-        makes = makes.map(function( esMake ) {
+        searchResults = searchResults.map(function( esMake ) {
           var safeMake = {},
               source = esMake._source,
               userData = mappedUsers[ source.email ];
@@ -143,42 +166,60 @@ module.exports = function( makeModel ) {
           }
           return safeMake;
         });
-        callback( null, makes );
+        callback( null, searchResults, requestQuery, total );
       });
     });
     get.end( JSON.stringify( emails ), "utf8" );
   }
 
+  function getRemixCounts( searchResults, requestQuery, total, callback ) {
+    var now;
+    if ( requestQuery.getRemixCounts === "true" ) {
+      now = Date.now();
+      async.mapSeries( searchResults, function iterator( make, mapCallback ) {
+        queryBuilder.remixCount( make._id, 0, now, function( err, dsl ) {
+          if ( err ) {
+            return mapCallback( new Error( "Error while fetching remixCount for " + make.url ) );
+          }
+          Make.search( dsl, function( err, results ) {
+            if ( err ) {
+              return mapCallback( new Error( "Error while fetching remixCount for " + make.url ) );
+            }
+            make.remixCount = results.hits.total;
+            mapCallback( null, make );
+          });
+        });
+      }, function done( err, hydratedSearchResults ) {
+        if ( err ) {
+          return callback( err );
+        }
+        callback( null, hydratedSearchResults, total );
+      });
+    } else {
+      callback( null, searchResults, total );
+    }
+  }
+
   function doSearch( req, res, authenticated ) {
-    // Build Query DSL
-    // authenticated indicates whether or not to include makes where published===false
-    queryBuilder.search( req.query, function( err, dsl ) {
-      if ( err ) {
+    async.waterfall([
+      function( callback ) {
+        callback( null, req.query, authenticated );
+      },
+      buildQuery,
+      makeSearch,
+      mapUsernames,
+      getRemixCounts
+    ], function( err, makes, total ) {
+      if( err ) {
         if ( err.code === 404 ) {
-          // No user was found, no makes to search.
           metrics.increment( "make.search.success" );
           return res.json( { makes: [], total: 0 } );
-        } else {
-          return error( res, err, "search", err.code );
         }
+        return error( res, err.toString(), "search", 500 );
       }
-      // Instruct mongoostastic to run the DSL against the Elastic Search endpoint
-      Make.search( dsl, function( err, results ) {
-        var searchResults;
-        if ( err ) {
-          error( res, "The query produced invalid ElasticSearch DSL. Query URL: " + req.url, "search", 500 );
-        } else {
-          searchResults = results.hits;
-          mapUsernames( searchResults.hits, function( err, mappedMakes ) {
-            if ( err ) {
-              return error( res, err, "search", 500 );
-            }
-            metrics.increment( "make.search.success" );
-            res.json( { makes: mappedMakes, total: searchResults.total } );
-          });
-        }
-      });
-    }, authenticated );
+      metrics.increment( "make.search.success" );
+      res.json( { makes: makes, total: total } );
+    });
   }
 
   return {
