@@ -97,37 +97,191 @@ app.get( "/", routes.index );
 
 app.options( "/api/20130724/make/search", corsOptions );
 
-app.post('/verify',csrfMiddleware, webmakerAuth.handlers.verify);
-app.post('/authenticate',csrfMiddleware, webmakerAuth.handlers.authenticate);
-app.post('/logout',csrfMiddleware, webmakerAuth.handlers.logout);
+// Session Verification Route
+app.post(
+  "/verify",
+  csrfMiddleware,
+  webmakerAuth.handlers.verify
+);
 
-// 20130724 API Routes (Hawk Authentication)
-app.post( "/api/20130724/make", middleware.hawkAuth, Mongo.isDbOnline, middleware.prefixAuth, routes.create );
-app.put( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.checkMakeOwner, middleware.prefixAuth, routes.update );
-app.put( "/api/20130724/make/like/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.checkMakeOwner, middleware.like, routes.update );
-app.put( "/api/20130724/make/unlike/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.checkMakeOwner, middleware.unlike, routes.update );
-app.del( "/api/20130724/make/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.checkMakeOwner, routes.remove );
-app.put( "/api/20130724/make/report/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.checkMakeOwner, middleware.report, routes.update );
-app.put( "/api/20130724/make/cancelReport/:id", middleware.hawkAuth, Mongo.isDbOnline, middleware.getMake, middleware.checkMakeOwner, middleware.cancelReport, routes.update );
+// Login Route
+app.post(
+  "/authenticate",
+  csrfMiddleware,
+  webmakerAuth.handlers.authenticate
+);
 
-app.get( "/api/20130724/make/search", Mongo.isDbOnline, middleware.crossOrigin, routes.search );
-app.get( "/api/20130724/make/protectedSearch", Mongo.isDbOnline, middleware.hawkAuth, routes.protectedSearch );
-app.get( "/api/20130724/make/remixCount", middleware.crossOrigin, routes.remixCount );
+// Logout Route
+app.post(
+  "/logout",
+  csrfMiddleware,
+  webmakerAuth.handlers.logout
+);
 
-app.get( "/api/20130724/make/tags", Mongo.isDbOnline, middleware.crossOrigin, routes.autocomplete );
+// Create Make
+app.post(
+  "/api/20130724/make",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.prefixAuth,
+  routes.create
+);
 
-// 20130724 Admin API routes
-app.put( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.collabAuth, middleware.fieldFilter, Mongo.isDbOnline, middleware.getMake, routes.update );
-app.del( "/admin/api/20130724/make/:id", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, middleware.getMake, routes.remove );
-app.get( "/admin/api/20130724/make/protectedSearch", csrfMiddleware, middleware.collabAuth, Mongo.isDbOnline, routes.protectedSearch );
-app.get( "/admin/api/20130724/make/remixCount", routes.remixCount );
+// Update Make
+app.put(
+  "/api/20130724/make/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  middleware.checkMakeOwner,
+  middleware.prefixAuth,
+  routes.update
+);
 
-// Routes relating to admin tools
-app.get( "/login", csrfMiddleware, routes.login );
-app.get( "/admin", csrfMiddleware, middleware.collabAuth, routes.admin );
+// Delete Make
+app.del(
+  "/api/20130724/make/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  middleware.checkMakeOwner,
+  routes.remove
+);
+
+// Like Make
+app.put(
+  "/api/20130724/make/like/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  middleware.checkMakeOwner,
+  middleware.like,
+  routes.update
+);
+
+// Unlike Make
+app.put(
+  "/api/20130724/make/unlike/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  middleware.checkMakeOwner,
+  middleware.unlike,
+  routes.update
+);
+
+// Report Make
+app.put(
+  "/api/20130724/make/report/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  middleware.checkMakeOwner,
+  middleware.report,
+  routes.update
+);
+
+// Cancel Make Report
+app.put(
+  "/api/20130724/make/cancelReport/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  middleware.checkMakeOwner,
+  middleware.cancelReport,
+  routes.update
+);
+
+// Search for Makes
+app.get(
+  "/api/20130724/make/search",
+  Mongo.isDbOnline,
+  middleware.crossOrigin,
+  routes.search
+);
+
+// Authenticated Make Search
+app.get(
+  "/api/20130724/make/protectedSearch",
+  Mongo.isDbOnline,
+  middleware.hawkAuth,
+  routes.protectedSearch
+);
+
+// Get Make Remix Count
+app.get(
+  "/api/20130724/make/remixCount",
+  middleware.crossOrigin,
+  routes.remixCount
+);
+
+// Tag Suggestion (Autocomplete API)
+app.get(
+  "/api/20130724/make/tags",
+  Mongo.isDbOnline,
+  middleware.crossOrigin,
+  routes.autocomplete
+);
+
+// Admin Make Update route
+app.put(
+  "/admin/api/20130724/make/:id",
+  csrfMiddleware,
+  middleware.collabAuth,
+  middleware.fieldFilter,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  routes.update
+);
+
+// Admin Make Delete Route
+app.del(
+  "/admin/api/20130724/make/:id",
+  csrfMiddleware,
+  middleware.adminAuth,
+  Mongo.isDbOnline,
+  middleware.getMake,
+  routes.remove
+);
+
+// Admin Search Route
+app.get(
+  "/admin/api/20130724/make/protectedSearch",
+  csrfMiddleware,
+  middleware.collabAuth,
+  Mongo.isDbOnline,
+  routes.protectedSearch
+);
+
+// Admin Remix Count
+app.get(
+  "/admin/api/20130724/make/remixCount",
+  routes.remixCount
+);
+
+// Admin Log-in Page
+app.get(
+  "/login",
+  csrfMiddleware,
+  routes.login
+);
+
+// Admin Tool
+app.get(
+  "/admin",
+  csrfMiddleware,
+  middleware.collabAuth,
+  routes.admin
+);
 
 // Admin tool path for generating Hawk Keys
-app.post( "/admin/api/app", csrfMiddleware, middleware.adminAuth, Mongo.isDbOnline, routes.addApp );
+app.post(
+  "/admin/api/app",
+  csrfMiddleware,
+  middleware.adminAuth,
+  Mongo.isDbOnline,
+  routes.addApp
+);
 
 // Serve makeapi-client.js over http
 app.get( "/js/make-api.js", function( req, res ) {
