@@ -123,8 +123,10 @@ app.post(
   "/api/20130724/make",
   middleware.hawkAuth,
   Mongo.isDbOnline,
-  middleware.getMakeCreator,
+  middleware.setHatchetEventType( "create_make" ),
+  middleware.getUser,
   middleware.validateAppTags,
+  middleware.getRemixMake,
   routes.create
 );
 
@@ -133,9 +135,10 @@ app.put(
   "/api/20130724/make/:id",
   middleware.hawkAuth,
   Mongo.isDbOnline,
+  middleware.setHatchetEventType( "update_make" ),
   middleware.getMake,
-  middleware.checkMakeOwner,
-  middleware.getMakeCreator,
+  middleware.checkOwnerApp,
+  middleware.getUser,
   middleware.validateAppTags,
   routes.update
 );
@@ -145,8 +148,10 @@ app.del(
   "/api/20130724/make/:id",
   middleware.hawkAuth,
   Mongo.isDbOnline,
+  middleware.setHatchetEventType( "delete_make" ),
   middleware.getMake,
-  middleware.checkMakeOwner,
+  middleware.getUser,
+  middleware.checkOwnerApp,
   routes.remove
 );
 
@@ -155,8 +160,9 @@ app.put(
   "/api/20130724/make/like/:id",
   middleware.hawkAuth,
   Mongo.isDbOnline,
+  middleware.setHatchetEventType( "like_make" ),
   middleware.getMake,
-  middleware.checkMakeOwner,
+  middleware.checkOwnerApp,
   middleware.like,
   routes.update
 );
@@ -166,8 +172,9 @@ app.put(
   "/api/20130724/make/unlike/:id",
   middleware.hawkAuth,
   Mongo.isDbOnline,
+  middleware.setHatchetEventType( "unlike_make" ),
   middleware.getMake,
-  middleware.checkMakeOwner,
+  middleware.checkOwnerApp,
   middleware.unlike,
   routes.update
 );
@@ -177,8 +184,9 @@ app.put(
   "/api/20130724/make/report/:id",
   middleware.hawkAuth,
   Mongo.isDbOnline,
+  middleware.setHatchetEventType( "report_make" ),
   middleware.getMake,
-  middleware.checkMakeOwner,
+  middleware.checkOwnerApp,
   middleware.report,
   routes.update
 );
@@ -188,8 +196,9 @@ app.put(
   "/api/20130724/make/cancelReport/:id",
   middleware.hawkAuth,
   Mongo.isDbOnline,
+  middleware.setHatchetEventType( "cancel_report_make" ),
   middleware.getMake,
-  middleware.checkMakeOwner,
+  middleware.checkOwnerApp,
   middleware.cancelReport,
   routes.update
 );
@@ -228,30 +237,34 @@ app.get(
 // Admin Make Update route
 app.put(
   "/admin/api/20130724/make/:id",
+  Mongo.isDbOnline,
   csrfMiddleware,
+  middleware.setHatchetEventType( "admin_update_make" ),
   middleware.collabAuth,
   middleware.fieldFilter,
-  Mongo.isDbOnline,
   middleware.getMake,
+  middleware.getUser,
   routes.update
 );
 
 // Admin Make Delete Route
 app.del(
   "/admin/api/20130724/make/:id",
-  csrfMiddleware,
-  middleware.adminAuth,
   Mongo.isDbOnline,
+  csrfMiddleware,
+  middleware.setHatchetEventType( "admin_delete_make" ),
+  middleware.adminAuth,
   middleware.getMake,
+  middleware.getUser,
   routes.remove
 );
 
 // Admin Search Route
 app.get(
   "/admin/api/20130724/make/protectedSearch",
+  Mongo.isDbOnline,
   csrfMiddleware,
   middleware.collabAuth,
-  Mongo.isDbOnline,
   routes.protectedSearch
 );
 
