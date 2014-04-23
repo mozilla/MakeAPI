@@ -8,6 +8,7 @@
 
 var hyperquest = require( "hyperquest" ),
     async = require( "async" ),
+    hatchet = require( "hatchet" ),
     url = require( "url" ),
     env = require( "../lib/environment" );
 
@@ -31,10 +32,46 @@ module.exports = function( makeModel ) {
     hawkModule.respond( code, res, req.credentials, req.artifacts, { status: "failure", reason: err }, "application/json" );
   }
 
+  function buildHatchetData( req, make, type ) {
+    var hatchetData = {
+      userId: req.user.id,
+      username: req.user.username,
+      email: req.user.email,
+      make: make.toObject()
+    };
+
+    if ( req.credentials ) {
+      hatchetData.apiApp = req.credentials.user;
+    }
+
+    var remixMake = req.hatchet.remixMake,
+        remixUser = req.hatchet.remixUser,
+        adminUser = req.hatchet.adminUser;
+
+    if ( type === "create_make" && make.remixedFrom && remixMake ) {
+      hatchetData.remixMake = remixMake;
+      if ( remixUser ) {
+        hatchetData.remixUserId = remixUser.make;
+        hatchetData.remixEmail = remixUser.email;
+        hatchetData.remixUsername = remixUser.username;
+      } else {
+        hatchetData.remixUserId = -1;
+      }
+    } else if ( /^admin_.*$/.test( type ) && adminUser ) {
+      hatchetData.adminUserId = adminUser.id;
+      hatchetData.adminUserEmail = adminUser.email;
+    }
+
+    return hatchetData;
+  }
+
   function handleSave( req, res, err, make, type ){
+    var hatchetData;
     if ( err ) {
       hawkError( req, res, err, 400, type );
     } else {
+      hatchetData = buildHatchetData( req, make, req.hatchet.type );
+      hatchet.send( req.hatchet.type, hatchetData );
       metrics.increment( "make." + type + ".success" );
       hawkModule.respond( 200, res, req.credentials, req.artifacts, make, "application/json" );
     }
@@ -237,6 +274,7 @@ module.exports = function( makeModel ) {
         if ( err ) {
           return hawkError( req, res, err, 500, "remove" );
         }
+        hatchet.send( req.hatchet.type, buildHatchetData( req, make, req.hatchet.type ) );
         metrics.increment( "make.remove.success" );
         hawkModule.respond( 200, res, req.credentials, req.artifacts, make, "application/json" );
       });

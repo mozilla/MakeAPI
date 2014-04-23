@@ -12,25 +12,12 @@
     "url": "git://github.com/mozilla/MakeAPI.git"
   },
   "author": "Webmaker Product Team <webmaker-staff@mozillafoundation.org>",
-  "contributors": [
-    {
-      "name": "Matthew Schranz",
-      "email": "schranz.m@gmail.com"
-    },
-    {
-      "name": "Simon Wex",
-      "email": "swex@mozilla.com"
-    },
-    {
-      "name": "Christopher De Cairos",
-      "email": "chris@chrisdecairos.ca"
-    }
-  ],
   "license": "MPL-2.0",
   "dependencies": {
     "async": "0.2.9",
     "express": "3.4.5",
     "habitat": "1.1.0",
+    "hatchet": "0.1.0",
     "hawk": "1.0.0",
     "helmet": "0.1.2",
     "hyperquest": "0.2.0",
