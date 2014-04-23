@@ -123,7 +123,8 @@ app.post(
   "/api/20130724/make",
   middleware.hawkAuth,
   Mongo.isDbOnline,
-  middleware.prefixAuth,
+  middleware.getMakeCreator,
+  middleware.validateAppTags,
   routes.create
 );
 
@@ -134,7 +135,8 @@ app.put(
   Mongo.isDbOnline,
   middleware.getMake,
   middleware.checkMakeOwner,
-  middleware.prefixAuth,
+  middleware.getMakeCreator,
+  middleware.validateAppTags,
   routes.update
 );
 
