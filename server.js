@@ -202,6 +202,15 @@ app.get(
   routes.search
 );
 
+// Search for a user's likes
+app.get(
+  "/api/20130724/make/likes/:username",
+  Mongo.isDbOnline,
+  middleware.crossOrigin,
+  middleware.getUserId,
+  routes.getUserLikes
+);
+
 // Authenticated Make Search
 app.get(
   "/api/20130724/make/protectedSearch",

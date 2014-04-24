@@ -13,6 +13,7 @@ module.exports = function routesCtor( makeModel, apiAppModel ) {
       res.send( "Hello world!" );
     },
     search: makeRoutes.search,
+    getUserLikes: makeRoutes.getUserLikes,
     protectedSearch: makeRoutes.protectedSearch,
     remixCount: makeRoutes.remixCount,
     autocomplete: makeRoutes.autocomplete,
