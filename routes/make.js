@@ -131,7 +131,7 @@ module.exports = function( makeModel ) {
       if ( err ) {
         return callback( new Error( "The query produced invalid ElasticSearch DSL" ) );
       }
-      callback( null, results.hits.hits, requestQuery, results.total );
+      callback( null, results.hits.hits, requestQuery, results.hits.total );
     });
   }
 
