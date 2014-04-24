@@ -94,7 +94,7 @@ module.exports = function( makeModel ) {
       if ( err ) {
         return callback( new Error( "The query produced invalid ElasticSearch DSL" ) );
       }
-      callback( null, results.hits.hits, requestQuery, results.total );
+      callback( null, results.hits.hits, requestQuery, results.hits.total );
     });
   }
 
@@ -246,6 +246,23 @@ module.exports = function( makeModel ) {
         return error( res, "Malformed Request", "search", 400 );
       }
       doSearch( req, res, false );
+    },
+    getUserLikes: function( req, res ) {
+      var size = req.query.size;
+      var dsl = queryBuilder.getUserLikes( req.user.id, size );
+
+      Make.search( dsl, function( err, results ) {
+        if ( err ) {
+          return error( res, err, "getUserLikes", err.code );
+        }
+
+        mapUsernames( results.hits.hits, {}, results.hits.total, function( err, results, requestQuery, total ) {
+          if ( err ) {
+            return error( res, err, "getUserLikes", 500 );
+          }
+          res.json({ makes: results, total: total });
+        });
+      });
     },
     protectedSearch: function( req, res ) {
       if ( !req.query ) {
