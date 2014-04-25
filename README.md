@@ -65,7 +65,6 @@ All the environment variables are listed and detailed here: [https://github.com/
 ##### Create a make
 + Headers
     + authorization - Hawk compatible authorization header
-        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
         + For more information about using Hawk, see https://github.com/hueniverse/hawk
 + Body
 
@@ -99,7 +98,6 @@ All the environment variables are listed and detailed here: [https://github.com/
 ##### Update a make
 + Headers
     + authorization - Hawk compatible authorization header
-        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
         + For more information about using Hawk, see https://github.com/hueniverse/hawk
 + Parameters
     + id (string) ... ID of the Make to be updated
@@ -120,7 +118,6 @@ All the environment variables are listed and detailed here: [https://github.com/
 ##### Delete a make
 + Headers
     + authorization - Hawk compatible authorization header
-        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
         + For more information about using Hawk, see https://github.com/hueniverse/hawk
 + Parameters
     + id (string) ... ID of the Make to be updated
@@ -160,7 +157,6 @@ All the environment variables are listed and detailed here: [https://github.com/
 ##### Adds a Webmaker User ID to a Makes likes array
 + Headers
     + authorization - Hawk compatible authorization header
-        + `'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'`
         + For more information about using Hawk, see https://github.com/hueniverse/hawk
 + Parameters
     + id (string) ... Id of the Make to add a like to
@@ -179,7 +175,6 @@ All the environment variables are listed and detailed here: [https://github.com/
 ##### Removes a Webmaker User ID from the Makes likes array
 + Headers
     + authorization - Hawk compatible authorization header
-        + 'Hawk id="dh37fgj492je", ts="1353832234", nonce="j4h3g2", ext="some-app-ext-data", mac="6R4rV5iE+NPoym+WwjeHzjAGXUtLNIxmo1vpMofpLAE="'
         + For more information about using Hawk, see https://github.com/hueniverse/hawk
 + Parameters
     + id (string) ... Id of the Make to remove a like from
@@ -223,6 +218,82 @@ All the environment variables are listed and detailed here: [https://github.com/
             total: {num} // number of suggestions found. May not equal the length of the tags array.
         }
 
+#### POST [/api/20130724/list]
+##### Create a List
++ Headers
+    + authorization - Hawk compatible authorization header
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Body
+
+        {
+            makes: [ /* array of Make IDs */ ],
+            userId: 1234 // UserId of user creating the List
+        }
++ Response 200 {application/json}
+
+        {
+            // The created List in JSON format (Make Data is not hydrated!)
+        }
+
+#### PUT [/api/20130724/list/{id}]
+##### Update a List
++ Headers
+    + authorization - Hawk compatible authorization header
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Parameters
+    + id (string) ... ID of the List to be updated
++ Body
+
+        {
+            userId: 1234 // userID of user making the update
+            makes: [ /* an updated list of Make ID's */ ]
+        }
++ Response 200 {application/json}
+
+        {
+            // The updated List in JSON format (Make Data is not hydrated!)
+        }
+
+#### DELETE [/api/20130724/list/{id}]
+##### Delete a list
++ Headers
+    + authorization - Hawk compatible authorization header
+        + For more information about using Hawk, see https://github.com/hueniverse/hawk
++ Parameters
+    + id (string) ... ID of the List to be updated
++ Response 200 {application/json}
+
+        {
+            // The Deleted List in JSON format (Make Data is not hydrated!)
+        }
+
+#### GET [/api/20130724/list/:id]
+##### Get a List of ordered Makes by List ID. The ID's in the list's make array are hydrated with their corresponding make data and sorted.
++ Parameters
+    + id (string) ... ID of the List to retrieve
++ Response 200 {application/json}
+
+        {
+            makes: [ /* Array of sorted Make data */]
+        }
+
+#### GET [/api/20130724/list/user/:id]
+##### Get a List of lists that are owned by the given user ID
++ Parameters
+    + id (string) ... ID of the user whose lists should be retrieved.
++ Response 200 {application/json}
+
+        {
+            lists: [
+                {
+                    _id: 12345
+                    title: "Awesome Makes",
+                    userId: 123,
+                    username: "webmaker",
+                    makes: [ /* ... */ ]
+                }
+            ]
+        }
 ## 4. Testing
 ### How to test
 We use a combination of technologies to "lint" and test our CSS and JavaScript code. These tests **must** pass in order for a pull request to be merged into the Mozilla repository. To run them locally,
