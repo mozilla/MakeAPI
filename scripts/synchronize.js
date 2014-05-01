@@ -5,20 +5,15 @@ Habitat.load();
 
 var config = new Habitat();
 
-var db = require( "../lib/mongoose" )( config, function( err ) {
-  if ( err ) {
-    console.error( err );
-    process.exit( 1 );
-  }
-
-  var Make = require( "../lib/models/make" )( config, db.mongoInstance() );
+var Mongo = require( "../lib/mongoose" )();
+var Make = require( "../lib/models/make" )( Mongo.mongoInstance() );
 
   var q = async.queue( function( doc, done ) {
     doc.index( done );
   }, 2);
   q.drain = function() {
     console.log( "Done indexing %d records from Mongo", indexedRecords );
-    db.mongoInstance().connection.close();
+    Mongo.mongoInstance().connection.close();
   };
 
   var indexedRecords = 0;
@@ -41,4 +36,3 @@ var db = require( "../lib/mongoose" )( config, function( err ) {
   stream.on( "end", function() {
     console.log( "Done streaming records from Mongo" );
   });
-});
