@@ -8,6 +8,8 @@ var config = new Habitat();
 var Mongo = require( "../lib/mongoose" )();
 var Make = require( "../lib/models/make" )( Mongo.mongoInstance() );
 
+var criteria = process.argv[2] ? JSON.parse(process.argv[2]) : {};
+
   var q = async.queue( function( doc, done ) {
     doc.index( done );
   }, 2);
@@ -17,7 +19,7 @@ var Make = require( "../lib/models/make" )( Mongo.mongoInstance() );
   };
 
   var indexedRecords = 0;
-  var stream = Make.find({}).stream();
+  var stream = Make.find(criteria).stream();
   stream.on( "data", function( doc ) {
     q.push( doc, function( err ) {
       if ( err ) {
