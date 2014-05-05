@@ -37,4 +37,9 @@ var criteria = process.argv[2] ? JSON.parse(process.argv[2]) : {};
   });
   stream.on( "end", function() {
     console.log( "Done streaming records from Mongo" );
+
+    if (indexedRecords === 0) {
+      console.log("No records matching '%j' found", criteria);
+      Mongo.mongoInstance().connection.close();
+    }
   });
