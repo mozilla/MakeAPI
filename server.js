@@ -20,6 +20,7 @@ var app = express(),
     Mongo = require( "./lib/mongoose" )(),
     Make = require( "./lib/models/make" )( Mongo.mongoInstance() ),
     apiApp = require( "./lib/models/apiApp" )( Mongo.mongoInstance() ),
+    List = require( "./lib/models/list" )( Mongo.mongoInstance() ),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
     csrfMiddleware = express.csrf(),
     webmakerAuth = new WebmakerAuth({
@@ -81,8 +82,8 @@ app.use(express.static(tmpDir));
 
 app.use( app.router );
 
-var routes = require( "./routes" )( Make, apiApp ),
-    middleware = require( "./lib/middleware" )( Make, apiApp );
+var routes = require( "./routes" )( Make, apiApp, List ),
+    middleware = require( "./lib/middleware" )( Make, apiApp, List );
 
 app.use( middleware.errorHandler );
 app.use( middleware.fourOhFourHandler );
@@ -137,7 +138,7 @@ app.put(
   Mongo.isDbOnline,
   middleware.setHatchetEventType( "update_make" ),
   middleware.getMake,
-  middleware.checkOwnerApp,
+  middleware.checkOwnerApp( "make" ),
   middleware.getUser,
   middleware.validateAppTags,
   routes.update
@@ -151,7 +152,7 @@ app.del(
   middleware.setHatchetEventType( "delete_make" ),
   middleware.getMake,
   middleware.getUser,
-  middleware.checkOwnerApp,
+  middleware.checkOwnerApp( "make" ),
   routes.remove
 );
 
@@ -162,7 +163,7 @@ app.put(
   Mongo.isDbOnline,
   middleware.setHatchetEventType( "like_make" ),
   middleware.getMake,
-  middleware.checkOwnerApp,
+  middleware.checkOwnerApp( "make" ),
   middleware.like,
   routes.update
 );
@@ -174,7 +175,7 @@ app.put(
   Mongo.isDbOnline,
   middleware.setHatchetEventType( "unlike_make" ),
   middleware.getMake,
-  middleware.checkOwnerApp,
+  middleware.checkOwnerApp( "make" ),
   middleware.unlike,
   routes.update
 );
@@ -186,7 +187,7 @@ app.put(
   Mongo.isDbOnline,
   middleware.setHatchetEventType( "report_make" ),
   middleware.getMake,
-  middleware.checkOwnerApp,
+  middleware.checkOwnerApp( "make" ),
   middleware.report,
   routes.update
 );
@@ -198,7 +199,7 @@ app.put(
   Mongo.isDbOnline,
   middleware.setHatchetEventType( "cancel_report_make" ),
   middleware.getMake,
-  middleware.checkOwnerApp,
+  middleware.checkOwnerApp( "make" ),
   middleware.cancelReport,
   routes.update
 );
@@ -296,6 +297,55 @@ app.post(
   middleware.adminAuth,
   Mongo.isDbOnline,
   routes.addApp
+);
+
+// Make Lists
+
+// Create List
+app.post(
+  "/api/20130724/list",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.setHatchetEventType( "create_list" ),
+  middleware.getListCreator,
+  routes.list.create
+);
+
+// Update List
+app.put(
+  "/api/20130724/list/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.setHatchetEventType( "update_list" ),
+  middleware.getList,
+  middleware.checkOwnerApp( "list" ),
+  routes.list.update
+);
+
+// Delete List
+app.del(
+  "/api/20130724/list/:id",
+  middleware.hawkAuth,
+  Mongo.isDbOnline,
+  middleware.setHatchetEventType( "delete_list" ),
+  middleware.getList,
+  middleware.checkOwnerApp( "list" ),
+  routes.list.remove
+);
+
+
+app.get(
+  "/api/20130724/list/:id",
+  Mongo.isDbOnline,
+  middleware.crossOrigin,
+  routes.list.get
+);
+
+app.get(
+  "/api/20130724/list/user/:id",
+  Mongo.isDbOnline,
+  middleware.crossOrigin,
+  routes.list.getUserLists
 );
 
 // Serve makeapi-client.js over http

@@ -22,7 +22,7 @@
     "helmet": "0.1.2",
     "hyperquest": "0.2.0",
     "less-middleware": "0.1.15",
-    "makeapi-client": "https://github.com/mozilla/makeapi-client/tarball/v0.5.17",
+    "makeapi-client": "0.5.24",
     "messina": "0.1.1",
     "mongoose": "3.5.2",
     "mongoose-validator": "0.2.1",
