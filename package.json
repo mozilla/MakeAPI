@@ -20,7 +20,7 @@
     "hatchet": "0.1.0",
     "hawk": "1.0.0",
     "helmet": "0.1.2",
-    "hyperquest": "0.2.0",
+    "hyperquest": "^0.3.0",
     "less-middleware": "0.1.15",
     "makeapi-client": "0.5.24",
     "messina": "0.1.1",
