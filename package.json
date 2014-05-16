@@ -18,7 +18,7 @@
     "express": "3.4.5",
     "habitat": "1.1.0",
     "hatchet": "0.1.0",
-    "hawk": "1.0.0",
+    "hawk": "^2.2.0",
     "helmet": "0.1.2",
     "hyperquest": "^0.3.0",
     "less-middleware": "0.1.15",
