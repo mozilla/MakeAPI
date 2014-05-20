@@ -384,7 +384,10 @@ document.addEventListener( "DOMContentLoaded", function() {
         apiURL: "/admin",
         csrf: csrfToken,
         // fake Hawk creds
-        hawk: {}
+        hawk: {
+          id: "000",
+          key: "000"
+        }
       }),
       searchTypeSelector = document.querySelector( "#filter-type" ),
       sortByUpdated = document.querySelector( "#sort-by-updated"),
