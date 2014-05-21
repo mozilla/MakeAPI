@@ -11,7 +11,7 @@ module.exports = function routesCtor( makeModel, apiAppModel, listModel ) {
 
   return {
     index: function( req, res ) {
-      res.send( "Hello world!" );
+      res.render( "index.html" );
     },
     search: makeRoutes.search,
     protectedSearch: makeRoutes.protectedSearch,
