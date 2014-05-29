@@ -34,7 +34,7 @@ module.exports = function( List, Make ) {
 
   function buildQuery( list, callback ) {
     if ( !list.makes.length ) {
-      return callback( null, null, null );
+      return callback( null, null, list );
     }
     queryBuilder.search({
       limit: list.length,
@@ -49,8 +49,8 @@ module.exports = function( List, Make ) {
   }
 
   function doSearch( dsl, list, callback ) {
-    if ( !list ) {
-      return callback( null, null, null );
+    if ( !list.makes.length ) {
+      return callback( null, null, list );
     }
     Make.search( dsl, function( err, results ) {
       if ( err ) {
@@ -61,30 +61,30 @@ module.exports = function( List, Make ) {
   }
 
   function transformMakes( makes, list, callback ) {
-    if ( !list ) {
-      return callback( null, null, null );
+    if ( !list.makes.length ) {
+      return callback( null, null, list );
     }
     mapUsernames(makes, function( err, mappedMakes ) {
       if ( err ) {
         return callback( err );
       }
-      callback( null, mappedMakes, list.makes );
+      callback( null, mappedMakes, list );
     });
   }
 
-  function orderList( makes, listMakes, callback ) {
-    if ( !listMakes ) {
-      return callback( null, null );
+  function orderList( makes, list, callback ) {
+    if ( !list.makes.length ) {
+      return callback( null, null, list );
     }
     makes.sort(function(a, b) {
-      if ( listMakes.indexOf( a._id ) < listMakes.indexOf( b._id ) ) {
+      if ( list.makes.indexOf( a._id ) < list.makes.indexOf( b._id ) ) {
         return -1;
-      } else if( listMakes.indexOf( a._id ) > listMakes.indexOf( b._id ) ) {
+      } else if( list.makes.indexOf( a._id ) > list.makes.indexOf( b._id ) ) {
         return 1;
       }
       return 0;
     });
-    callback( null, makes );
+    callback( null, makes, list );
   }
 
   function create( req, res ) {
@@ -104,7 +104,8 @@ module.exports = function( List, Make ) {
       makes: body.makes,
       userId: body.userId,
       ownerApp: req.credentials.user,
-      title: body.title ||  req.user.username + "'s Untitled List"
+      title: body.title ||  req.user.username + "'s Untitled List",
+      description: body.description || ""
     });
 
     list.save(function( err, list ) {
@@ -134,13 +135,11 @@ module.exports = function( List, Make ) {
       return hawkError( req, res, "Invalid post body", 400 );
     }
 
-    if ( body.makes ) {
-      list.makes = body.makes;
-    }
-
-    if ( body.title ) {
-      list.title = body.title;
-    }
+    List.updateFields.forEach(function( field ) {
+      if ( body[ field ] ) {
+        list[ field ] = body[ field ];
+      }
+    });
 
     list.save(function( err ) {
       if ( err ) {
@@ -189,14 +188,18 @@ module.exports = function( List, Make ) {
       doSearch,
       transformMakes,
       orderList
-    ], function( err, makes ) {
+    ], function( err, orderedMakes, list ) {
       if ( err ) {
         if ( err.code === 404 ) {
           return res.json( { makes: [], total: 0 } );
         }
         return res.json( 500, err );
       }
-      res.json( { makes: makes || [] } );
+      res.json({
+        makes: orderedMakes || [],
+        title: list.title,
+        description: list.description
+      });
     });
   }
 
