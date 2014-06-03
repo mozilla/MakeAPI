@@ -13,9 +13,10 @@ The MakeAPI is a node.js based service for storing and exposing metadata about u
 - [MongoDB](http://www.mongodb.org/)
   - *Mac OS X*: Run this with `mongod`
   - *Ubuntu-based linux systems.*: Run this with `sudo service mongodb start`
-- [ElasticSearch](http://www.elasticsearch.org/)
+- [ElasticSearch](http://www.elasticsearch.org/) **VERSION 0.90.x ONLY**
   - *Mac OS X*: Run this with `elasticsearch -f`
   - *Ubuntu-based linux systems.*: Run this with `sudo service elasticsearch start`
+  - *We're working on support for ElasticSearch v1.x [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1019675)*
 - [Login server](https://github.com/mozilla/login.webmaker.org)
 - [Webmaker.org server](https://github.com/mozilla/webmaker.org)
 
