@@ -44,15 +44,27 @@ module.exports = function( qb ) {
 
   return function() {
     tests.forEach(function( test ) {
-      qb.search( { limit: test.limit }, function( err, query ) {
-        it( "err should be null", function() {
-          assert.strictEqual( err, null );
+      describe( "limit = " + test.limit, function(){
+        var result = {};
+
+        before(function( done ){
+          qb.search( { limit: test.limit }, function( err, query ) {
+            result.err = err;
+            result.query = query;
+            done();
+          });
         });
-        it( "query should be defined", function() {
-          assert( query );
-        });
-        it( "query.size should be set to " + test.expected, function() {
-          assert.strictEqual( query.size, test.expected );
+
+        describe("Built Query:", function () {
+          it( "err should be null", function() {
+            assert.strictEqual( result.err, null );
+          });
+          it( "query should be defined", function() {
+            assert( result.query );
+          });
+          it( "query.size should be set to " + test.expected, function() {
+            assert.strictEqual( result.query.size, test.expected );
+          });
         });
       });
     });

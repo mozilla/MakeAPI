@@ -4,27 +4,27 @@ module.exports = function( qb ){
   var filterTests = {
     author: [
       {
-        args: [ { author: "name" } ],
+        query: { author: "name" },
         expected: { "term": { "author": "name" } }
       },
       {
-        args: [ { author: "{!}name" } ],
+        query: { author: "{!}name" },
         expected: { "not": { "term": { "author": "name" } } }
       }
     ],
     contentType: [
       {
-        args: [ { contentType: "application/x-type" } ],
+        query: { contentType: "application/x-type" },
         expected: { "term": { "contentType": "application/x-type" } }
       },
       {
-        args: [ { contentType: "{!}application/x-type" } ],
+        query: { contentType: "{!}application/x-type" },
         expected: { "not": { "term": { "contentType": "application/x-type" } } }
       }
     ],
     description: [
       {
-        args: [ { description: "This is a description" } ],
+        query: { description: "This is a description" },
         expected: {
           "query": {
             "match": {
@@ -37,7 +37,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { description: "{!}This is a description" } ],
+        query: { description: "{!}This is a description" },
         expected: {
           "not": {
             "query": {
@@ -54,15 +54,15 @@ module.exports = function( qb ){
     ],
     id: [
       {
-        args: [ { id: "randomidstring" } ],
-        expected: { "query": { "field": { "_id": "randomidstring" } } }
+        query: { id: "randomidstring" },
+        expected: { "term": { "_id": "randomidstring" } }
       },
       {
-        args: [ { id: "{!}randomidstring" } ],
-        expected: { "not": { "query": { "field": { "_id": "randomidstring" } } } }
+        query: { id: "{!}randomidstring" },
+        expected: { "not": { "term": { "_id": "randomidstring" } } }
       },
       {
-        args: [ { id: "id,id2" } ],
+        query: { id: "id,id2" },
         expected: {
           "terms": {
             "_id": [
@@ -73,7 +73,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "id,id2,id3" } ],
+        query: { id: "id,id2,id3" },
         expected: {
           "terms": {
             "_id": [
@@ -85,7 +85,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "or,id" } ],
+        query: { id: "or,id" },
         expected: {
           "terms": {
             "_id": [
@@ -96,7 +96,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "or,id,id2" } ],
+        query: { id: "or,id,id2" },
         expected: {
           "terms": {
             "_id": [
@@ -108,7 +108,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "or,id,id2,id3" } ],
+        query: { id: "or,id,id2,id3" },
         expected: {
           "terms": {
             "_id": [
@@ -121,7 +121,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "and,id" } ],
+        query: { id: "and,id" },
         expected: {
           "terms": {
             "_id": [
@@ -132,7 +132,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "and,id,id2" } ],
+        query: { id: "and,id,id2" },
         expected: {
           "terms": {
             "_id": [
@@ -144,7 +144,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "and,id,id2,id3" } ],
+        query: { id: "and,id,id2,id3" },
         expected: {
           "terms": {
             "_id": [
@@ -157,7 +157,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}id,id2" } ],
+        query: { id: "{!}id,id2" },
         expected: {
           "not": {
             "terms": {
@@ -170,7 +170,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}id,id2,id3" } ],
+        query: { id: "{!}id,id2,id3" },
         expected: {
           "not": {
             "terms": {
@@ -184,7 +184,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}or,id" } ],
+        query: { id: "{!}or,id" },
         expected: {
           "not": {
             "terms": {
@@ -197,7 +197,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}or,id,id2" } ],
+        query: { id: "{!}or,id,id2" },
         expected: {
           "not": {
             "terms": {
@@ -211,7 +211,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}or,id,id2,id3" } ],
+        query: { id: "{!}or,id,id2,id3" },
         expected: {
           "not": {
             "terms": {
@@ -226,7 +226,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}and,id" } ],
+        query: { id: "{!}and,id" },
         expected: {
           "not": {
             "terms": {
@@ -239,7 +239,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}and,id,id2" } ],
+        query: { id: "{!}and,id,id2" },
         expected: {
           "not": {
             "terms": {
@@ -253,7 +253,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "{!}and,id,id2,id3" } ],
+        query: { id: "{!}and,id,id2,id3" },
         expected: {
           "not": {
             "terms": {
@@ -268,7 +268,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "   id,   id2   " } ],
+        query: { id: "   id,   id2   " },
         expected: {
           "terms": {
             "_id": [
@@ -279,7 +279,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "   id,id2,   id3" } ],
+        query: { id: "   id,id2,   id3" },
         expected: {
           "terms": {
             "_id": [
@@ -291,7 +291,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "or,   id" } ],
+        query: { id: "or,   id" },
         expected: {
           "terms": {
             "_id": [
@@ -302,7 +302,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "or   ,id,   id2    " } ],
+        query: { id: "or   ,id,   id2    " },
         expected: {
           "terms": {
             "_id": [
@@ -314,7 +314,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { id: "or,    id,  id2  ,id3         " } ],
+        query: { id: "or,    id,  id2  ,id3         " },
         expected: {
           "terms": {
             "_id": [
@@ -329,17 +329,17 @@ module.exports = function( qb ){
     ],
     remixedFrom: [
       {
-        args: [ { remixedFrom: "remixid" } ],
+        query: { remixedFrom: "remixid" },
         expected: { "term": { "remixedFrom": "remixid" } }
       },
       {
-        args: [ { remixedFrom: "{!}remixid" } ],
+        query: { remixedFrom: "{!}remixid" },
         expected: { "not": { "term": { "remixedFrom": "remixid" } } }
       }
     ],
     tags: [
       {
-        args: [ { tags: "tag" } ],
+        query: { tags: "tag" },
         expected: {
           "terms": {
             "tags": [
@@ -349,7 +349,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "tag,tag2" } ],
+        query: { tags: "tag,tag2" },
         expected: {
           "terms": {
             "tags": [
@@ -360,7 +360,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "tag,tag2,tag3" } ],
+        query: { tags: "tag,tag2,tag3" },
         expected: {
           "terms": {
             "tags": [
@@ -372,7 +372,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "or,tag" } ],
+        query: { tags: "or,tag" },
         expected: {
           "terms": {
             "tags": [
@@ -383,7 +383,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "or,tag,tag2" } ],
+        query: { tags: "or,tag,tag2" },
         expected: {
           "terms": {
             "tags": [
@@ -395,7 +395,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "or,tag,tag2,tag3" } ],
+        query: { tags: "or,tag,tag2,tag3" },
         expected: {
           "terms": {
             "tags": [
@@ -408,7 +408,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "and,tag" } ],
+        query: { tags: "and,tag" },
         expected: {
           "terms": {
             "tags": [
@@ -419,7 +419,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "and,tag,tag2" } ],
+        query: { tags: "and,tag,tag2" },
         expected: {
           "terms": {
             "tags": [
@@ -431,7 +431,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "and,tag,tag2,tag3" } ],
+        query: { tags: "and,tag,tag2,tag3" },
         expected: {
           "terms": {
             "tags": [
@@ -444,7 +444,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}tag" } ],
+        query: { tags: "{!}tag" },
         expected: {
           "not": {
             "terms": {
@@ -456,7 +456,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}tag,tag2" } ],
+        query: { tags: "{!}tag,tag2" },
         expected: {
           "not": {
             "terms": {
@@ -469,7 +469,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}tag,tag2,tag3" } ],
+        query: { tags: "{!}tag,tag2,tag3" },
         expected: {
           "not": {
             "terms": {
@@ -483,7 +483,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}or,tag" } ],
+        query: { tags: "{!}or,tag" },
         expected: {
           "not": {
             "terms": {
@@ -496,7 +496,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}or,tag,tag2" } ],
+        query: { tags: "{!}or,tag,tag2" },
         expected: {
           "not": {
             "terms": {
@@ -510,7 +510,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}or,tag,tag2,tag3" } ],
+        query: { tags: "{!}or,tag,tag2,tag3" },
         expected: {
           "not": {
             "terms": {
@@ -525,7 +525,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}and,tag" } ],
+        query: { tags: "{!}and,tag" },
         expected: {
           "not": {
             "terms": {
@@ -538,7 +538,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}and,tag,tag2" } ],
+        query: { tags: "{!}and,tag,tag2" },
         expected: {
           "not": {
             "terms": {
@@ -552,7 +552,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "{!}and,tag,tag2,tag3" } ],
+        query: { tags: "{!}and,tag,tag2,tag3" },
         expected: {
           "not": {
             "terms": {
@@ -567,7 +567,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "  tag    " } ],
+        query: { tags: "  tag    " },
         expected: {
           "terms": {
             "tags": [
@@ -577,7 +577,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "   tag,   tag2   " } ],
+        query: { tags: "   tag,   tag2   " },
         expected: {
           "terms": {
             "tags": [
@@ -588,7 +588,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "   tag,tag2,   tag3" } ],
+        query: { tags: "   tag,tag2,   tag3" },
         expected: {
           "terms": {
             "tags": [
@@ -600,7 +600,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "or,   tag" } ],
+        query: { tags: "or,   tag" },
         expected: {
           "terms": {
             "tags": [
@@ -611,7 +611,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "or   ,tag,   tag2    " } ],
+        query: { tags: "or   ,tag,   tag2    " },
         expected: {
           "terms": {
             "tags": [
@@ -623,7 +623,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tags: "or,    tag,  tag2  ,tag3         " } ],
+        query: { tags: "or,    tag,  tag2  ,tag3         " },
         expected: {
           "terms": {
             "tags": [
@@ -638,7 +638,7 @@ module.exports = function( qb ){
     ],
     tagPrefix: [
       {
-        args: [ { tagPrefix: "prefixString" } ],
+        query: { tagPrefix: "prefixString" },
         expected: {
           "prefix": {
             "tags": "prefixString"
@@ -646,7 +646,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { tagPrefix: "{!}prefixString" } ],
+        query: { tagPrefix: "{!}prefixString" },
         expected: {
           "not": {
             "prefix": {
@@ -658,7 +658,7 @@ module.exports = function( qb ){
     ],
     title: [
       {
-        args: [ { title: "This is a title" } ],
+        query: { title: "This is a title" },
         expected: {
           "query": {
             "match": {
@@ -671,7 +671,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { title: "{!}This is a title" } ],
+        query: { title: "{!}This is a title" },
         expected: {
           "not": {
             "query": {
@@ -688,7 +688,7 @@ module.exports = function( qb ){
     ],
     url: [
       {
-        args: [ { url: "https://mozilla.org" } ],
+        query: { url: "https://mozilla.org" },
         expected: {
           "term": {
             "url": "https://mozilla.org"
@@ -696,25 +696,7 @@ module.exports = function( qb ){
         }
       },
       {
-        args: [ { url: "{!}https://mozilla.org" } ],
-        expected: {
-          "not": {
-            "term": {
-              "url": "https://mozilla.org"
-            }
-          }
-        }
-      },
-      {
-        args: [ { url: "https%3A//mozilla.org" } ],
-        expected: {
-          "term": {
-            "url": "https://mozilla.org"
-          }
-        }
-      },
-      {
-        args: [ { url: "{!}https%3A//mozilla.org" } ],
+        query: { url: "{!}https://mozilla.org" },
         expected: {
           "not": {
             "term": {
@@ -729,19 +711,30 @@ module.exports = function( qb ){
   return function() {
     Object.keys( filterTests ).forEach(function( field ) {
       var tests = filterTests[ field ];
-      tests.map(function( test ) {
-        test.args.push(function( err, query ) {
-          it( "err should be undefined", function() {
-            assert.strictEqual( err, null );
+      tests.forEach(function( test ) {
+        describe( "field = " + field + " query = " + JSON.stringify( test.query ), function() {
+          var result = {};
+
+          before(function(done) {
+            qb.search( test.query, function( err, query ) {
+              result.err = err;
+              result.query = query;
+              done();
+            });
           });
-          it( "query should be defined", function(){
-            assert( query );
-          });
-          it( "term[s] filter should exist", function() {
-            assert.deepEqual( query.query.filtered.filter.bool.must[ 0 ], test.expected );
+
+          describe( "Built Query", function() {
+            it( "err should be undefined", function() {
+              assert.strictEqual( result.err, null );
+            });
+            it( "query should be defined", function(){
+              assert( result.query );
+            });
+            it( "term[s] filter should exist", function() {
+              assert.deepEqual( result.query.query.filtered.filter.bool.must[ 0 ], test.expected );
+            });
           });
         });
-        qb.search.apply( this, test.args );
       });
     });
   };

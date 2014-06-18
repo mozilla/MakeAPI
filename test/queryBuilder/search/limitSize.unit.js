@@ -76,19 +76,29 @@ module.exports = function( qb ) {
   ];
 
   return function() {
-    var testNum;
-    tests.forEach(function( test, idx ) {
-      qb.search( { page: test.page, limit: test.limit }, function( err, query ) {
-        testNum = idx + 1;
-        it( "err should be null - test #" + testNum, function() {
-          assert.strictEqual( err, null );
+    tests.forEach(function( test ) {
+      describe( "size = " + test.size + " limit = " + test.limit, function() {
+        var result = {};
+
+        before(function( done ) {
+          qb.search( { page: test.page, limit: test.limit }, function( err, query ) {
+            result.err = err;
+            result.query = query;
+            done();
+          });
         });
-        it( "query should be defined - test #" + testNum, function(){
-          assert( query );
-        });
-        it( "from and size match expected - test #" + testNum, function() {
-          assert.strictEqual( query.from, test.expected.from );
-          assert.strictEqual( query.size, test.expected.size );
+
+        describe("Built Query:", function() {
+          it( "err should be null", function() {
+            assert.strictEqual( result.err, null );
+          });
+          it( "query should be defined", function(){
+            assert( result.query );
+          });
+          it( "from and size match expected", function() {
+            assert.strictEqual( result.query.from, test.expected.from );
+            assert.strictEqual( result.query.size, test.expected.size );
+          });
         });
       });
     });

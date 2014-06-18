@@ -44,58 +44,65 @@ module.exports = function( qb ) {
         "",
         ",asc",
         ",desc"
+      ],
+      ignoredInvalidFields = [
+         { sortByField: 1 },
+         { sortByField: "Invalid" },
+         { sortByField: { "invalid": "arg" } }
       ];
 
   return function() {
-    qb.search( { sortByField: 1 }, function( err, query ) {
-      it( "err should be null", function() {
-        assert.strictEqual( err, null );
-      });
-      it( "query should be defined", function(){
-        assert( query );
-      });
-      it( "The invalid sort field should have been ignored", function() {
-        assert.deepEqual( query, baseQuery );
-      });
-    });
+    ignoredInvalidFields.forEach(function(test) {
+      describe( "Ignored - SortByField = " + test.sortByField, function() {
+        var result = {};
 
-    qb.search( { sortByField: "Invalid" }, function( err, query ) {
-      it( "err should be null", function() {
-        assert.strictEqual( err, null );
-      });
-      it( "query should be defined", function(){
-        assert( query );
-      });
-      it( "The invalid sort field should have been ignored", function() {
-        assert.deepEqual( query, baseQuery );
-      });
-    });
+        before(function(done) {
+          qb.search( test, function( err, query ) {
+            result.err = err;
+            result.query = query;
+            done();
+          });
+        });
 
-    qb.search( { sortByField: { "invalid": "arg" } }, function( err, query ) {
-      it( "err should be null", function() {
-        assert.strictEqual( err, null );
-      });
-      it( "query should be defined", function(){
-        assert( query );
-      });
-      it( "The invalid sort field should have been ignored", function() {
-        assert.deepEqual( query, baseQuery );
+        describe("Built Query:", function() {
+          it( "err should be null", function() {
+            assert.strictEqual( result.err, null );
+          });
+          it( "query should be defined", function(){
+            assert( result.query );
+          });
+          it( "The invalid sort field should have been ignored", function() {
+            assert.deepEqual( result.query, baseQuery );
+          });
+        });
       });
     });
 
     validSortFields.forEach(function( field ) {
       validDirections.forEach( function( direction ) {
-        qb.search( { sortByField: direction ? field + direction : field }, function( err, query ) {
-          it( "err should be null", function() {
-            assert.strictEqual( err, null );
+        describe( "Valid - SortByField = " + field + (direction ? " direction = " + direction : ""), function() {
+          var result = {};
+
+          before(function(done) {
+            qb.search( { sortByField: direction ? field + direction : field }, function( err, query ) {
+              result.err = err;
+              result.query = query;
+              done();
+            });
           });
-          it( "query should be defined", function(){
-            assert( query );
-          });
-          it( "The sort field should have been created for " + field, function() {
-            var passObj = {};
-            passObj[ field ] = direction ? direction.substr( 1 ) : "desc";
-            assert.deepEqual( query.sort[0], passObj );
+
+          describe( "Built Query", function() {
+            it( "err should be null", function() {
+              assert.strictEqual( result.err, null );
+            });
+            it( "query should be defined", function(){
+              assert( result.query );
+            });
+            it( "The sort field should have been created for " + field, function() {
+              var passObj = {};
+              passObj[ field ] = direction ? direction.substr( 1 ) : "desc";
+              assert.deepEqual( result.query.sort[0], passObj );
+            });
           });
         });
       });

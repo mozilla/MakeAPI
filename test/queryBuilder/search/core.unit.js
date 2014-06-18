@@ -69,12 +69,22 @@ module.exports = function( qb ){
       });
     },
     emptyQuery: function() {
-      qb.search( {}, function( err, query ) {
+      var err, query;
+
+      before(function(done){
+        qb.search( {}, function( e, q ) {
+          err = e;
+          query = q;
+          done();
+        });
+      });
+
+      describe( "empty query", function(){
         it( "err should be null", function() {
-          assert.strictEqual( err, null );
+            assert.strictEqual( err, null );
         });
         it( "built query should match the defined base query", function() {
-          assert.deepEqual( query, baseQuery );
+            assert.deepEqual( query, baseQuery );
         });
       });
     }

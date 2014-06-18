@@ -14,22 +14,22 @@
 
   describe( "QueryBuilder: ", core.base );
 
-  describe( "build() - bad args: ", core.badArgs );
+  describe( "qb.search() - bad args: ", core.badArgs );
 
-  describe( "build() - empty query object: ", core.emptyQuery );
+  describe( "qb.search()", core.emptyQuery );
 
-  describe( "build() - size(limit): ", size );
+  describe( "qb.search() - size(limit): ", size );
 
-  describe( "build() - page: ", page );
+  describe( "qb.search() - page: ", page );
 
-  describe( "build() - size and limit: ", sizeAndLimit );
+  describe( "qb.search() - size and limit: ", sizeAndLimit );
 
-  describe( "build() - sort: ", sort );
+  describe( "qb.search() - sort: ", sort );
 
-  describe( "build() - All Term filters: ", filterTests );
+  describe( "qb.search() - All Term filters: ", filterTests );
 
-  describe( "build() - complexQueries: ", complexQueries );
+  describe( "qb.search() - complexQueries: ", complexQueries );
 
-  describe( "build() - tag facets: ", tagFacets );
+  describe( "qb.search() - tag facets: ", tagFacets );
 
 };
