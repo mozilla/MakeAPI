@@ -24,7 +24,8 @@ var app = express(),
     nunjucksEnv = new nunjucks.Environment( new nunjucks.FileSystemLoader( path.join( __dirname + "/views" ) ), { autoescape: true } ),
     csrfMiddleware = express.csrf(),
     webmakerAuth = new WebmakerAuth({
-      loginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
+      loginURL: env.get( "LOGIN_SERVER" ),
+      authLoginURL: env.get( "LOGIN_SERVER_URL_WITH_AUTH" ),
       secretKey: env.get( "SESSION_SECRET" ),
       forceSSL: env.get( "FORCE_SSL" ),
       domain: env.get( "COOKIE_DOMAIN" )
