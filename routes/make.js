@@ -262,6 +262,29 @@ module.exports = function( makeModel ) {
         http: "okay",
         version: version
       });
+    },
+    tag: function( req, res ) {
+      var tag = req.params.tag;
+      var make = req.make;
+      if ( make.tags.indexOf(tag) !== -1 ) {
+        return hawkError( req, res, "Already tagged with " + tag, 400, "tag" );
+      }
+
+      make.tags.push(tag);
+      make.save(function( err, make ) {
+        return handleSave( req, res, err, make, "tag" );
+      });
+    },
+    untag: function( req, res ) {
+      var tag = req.params.tag;
+      var make = req.make;
+      if ( make.tags.indexOf(tag) === -1 ) {
+        return hawkError( req, res, "Not tagged with " + tag, 400, "tag" );
+      }
+      make.tags.splice(make.tags.indexOf(tag), 1);
+      make.save(function( err, make ) {
+        return handleSave( req, res, err, make, "untag" );
+      });
     }
   };
 };

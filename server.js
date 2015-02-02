@@ -211,6 +211,30 @@ app.get(
   routes.search
 );
 
+// Add Tag to Make
+app.put(
+  "/api/20130724/make/:id/tag/:tag",
+  Mongo.isDbOnline,
+  middleware.hawkAuth,
+  middleware.setHatchetEventType( "add_tag" ),
+  middleware.getMake,
+  middleware.getUser,
+  middleware.canTag,
+  routes.tag
+);
+
+// remove Tag from Make
+app.del(
+  "/api/20130724/make/:id/tag/:tag",
+  Mongo.isDbOnline,
+  middleware.hawkAuth,
+  middleware.setHatchetEventType( "add_tag" ),
+  middleware.getMake,
+  middleware.getUser,
+  middleware.canTag,
+  routes.untag
+);
+
 // Authenticated Make Search
 app.get(
   "/api/20130724/make/protectedSearch",

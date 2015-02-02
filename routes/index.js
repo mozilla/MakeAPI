@@ -20,6 +20,8 @@ module.exports = function routesCtor( makeModel, apiAppModel, listModel ) {
     create: makeRoutes.create,
     update: makeRoutes.update,
     remove: makeRoutes.remove,
+    tag: makeRoutes.tag,
+    untag: makeRoutes.untag,
     healthcheck: makeRoutes.healthcheck,
     admin: adminRoutes.admin,
     login: adminRoutes.login,
