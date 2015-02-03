@@ -228,7 +228,7 @@ app.del(
   "/api/20130724/make/:id/tag/:tag",
   Mongo.isDbOnline,
   middleware.hawkAuth,
-  middleware.setHatchetEventType( "add_tag" ),
+  middleware.setHatchetEventType( "delete_tag" ),
   middleware.getMake,
   middleware.getUser,
   middleware.canTag,
