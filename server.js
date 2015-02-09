@@ -235,6 +235,15 @@ app.del(
   routes.untag
 );
 
+app.post(
+  "/api/20130724/make/restore/:id",
+  Mongo.isDbOnline,
+  middleware.hawkAuth,
+  middleware.setHatchetEventType( "restore_make" ),
+  middleware.isHawkAdmin,
+  routes.restore
+);
+
 // Authenticated Make Search
 app.get(
   "/api/20130724/make/protectedSearch",
