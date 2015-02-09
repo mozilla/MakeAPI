@@ -22,6 +22,7 @@ module.exports = function routesCtor( makeModel, apiAppModel, listModel ) {
     remove: makeRoutes.remove,
     tag: makeRoutes.tag,
     untag: makeRoutes.untag,
+    restore: makeRoutes.restore,
     healthcheck: makeRoutes.healthcheck,
     admin: adminRoutes.admin,
     login: adminRoutes.login,

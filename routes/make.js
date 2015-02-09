@@ -31,9 +31,9 @@ module.exports = function( makeModel ) {
 
   function buildHatchetData( req, make, type ) {
     var hatchetData = {
-      userId: req.user.id,
-      username: req.user.username,
-      email: req.user.email,
+      userId: req.user ? req.user.id : '',
+      username: req.user ? req.user.username : '',
+      email: req.user ? req.user.email : '',
       make: make.toObject()
     };
 
@@ -284,6 +284,24 @@ module.exports = function( makeModel ) {
       make.tags.splice(make.tags.indexOf(tag), 1);
       make.save(function( err, make ) {
         return handleSave( req, res, err, make, "untag" );
+      });
+    },
+    restore: function( req, res ) {
+      var id = req.params.id;
+
+      Make.findById(id).where("deletedAt").ne(null).exec(function( err, make ) {
+        if ( err ) {
+          return hawkError( req, res, err, 500, "restore" );
+        }
+
+        if ( !make ) {
+          return hawkError( req, res, "Could not find a make with the id '" + id + "' ensure it exists and has been deleted recently.", 400, "restore");
+        }
+
+        make.deletedAt = null
+        make.save(function(err, updated) {
+          handleSave( req, res, err, updated, "restore" );
+        });
       });
     }
   };
