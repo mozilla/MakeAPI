@@ -298,7 +298,7 @@ module.exports = function( makeModel ) {
           return hawkError( req, res, "Could not find a make with the id '" + id + "' ensure it exists and has been deleted recently.", 400, "restore");
         }
 
-        make.deletedAt = null
+        make.deletedAt = null;
         make.save(function(err, updated) {
           handleSave( req, res, err, updated, "restore" );
         });
