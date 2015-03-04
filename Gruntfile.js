@@ -14,7 +14,7 @@ module.exports = function (grunt) {
     "routes/**/*.js",
     "test/**/*.js"
   ];
-  console.log(JSON.stringify(jsbeautifyrc, null, 2));
+
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
 
@@ -37,9 +37,11 @@ module.exports = function (grunt) {
       },
       verify: {
         src: javaScriptFiles,
-        options: util._extend({
-          mode: "VERIFY_ONLY"
-        }, jsbeautifyrc)
+        options: {
+          js: util._extend({
+            mode: "VERIFY_ONLY"
+          }, jsbeautifyrc)
+        }
       }
     },
     jscs: {
