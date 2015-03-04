@@ -1,31 +1,69 @@
-module.exports = function( qb ){
-  var assert = require( "assert" );
+module.exports = function (qb) {
+  var assert = require("assert");
 
   var filterTests = {
-    author: [
-      {
-        query: { author: "name" },
-        expected: { "term": { "author": "name" } }
+    author: [{
+      query: {
+        author: "name"
       },
-      {
-        query: { author: "{!}name" },
-        expected: { "not": { "term": { "author": "name" } } }
+      expected: {
+        "term": {
+          "author": "name"
+        }
       }
-    ],
-    contentType: [
-      {
-        query: { contentType: "application/x-type" },
-        expected: { "term": { "contentType": "application/x-type" } }
+    }, {
+      query: {
+        author: "{!}name"
       },
-      {
-        query: { contentType: "{!}application/x-type" },
-        expected: { "not": { "term": { "contentType": "application/x-type" } } }
+      expected: {
+        "not": {
+          "term": {
+            "author": "name"
+          }
+        }
       }
-    ],
-    description: [
-      {
-        query: { description: "This is a description" },
-        expected: {
+    }],
+    contentType: [{
+      query: {
+        contentType: "application/x-type"
+      },
+      expected: {
+        "term": {
+          "contentType": "application/x-type"
+        }
+      }
+    }, {
+      query: {
+        contentType: "{!}application/x-type"
+      },
+      expected: {
+        "not": {
+          "term": {
+            "contentType": "application/x-type"
+          }
+        }
+      }
+    }],
+    description: [{
+      query: {
+        description: "This is a description"
+      },
+      expected: {
+        "query": {
+          "match": {
+            "description": {
+              "query": "This is a description",
+              "operator": "and"
+            }
+          }
+        }
+      }
+    }, {
+      query: {
+        description: "{!}This is a description"
+      },
+      expected: {
+        "not": {
           "query": {
             "match": {
               "description": {
@@ -35,35 +73,137 @@ module.exports = function( qb ){
             }
           }
         }
+      }
+    }],
+    id: [{
+      query: {
+        id: "randomidstring"
       },
-      {
-        query: { description: "{!}This is a description" },
-        expected: {
-          "not": {
-            "query": {
-              "match": {
-                "description": {
-                  "query": "This is a description",
-                  "operator": "and"
-                }
-              }
-            }
+      expected: {
+        "term": {
+          "_id": "randomidstring"
+        }
+      }
+    }, {
+      query: {
+        id: "{!}randomidstring"
+      },
+      expected: {
+        "not": {
+          "term": {
+            "_id": "randomidstring"
           }
         }
       }
-    ],
-    id: [
-      {
-        query: { id: "randomidstring" },
-        expected: { "term": { "_id": "randomidstring" } }
+    }, {
+      query: {
+        id: "id,id2"
       },
-      {
-        query: { id: "{!}randomidstring" },
-        expected: { "not": { "term": { "_id": "randomidstring" } } }
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2"
+          ]
+        }
+      }
+    }, {
+      query: {
+        id: "id,id2,id3"
       },
-      {
-        query: { id: "id,id2" },
-        expected: {
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2",
+            "id3"
+          ]
+        }
+      }
+    }, {
+      query: {
+        id: "or,id"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id"
+          ],
+          "execution": "or"
+        }
+      }
+    }, {
+      query: {
+        id: "or,id,id2"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2"
+          ],
+          "execution": "or"
+        }
+      }
+    }, {
+      query: {
+        id: "or,id,id2,id3"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2",
+            "id3"
+          ],
+          "execution": "or"
+        }
+      }
+    }, {
+      query: {
+        id: "and,id"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id"
+          ],
+          "execution": "and"
+        }
+      }
+    }, {
+      query: {
+        id: "and,id,id2"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2"
+          ],
+          "execution": "and"
+        }
+      }
+    }, {
+      query: {
+        id: "and,id,id2,id3"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2",
+            "id3"
+          ],
+          "execution": "and"
+        }
+      }
+    }, {
+      query: {
+        id: "{!}id,id2"
+      },
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id",
@@ -71,10 +211,13 @@ module.exports = function( qb ){
             ]
           }
         }
+      }
+    }, {
+      query: {
+        id: "{!}id,id2,id3"
       },
-      {
-        query: { id: "id,id2,id3" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id",
@@ -83,10 +226,13 @@ module.exports = function( qb ){
             ]
           }
         }
+      }
+    }, {
+      query: {
+        id: "{!}or,id"
       },
-      {
-        query: { id: "or,id" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id"
@@ -94,10 +240,13 @@ module.exports = function( qb ){
             "execution": "or"
           }
         }
+      }
+    }, {
+      query: {
+        id: "{!}or,id,id2"
       },
-      {
-        query: { id: "or,id,id2" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id",
@@ -106,10 +255,13 @@ module.exports = function( qb ){
             "execution": "or"
           }
         }
+      }
+    }, {
+      query: {
+        id: "{!}or,id,id2,id3"
       },
-      {
-        query: { id: "or,id,id2,id3" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id",
@@ -119,10 +271,13 @@ module.exports = function( qb ){
             "execution": "or"
           }
         }
+      }
+    }, {
+      query: {
+        id: "{!}and,id"
       },
-      {
-        query: { id: "and,id" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id"
@@ -130,10 +285,13 @@ module.exports = function( qb ){
             "execution": "and"
           }
         }
+      }
+    }, {
+      query: {
+        id: "{!}and,id,id2"
       },
-      {
-        query: { id: "and,id,id2" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id",
@@ -142,10 +300,13 @@ module.exports = function( qb ){
             "execution": "and"
           }
         }
+      }
+    }, {
+      query: {
+        id: "{!}and,id,id2,id3"
       },
-      {
-        query: { id: "and,id,id2,id3" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "_id": [
               "id",
@@ -155,476 +316,284 @@ module.exports = function( qb ){
             "execution": "and"
           }
         }
+      }
+    }, {
+      query: {
+        id: "   id,   id2   "
       },
-      {
-        query: { id: "{!}id,id2" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id",
-                "id2"
-              ]
-            }
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2"
+          ]
+        }
+      }
+    }, {
+      query: {
+        id: "   id,id2,   id3"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2",
+            "id3"
+          ]
+        }
+      }
+    }, {
+      query: {
+        id: "or,   id"
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id"
+          ],
+          "execution": "or"
+        }
+      }
+    }, {
+      query: {
+        id: "or   ,id,   id2    "
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2"
+          ],
+          "execution": "or"
+        }
+      }
+    }, {
+      query: {
+        id: "or,    id,  id2  ,id3         "
+      },
+      expected: {
+        "terms": {
+          "_id": [
+            "id",
+            "id2",
+            "id3"
+          ],
+          "execution": "or"
+        }
+      }
+    }],
+    remixedFrom: [{
+      query: {
+        remixedFrom: "remixid"
+      },
+      expected: {
+        "term": {
+          "remixedFrom": "remixid"
+        }
+      }
+    }, {
+      query: {
+        remixedFrom: "{!}remixid"
+      },
+      expected: {
+        "not": {
+          "term": {
+            "remixedFrom": "remixid"
           }
         }
+      }
+    }],
+    tags: [{
+      query: {
+        tags: "tag"
       },
-      {
-        query: { id: "{!}id,id2,id3" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id",
-                "id2",
-                "id3"
-              ]
-            }
-          }
+      expected: {
+        "terms": {
+          "tags": [
+            "tag"
+          ]
         }
+      }
+    }, {
+      query: {
+        tags: "tag,tag2"
       },
-      {
-        query: { id: "{!}or,id" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id"
-              ],
-              "execution": "or"
-            }
-          }
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2"
+          ]
         }
+      }
+    }, {
+      query: {
+        tags: "tag,tag2,tag3"
       },
-      {
-        query: { id: "{!}or,id,id2" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id",
-                "id2"
-              ],
-              "execution": "or"
-            }
-          }
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2",
+            "tag3"
+          ]
         }
+      }
+    }, {
+      query: {
+        tags: "or,tag"
       },
-      {
-        query: { id: "{!}or,id,id2,id3" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id",
-                "id2",
-                "id3"
-              ],
-              "execution": "or"
-            }
-          }
+      expected: {
+        "terms": {
+          "tags": [
+            "tag"
+          ],
+          "execution": "or"
         }
+      }
+    }, {
+      query: {
+        tags: "or,tag,tag2"
       },
-      {
-        query: { id: "{!}and,id" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id"
-              ],
-              "execution": "and"
-            }
-          }
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2"
+          ],
+          "execution": "or"
         }
+      }
+    }, {
+      query: {
+        tags: "or,tag,tag2,tag3"
       },
-      {
-        query: { id: "{!}and,id,id2" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id",
-                "id2"
-              ],
-              "execution": "and"
-            }
-          }
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2",
+            "tag3"
+          ],
+          "execution": "or"
         }
+      }
+    }, {
+      query: {
+        tags: "and,tag"
       },
-      {
-        query: { id: "{!}and,id,id2,id3" },
-        expected: {
-          "not": {
-            "terms": {
-              "_id": [
-                "id",
-                "id2",
-                "id3"
-              ],
-              "execution": "and"
-            }
-          }
+      expected: {
+        "terms": {
+          "tags": [
+            "tag"
+          ],
+          "execution": "and"
         }
+      }
+    }, {
+      query: {
+        tags: "and,tag,tag2"
       },
-      {
-        query: { id: "   id,   id2   " },
-        expected: {
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2"
+          ],
+          "execution": "and"
+        }
+      }
+    }, {
+      query: {
+        tags: "and,tag,tag2,tag3"
+      },
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2",
+            "tag3"
+          ],
+          "execution": "and"
+        }
+      }
+    }, {
+      query: {
+        tags: "{!}tag"
+      },
+      expected: {
+        "not": {
           "terms": {
-            "_id": [
-              "id",
-              "id2"
+            "tags": [
+              "tag"
             ]
           }
         }
+      }
+    }, {
+      query: {
+        tags: "{!}tag,tag2"
       },
-      {
-        query: { id: "   id,id2,   id3" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
-            "_id": [
-              "id",
-              "id2",
-              "id3"
+            "tags": [
+              "tag",
+              "tag2"
             ]
           }
         }
+      }
+    }, {
+      query: {
+        tags: "{!}tag,tag2,tag3"
       },
-      {
-        query: { id: "or,   id" },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
-            "_id": [
-              "id"
-            ],
-            "execution": "or"
+            "tags": [
+              "tag",
+              "tag2",
+              "tag3"
+            ]
           }
         }
+      }
+    }, {
+      query: {
+        tags: "{!}or,tag"
       },
-      {
-        query: { id: "or   ,id,   id2    " },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
-            "_id": [
-              "id",
-              "id2"
-            ],
-            "execution": "or"
-          }
-        }
-      },
-      {
-        query: { id: "or,    id,  id2  ,id3         " },
-        expected: {
-          "terms": {
-            "_id": [
-              "id",
-              "id2",
-              "id3"
+            "tags": [
+              "tag"
             ],
             "execution": "or"
           }
         }
       }
-    ],
-    remixedFrom: [
-      {
-        query: { remixedFrom: "remixid" },
-        expected: { "term": { "remixedFrom": "remixid" } }
+    }, {
+      query: {
+        tags: "{!}or,tag,tag2"
       },
-      {
-        query: { remixedFrom: "{!}remixid" },
-        expected: { "not": { "term": { "remixedFrom": "remixid" } } }
+      expected: {
+        "not": {
+          "terms": {
+            "tags": [
+              "tag",
+              "tag2"
+            ],
+            "execution": "or"
+          }
+        }
       }
-    ],
-    tags: [
-      {
-        query: { tags: "tag" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag"
-            ]
-          }
-        }
+    }, {
+      query: {
+        tags: "{!}or,tag,tag2,tag3"
       },
-      {
-        query: { tags: "tag,tag2" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2"
-            ]
-          }
-        }
-      },
-      {
-        query: { tags: "tag,tag2,tag3" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2",
-              "tag3"
-            ]
-          }
-        }
-      },
-      {
-        query: { tags: "or,tag" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag"
-            ],
-            "execution": "or"
-          }
-        }
-      },
-      {
-        query: { tags: "or,tag,tag2" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2"
-            ],
-            "execution": "or"
-          }
-        }
-      },
-      {
-        query: { tags: "or,tag,tag2,tag3" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2",
-              "tag3"
-            ],
-            "execution": "or"
-          }
-        }
-      },
-      {
-        query: { tags: "and,tag" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag"
-            ],
-            "execution": "and"
-          }
-        }
-      },
-      {
-        query: { tags: "and,tag,tag2" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2"
-            ],
-            "execution": "and"
-          }
-        }
-      },
-      {
-        query: { tags: "and,tag,tag2,tag3" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2",
-              "tag3"
-            ],
-            "execution": "and"
-          }
-        }
-      },
-      {
-        query: { tags: "{!}tag" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag"
-              ]
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}tag,tag2" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag",
-                "tag2"
-              ]
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}tag,tag2,tag3" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}or,tag" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag"
-              ],
-              "execution": "or"
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}or,tag,tag2" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag",
-                "tag2"
-              ],
-              "execution": "or"
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}or,tag,tag2,tag3" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag",
-                "tag2",
-                "tag3"
-              ],
-              "execution": "or"
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}and,tag" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag"
-              ],
-              "execution": "and"
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}and,tag,tag2" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag",
-                "tag2"
-              ],
-              "execution": "and"
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "{!}and,tag,tag2,tag3" },
-        expected: {
-          "not": {
-            "terms": {
-              "tags": [
-                "tag",
-                "tag2",
-                "tag3"
-              ],
-              "execution": "and"
-            }
-          }
-        }
-      },
-      {
-        query: { tags: "  tag    " },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag"
-            ]
-          }
-        }
-      },
-      {
-        query: { tags: "   tag,   tag2   " },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2"
-            ]
-          }
-        }
-      },
-      {
-        query: { tags: "   tag,tag2,   tag3" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2",
-              "tag3"
-            ]
-          }
-        }
-      },
-      {
-        query: { tags: "or,   tag" },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag"
-            ],
-            "execution": "or"
-          }
-        }
-      },
-      {
-        query: { tags: "or   ,tag,   tag2    " },
-        expected: {
-          "terms": {
-            "tags": [
-              "tag",
-              "tag2"
-            ],
-            "execution": "or"
-          }
-        }
-      },
-      {
-        query: { tags: "or,    tag,  tag2  ,tag3         " },
-        expected: {
+      expected: {
+        "not": {
           "terms": {
             "tags": [
               "tag",
@@ -635,31 +604,168 @@ module.exports = function( qb ){
           }
         }
       }
-    ],
-    tagPrefix: [
-      {
-        query: { tagPrefix: "prefixString" },
-        expected: {
+    }, {
+      query: {
+        tags: "{!}and,tag"
+      },
+      expected: {
+        "not": {
+          "terms": {
+            "tags": [
+              "tag"
+            ],
+            "execution": "and"
+          }
+        }
+      }
+    }, {
+      query: {
+        tags: "{!}and,tag,tag2"
+      },
+      expected: {
+        "not": {
+          "terms": {
+            "tags": [
+              "tag",
+              "tag2"
+            ],
+            "execution": "and"
+          }
+        }
+      }
+    }, {
+      query: {
+        tags: "{!}and,tag,tag2,tag3"
+      },
+      expected: {
+        "not": {
+          "terms": {
+            "tags": [
+              "tag",
+              "tag2",
+              "tag3"
+            ],
+            "execution": "and"
+          }
+        }
+      }
+    }, {
+      query: {
+        tags: "  tag    "
+      },
+      expected: {
+        "terms": {
+          "tags": [
+            "tag"
+          ]
+        }
+      }
+    }, {
+      query: {
+        tags: "   tag,   tag2   "
+      },
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2"
+          ]
+        }
+      }
+    }, {
+      query: {
+        tags: "   tag,tag2,   tag3"
+      },
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2",
+            "tag3"
+          ]
+        }
+      }
+    }, {
+      query: {
+        tags: "or,   tag"
+      },
+      expected: {
+        "terms": {
+          "tags": [
+            "tag"
+          ],
+          "execution": "or"
+        }
+      }
+    }, {
+      query: {
+        tags: "or   ,tag,   tag2    "
+      },
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2"
+          ],
+          "execution": "or"
+        }
+      }
+    }, {
+      query: {
+        tags: "or,    tag,  tag2  ,tag3         "
+      },
+      expected: {
+        "terms": {
+          "tags": [
+            "tag",
+            "tag2",
+            "tag3"
+          ],
+          "execution": "or"
+        }
+      }
+    }],
+    tagPrefix: [{
+      query: {
+        tagPrefix: "prefixString"
+      },
+      expected: {
+        "prefix": {
+          "tags": "prefixString"
+        }
+      }
+    }, {
+      query: {
+        tagPrefix: "{!}prefixString"
+      },
+      expected: {
+        "not": {
           "prefix": {
             "tags": "prefixString"
           }
         }
+      }
+    }],
+    title: [{
+      query: {
+        title: "This is a title"
       },
-      {
-        query: { tagPrefix: "{!}prefixString" },
-        expected: {
-          "not": {
-            "prefix": {
-              "tags": "prefixString"
+      expected: {
+        "query": {
+          "match": {
+            "title": {
+              "query": "This is a title",
+              "operator": "and"
             }
           }
         }
       }
-    ],
-    title: [
-      {
-        query: { title: "This is a title" },
-        expected: {
+    }, {
+      query: {
+        title: "{!}This is a title"
+      },
+      expected: {
+        "not": {
           "query": {
             "match": {
               "title": {
@@ -669,69 +775,55 @@ module.exports = function( qb ){
             }
           }
         }
+      }
+    }],
+    url: [{
+      query: {
+        url: "https://mozilla.org"
       },
-      {
-        query: { title: "{!}This is a title" },
-        expected: {
-          "not": {
-            "query": {
-              "match": {
-                "title": {
-                  "query": "This is a title",
-                  "operator": "and"
-                }
-              }
-            }
-          }
+      expected: {
+        "term": {
+          "url": "https://mozilla.org"
         }
       }
-    ],
-    url: [
-      {
-        query: { url: "https://mozilla.org" },
-        expected: {
+    }, {
+      query: {
+        url: "{!}https://mozilla.org"
+      },
+      expected: {
+        "not": {
           "term": {
             "url": "https://mozilla.org"
           }
         }
-      },
-      {
-        query: { url: "{!}https://mozilla.org" },
-        expected: {
-          "not": {
-            "term": {
-              "url": "https://mozilla.org"
-            }
-          }
-        }
       }
-    ]
+    }]
   };
 
-  return function() {
-    Object.keys( filterTests ).forEach(function( field ) {
-      var tests = filterTests[ field ];
-      tests.forEach(function( test ) {
-        describe( "field = " + field + " query = " + JSON.stringify( test.query ), function() {
+  return function () {
+    Object.keys(filterTests).forEach(function (field) {
+      var tests = filterTests[field];
+      tests.forEach(function (test) {
+        describe("field = " + field + " query = " + JSON.stringify(test.query), function () {
           var result = {};
 
-          before(function(done) {
-            qb.search( test.query, function( err, query ) {
+          before(function (done) {
+            qb.search(test.query, function (err, query) {
               result.err = err;
               result.query = query;
               done();
             });
           });
 
-          describe( "Built Query", function() {
-            it( "err should be undefined", function() {
-              assert.strictEqual( result.err, null );
+          describe("Built Query", function () {
+            it("err should be undefined", function () {
+              assert.strictEqual(result.err, null);
             });
-            it( "query should be defined", function(){
-              assert( result.query );
+            it("query should be defined", function () {
+              assert(result.query);
             });
-            it( "term[s] filter should exist", function() {
-              assert.deepEqual( result.query.query.filtered.filter.bool.must[ 0 ], test.expected );
+            it("term[s] filter should exist", function () {
+              assert.deepEqual(result.query.query.filtered.filter.bool.must[0], test.expected);
             });
           });
         });

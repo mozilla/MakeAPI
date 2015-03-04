@@ -1,4 +1,6 @@
-module.exports = function( grunt ) {
+var util = require("util");
+
+module.exports = function (grunt) {
 
   var jsbeautifyrc = grunt.file.readJSON("node_modules/mofo-style/linters/.jsbeautifyrc");
   var jscsrc = grunt.file.readJSON("node_modules/mofo-style/linters/.jscsrc");
@@ -12,11 +14,9 @@ module.exports = function( grunt ) {
     "routes/**/*.js",
     "test/**/*.js"
   ];
-  var jsbeautifyrcReadOnly = jsbeautifyrc;
-  jsbeautifyrcReadOnly.mode = "VERIFY_ONLY";
-
+  console.log(JSON.stringify(jsbeautifyrc, null, 2));
   grunt.initConfig({
-    pkg: grunt.file.readJSON( "package.json" ),
+    pkg: grunt.file.readJSON("package.json"),
 
     csslint: {
       files: [
@@ -31,27 +31,31 @@ module.exports = function( grunt ) {
     jsbeautifier: {
       modify: {
         src: javaScriptFiles,
-        options: jsbeautifyrc
+        options: {
+          js: jsbeautifyrc
+        }
       },
       verify: {
         src: javaScriptFiles,
-        options: jsbeautifyrcReadOnly
+        options: util._extend({
+          mode: "VERIFY_ONLY"
+        }, jsbeautifyrc)
       }
     },
     jscs: {
       src: javaScriptFiles,
-      options:jscsrc
+      options: jscsrc
     }
   });
 
-  grunt.loadNpmTasks( "grunt-contrib-csslint" );
-  grunt.loadNpmTasks( "grunt-contrib-jshint" );
-  grunt.loadNpmTasks( "grunt-jsbeautifier" );
-  grunt.loadNpmTasks( "grunt-jscs" );
+  grunt.loadNpmTasks("grunt-contrib-csslint");
+  grunt.loadNpmTasks("grunt-contrib-jshint");
+  grunt.loadNpmTasks("grunt-jsbeautifier");
+  grunt.loadNpmTasks("grunt-jscs");
 
-  grunt.registerTask( "clean", [ "jsbeautifier:modify" ] );
+  grunt.registerTask("clean", ["jsbeautifier:modify"]);
 
-  grunt.registerTask( "validate", [ "jsbeautifier:verify", "jshint", "jscs", "csslint" ] );
+  grunt.registerTask("validate", ["jsbeautifier:verify", "jshint", "jscs", "csslint"]);
 
-  grunt.registerTask( "default", [ "validate" ] );
+  grunt.registerTask("default", ["validate"]);
 };
