@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/* global $ */
+
 document.addEventListener("DOMContentLoaded", function () {
   var Slick = window.Slick;
 
@@ -413,7 +415,7 @@ document.addEventListener("DOMContentLoaded", function () {
     make.remove(id, function (err) {
       if (err) {
         errorSpan.classlist.remove("hidden");
-        errorspan.textContent = "Error Deleting! " + JSON.stringify(err);
+        errorSpan.textContent = "Error Deleting! " + JSON.stringify(err);
       } else {
         dataView.deleteItem(id);
         grid.invalidate();
@@ -528,8 +530,8 @@ document.addEventListener("DOMContentLoaded", function () {
         error;
       if (this.readyState === 4) {
         try {
-          response = JSON.parse(this.responseText),
-            error = response.error;
+          response = JSON.parse(this.responseText);
+          error = response.error;
         } catch (exception) {
           error = exception;
         }

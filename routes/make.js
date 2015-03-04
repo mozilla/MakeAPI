@@ -15,7 +15,6 @@ var async = require("async"),
   version = require("../package").version;
 
 module.exports = function (makeModel) {
-  var LOGINAPI_ERR = "Error fetching usernames: ";
   var Make = makeModel,
     mapUsernames = require("../lib/mapUsernames")(Make);
 

@@ -1,3 +1,5 @@
+/* global it */
+
 module.exports = function (qb) {
   var assert = require("assert");
 

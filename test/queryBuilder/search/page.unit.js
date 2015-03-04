@@ -1,3 +1,5 @@
+/* global describe, before, it */
+
 module.exports = function (qb) {
   var assert = require("assert");
 

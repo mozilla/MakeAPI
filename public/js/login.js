@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/* global $ */
+
 $(function () {
   var loginBtn = $(".webmaker-login"),
     logoutBtn = $(".webmaker-logout"),
@@ -37,6 +39,7 @@ $(function () {
 
   auth.on("login", onLogin);
   auth.on("logout", onLogout);
+  auth.on("error", onError);
 
   auth.verify();
 });

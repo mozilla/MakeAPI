@@ -1,5 +1,3 @@
-var util = require("util");
-
 module.exports = function (grunt) {
 
   var jsbeautifyrc = grunt.file.readJSON("node_modules/mofo-style/linters/.jsbeautifyrc");
@@ -29,18 +27,16 @@ module.exports = function (grunt) {
       files: javaScriptFiles
     },
     jsbeautifier: {
+      options: {
+        js: jsbeautifyrc
+      },
       modify: {
         src: javaScriptFiles,
-        options: {
-          js: jsbeautifyrc
-        }
       },
       verify: {
         src: javaScriptFiles,
         options: {
-          js: util._extend({
-            mode: "VERIFY_ONLY"
-          }, jsbeautifyrc)
+          mode: "VERIFY_ONLY"
         }
       }
     },

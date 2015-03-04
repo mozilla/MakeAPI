@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+/* global describe */
+
 module.exports = function (qb) {
   var core = require("./core.unit")(qb),
     size = require("./size.unit")(qb),

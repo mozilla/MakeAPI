@@ -1,3 +1,5 @@
+/* global describe, before, it */
+
 module.exports = function (qb) {
   var assert = require("assert");
 
@@ -105,7 +107,8 @@ module.exports = function (qb) {
           it("Has correct attributes", function () {
             var filters = test.filters,
               attributes = test.attributes,
-              i;
+              i,
+              l;
             for (i = 0, l = filters.length; i < l; i++) {
               assert.deepEqual(result.query.query.filtered.filter.bool.must[i], filters[i]);
             }

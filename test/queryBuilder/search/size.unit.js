@@ -1,7 +1,9 @@
+/* global describe, before, it */
+
 module.exports = function (qb) {
   var assert = require("assert");
 
-  tests = [{
+  var tests = [{
     limit: 1,
     expected: 1
   }, {
