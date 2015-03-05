@@ -6,18 +6,18 @@
 
 "use strict";
 
-var env = require( "../lib/environment" );
+var env = require("../lib/environment");
 
-module.exports = function( apiAppModel ) {
-  var uuid = require( "uuid" ),
-      App = apiAppModel,
-      audience = env.get( "AUDIENCE" ),
-      login = env.get( "LOGIN_SERVER" ),
-      personaHostname = env.get( "PERSONA_HOSTNAME", "https://login.persona.org" );
+module.exports = function (apiAppModel) {
+  var uuid = require("uuid"),
+    App = apiAppModel,
+    audience = env.get("AUDIENCE"),
+    login = env.get("LOGIN_SERVER"),
+    personaHostname = env.get("PERSONA_HOSTNAME", "https://login.persona.org");
 
   return {
-    admin: function( req, res ) {
-      res.render( "admin.html", {
+    admin: function (req, res) {
+      res.render("admin.html", {
         email: req.session.email,
         audience: audience,
         login: login,
@@ -26,8 +26,8 @@ module.exports = function( apiAppModel ) {
         personaHostname: personaHostname
       });
     },
-    login: function( req, res ) {
-      res.render( "login.html", {
+    login: function (req, res) {
+      res.render("login.html", {
         email: req.session.email,
         audience: audience,
         login: login,
@@ -35,11 +35,13 @@ module.exports = function( apiAppModel ) {
         personaHostname: personaHostname
       });
     },
-    addApp: function( req, res ) {
+    addApp: function (req, res) {
       var newApp = req.body;
 
-      if ( !newApp.contact || !newApp.domain ) {
-        return res.json( 400, { error: "Missing data" } );
+      if (!newApp.contact || !newApp.domain) {
+        return res.json(400, {
+          error: "Missing data"
+        });
       }
 
       newApp.privatekey = uuid.v4();
@@ -47,13 +49,17 @@ module.exports = function( apiAppModel ) {
       newApp.revoked = false;
       newApp.admin = false;
 
-      var app = new App( newApp );
+      var app = new App(newApp);
 
-      app.save(function( err, app ) {
-        if ( err ) {
-          res.json( 500, { error: err } );
+      app.save(function (err, app) {
+        if (err) {
+          res.json(500, {
+            error: err
+          });
         } else {
-          res.json( { app: app } );
+          res.json({
+            app: app
+          });
         }
       });
     }

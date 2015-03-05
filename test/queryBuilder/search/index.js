@@ -2,34 +2,35 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
- module.exports = function( qb ) {
-  var core = require( "./core.unit" )( qb ),
-      size = require( "./size.unit" )( qb ),
-      page = require( "./page.unit" )( qb ),
-      sizeAndLimit = require( "./limitSize.unit" )( qb ),
-      sort = require( "./sort.unit" )( qb ),
-      filterTests = require( "./termFilters.unit" )( qb ),
-      complexQueries = require( "./complexQueries.unit" )( qb ),
-      tagFacets =  require( "./tagFacets.unit" )( qb );
+/* global describe */
 
-  describe( "QueryBuilder: ", core.base );
+module.exports = function (qb) {
+  var core = require("./core.unit")(qb),
+    size = require("./size.unit")(qb),
+    page = require("./page.unit")(qb),
+    sizeAndLimit = require("./limitSize.unit")(qb),
+    sort = require("./sort.unit")(qb),
+    filterTests = require("./termFilters.unit")(qb),
+    complexQueries = require("./complexQueries.unit")(qb),
+    tagFacets = require("./tagFacets.unit")(qb);
 
-  describe( "qb.search() - bad args: ", core.badArgs );
+  describe("QueryBuilder: ", core.base);
 
-  describe( "qb.search()", core.emptyQuery );
+  describe("qb.search() - bad args: ", core.badArgs);
 
-  describe( "qb.search() - size(limit): ", size );
+  describe("qb.search()", core.emptyQuery);
 
-  describe( "qb.search() - page: ", page );
+  describe("qb.search() - size(limit): ", size);
 
-  describe( "qb.search() - size and limit: ", sizeAndLimit );
+  describe("qb.search() - page: ", page);
 
-  describe( "qb.search() - sort: ", sort );
+  describe("qb.search() - size and limit: ", sizeAndLimit);
 
-  describe( "qb.search() - All Term filters: ", filterTests );
+  describe("qb.search() - sort: ", sort);
 
-  describe( "qb.search() - complexQueries: ", complexQueries );
+  describe("qb.search() - All Term filters: ", filterTests);
 
-  describe( "qb.search() - tag facets: ", tagFacets );
+  describe("qb.search() - complexQueries: ", complexQueries);
 
+  describe("qb.search() - tag facets: ", tagFacets);
 };
