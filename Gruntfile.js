@@ -1,5 +1,4 @@
 module.exports = function (grunt) {
-
   var jsbeautifyrc = grunt.file.readJSON("node_modules/mofo-style/linters/.jsbeautifyrc");
   var jscsrc = grunt.file.readJSON("node_modules/mofo-style/linters/.jscsrc");
   var jshintrc = grunt.file.readJSON("node_modules/mofo-style/linters/.jshintrc");
@@ -31,7 +30,7 @@ module.exports = function (grunt) {
         js: jsbeautifyrc
       },
       modify: {
-        src: javaScriptFiles,
+        src: javaScriptFiles
       },
       verify: {
         src: javaScriptFiles,

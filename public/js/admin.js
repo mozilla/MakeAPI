@@ -18,7 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
           newDate = val ? new Date(val) : "N/A";
         } catch (e) {
           newDate = Date.now();
-          document.querySelector("#error-message").classList.remove("hidden").textContent("Bad Date Value. Falling back to current date and time.");
+          document.querySelector("#error-message")
+            .classList.remove("hidden")
+            .textContent("Bad Date Value. Falling back to current date and time.");
         }
         return newDate;
       },
@@ -26,31 +28,41 @@ document.addEventListener("DOMContentLoaded", function () {
         return Array.isArray(val) ? val.join(",") : val;
       },
       username: function (row, cell, val) {
-        return '<a href="' + webmakerHostName + '/u/' + val + '" target="_blank">' + val + '</a>';
+        return "<a href=\"" + webmakerHostName + "/u/" + val + "\" target=\"_blank\">" + val + "</a>";
       },
       url: function (r, c, val, def, datactx) {
-        return '<a href="' + val + '/remix" target="_blank">Remix</a>';
+        return "<a href=\"" + val + "/remix\" target=\"_blank\">Remix</a>";
       },
       thumbnail: function (r, c, val, def, datactx) {
         if (!val) {
           return "";
         }
-        return '<a href="' + val + '" target="_blank">' + val + '</a>';
+        return "<a href=\"" + val + "\" target=\"_blank\">" + val + "</a>";
       },
       del: function (r, c, val, def, datactx) {
-        return '<button onclick="removeClick(\'' + val + '\',\'' + datactx.id + '\');" class="delete-make-btn red-text">X</button>';
+        return "<button onclick=\"removeClick('" +
+          val +
+          "','" +
+          datactx.id +
+          "');\" class=\"delete-make-btn red-text\">X</button>";
       },
       title: function (r, c, val, def, datactx) {
-        return '<a href="' + datactx.url + '" target="_blank">' + val + '</a>';
+        return "<a href=\"" + datactx.url + "\" target=\"_blank\">" + val + "</a>";
       },
       reports: function (row, cell, val) {
         return val ? val.length : 0;
       },
       clearReports: function (row, cell, val, def, datactx) {
-        return '<button onclick="clearReports(\'' + datactx.id + '\');" class="delete-reports-btn red-text">Clear</button>';
+        return "<button onclick=\"clearReports('" +
+          datactx.id +
+          "');\" class=\"delete-reports-btn red-text\">Clear</button>";
       },
       id: function (r, c, val) {
-        return '<span title="Click to set as remix count ID" class="make-id" onclick="updateRemixId(\'' + val + '\');">' + val + '<span>';
+        return "<span title=\"Click to set as remix count ID\" class=\"make-id\" onclick=\"updateRemixId('" +
+          val +
+          "');\">" +
+          val +
+          "<span>";
       }
     },
 
@@ -155,18 +167,18 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   var escapeMap = {
-      '&': '&amp;',
-      '"': '&quot;',
-      "'": '&#39;',
-      "<": '&lt;',
-      ">": '&gt;'
+      "&": "&amp;",
+      "\"": "&quot;",
+      "'": "&#39;",
+      "<": "&lt;",
+      ">": "&gt"
     },
     reverseEscapeMap = {
-      '&amp;': '&',
-      '&quot;': '"',
-      '&#39;': "'",
-      '&lt;': "<",
-      '&gt;': ">"
+      "&amp;": "&",
+      "&quot;": "\"",
+      "&#39;": "'",
+      "&lt;": "<",
+      "&gt;": ">"
     };
 
   function lookupChar(ch) {
@@ -209,7 +221,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   var MakePager = function (settings) {
-
     var STATUS_TEMPLATE = "Page {{pagenum}} of {{pagetotal}} - {{hits}} total hits",
       DEFAULT_PAGE_SIZE = 100;
 
@@ -549,7 +560,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (isAdmin) {
-
     createApp.addEventListener("keypress", function (e) {
       if (e.which === 13) {
         e.preventDefault();
@@ -630,5 +640,4 @@ document.addEventListener("DOMContentLoaded", function () {
   $(".webmaker-logout").click(auth.logout);
 
   auth.verify();
-
 }, false);

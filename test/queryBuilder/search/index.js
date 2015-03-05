@@ -33,5 +33,4 @@ module.exports = function (qb) {
   describe("qb.search() - complexQueries: ", complexQueries);
 
   describe("qb.search() - tag facets: ", tagFacets);
-
 };

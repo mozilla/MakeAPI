@@ -35,9 +35,9 @@ module.exports = function (makeModel) {
 
   function buildHatchetData(req, make, type) {
     var hatchetData = {
-      userId: req.user ? req.user.id : '',
-      username: req.user ? req.user.username : '',
-      email: req.user ? req.user.email : '',
+      userId: req.user ? req.user.id : "",
+      username: req.user ? req.user.username : "",
+      email: req.user ? req.user.email : "",
       make: make.toObject()
     };
 
@@ -307,7 +307,12 @@ module.exports = function (makeModel) {
         }
 
         if (!make) {
-          return hawkError(req, res, "Could not find a make with the id '" + id + "' ensure it exists and has been deleted recently.", 400, "restore");
+          return hawkError(req,
+            res,
+            "Could not find a make with the id '" + id + "' ensure it exists and has been deleted recently.",
+            400,
+            "restore"
+          );
         }
 
         make.deletedAt = null;

@@ -13,7 +13,6 @@ var async = require("async"),
   queryBuilder = require("../lib/queryBuilder");
 
 module.exports = function (List, Make) {
-
   mapUsernames = mapUsernames(Make);
 
   function hawkError(req, res, err, code) {

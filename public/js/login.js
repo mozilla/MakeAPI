@@ -10,7 +10,7 @@ $(function () {
     errMessage = $("#err-message");
 
   var auth = new window.WebmakerAuthClient({
-    csrfToken: $('meta[name="csrf-token"]').attr('content'),
+    csrfToken: $("meta[name=\"csrf-token\"]").attr("content"),
     handleNewUserUI: false
   });
 
