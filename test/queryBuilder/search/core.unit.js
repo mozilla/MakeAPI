@@ -36,15 +36,6 @@ module.exports = function (qb) {
     [null],
     [null, null],
     [undefined, null]
-    // [null, undefined],
-    // [{}],
-    // [null, nop],
-    // [nop, {}],
-    // ["foo", "bar"],
-    // [1, "bar"],
-    // ["bar", 1],
-    // [/lolwut/, nop],
-    // [nop, /lolwut/]
   ];
 
   return {
