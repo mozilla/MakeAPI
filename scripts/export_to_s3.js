@@ -1,5 +1,4 @@
 var async = require('async');
-var Habitat = require('habitat');
 var request = require('request');
 var url = require('url');
 var AWS = require('aws-sdk');
@@ -11,7 +10,7 @@ var documentCount;
 var aggregatedMakes = {};
 var aggregatedRedactedMakes = {};
 var currentSkipValue = 0;
-var aggregationLimit = 300;
+var aggregationLimit = 2500;
 var loginURL = url.parse(env.get('LOGIN_SERVER_URL_WITH_AUTH'));
 var loginServerGetRequest = request.defaults({
   method: 'get',
