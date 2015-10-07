@@ -32,6 +32,7 @@
     "newrelic": "1.5.5",
     "node-statsd": "0.0.7",
     "nunjucks": "0.1.9",
+    "request": "^2.64.0",
     "uuid": "1.4.1",
     "webmaker-auth": "0.1.4"
   },

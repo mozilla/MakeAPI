@@ -162,7 +162,9 @@ function outputToS3(callback) {
     s3.putObject({
       Bucket: bucket,
       Key: username + '/makes.json',
-      Body: JSON.stringify(makes)
+      Body: new Buffer(JSON.stringify(makes), 'utf8'),
+      ContentType: 'application/json; charset=utf-8',
+      CacheControl: 'public, max-age=86400'
     }, callback);
   }
 
