@@ -108,10 +108,12 @@ function canFetchMore() {
 
 function aggregateDocuments(callback) {
   console.info("Aggregating makes by email address... go get some coffee, this could take a while.");
+  console.time("fetch documents");
   async.doWhilst(
     fetchAggregatedSet,
     canFetchMore,
     function(error) {
+      console.timeEnd("fetch documents");
       if (error) {
         return handleError(error);
       }
@@ -139,8 +141,10 @@ function replaceUserEmail(makes, email, callback) {
 }
 
 function replaceEmails(callback) {
+  console.time("replace emails");
   console.info("Redacting user emails and replacing them with usernames. This will also take a while.");
   async.forEachOfLimit(aggregatedMakes, 20, replaceUserEmail, function(error) {
+    console.timeEnd("replace emails");
     if (error) {
       return handleError(error);
     }
@@ -168,11 +172,14 @@ function outputToS3(callback) {
     }, callback);
   }
 
+  console.time("export to s3");
+
   async.forEachOfLimit(
     aggregatedRedactedMakes,
     5,
     putJSON,
     function(error) {
+      console.timeEnd("export to s3");
       if (error) {
         return handleError(error);
       }
