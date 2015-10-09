@@ -122,9 +122,9 @@ function aggregateDocuments(callback) {
 }
 
 function replaceUserEmail(makes, email, callback) {
-  loginServerGetRequest({
-    url: '/user/email/' + email
-  }, function(error, response, body) {
+  async.retry(
+    async.apply(loginServerGetRequest, { url: '/user/email/' + email})
+  , function(error, response) {
     if (error) {
       return callback(error);
     }
@@ -133,7 +133,7 @@ function replaceUserEmail(makes, email, callback) {
       return callback();
     }
 
-    aggregatedRedactedMakes[body.user.username] = makes;
+    aggregatedRedactedMakes[response.body.user.username] = makes;
     callback();
   });
 }
