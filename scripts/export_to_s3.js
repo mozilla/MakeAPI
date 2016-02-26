@@ -150,6 +150,7 @@ function replaceUserEmail(makes, email, callback) {
       return callback();
     }
 
+    cache[host][email] = response.body.user.username;
     aggregatedRedactedMakes[response.body.user.username] = makes;
     callback();
   });
