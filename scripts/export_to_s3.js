@@ -16,6 +16,7 @@ var aggregatedMakes = {};
 var aggregatedRedactedMakes = {};
 var currentSkipValue = 0;
 var aggregationLimit = 2500;
+var host = env.get('LOGIN_SERVER_URL_WITH_AUTH');
 var loginURL = url.parse(env.get('LOGIN_SERVER_URL_WITH_AUTH'));
 var loginServerGetRequest = request.defaults({
   method: 'get',
@@ -26,6 +27,10 @@ var loginServerGetRequest = request.defaults({
   },
   json: true
 });
+
+var cache = {};
+cache[host] = {};
+try { cache = require('./userlookupcache'); } catch(ignored) {}
 
 function handleError(error) {
   console.error('An error occurred: ', error);
@@ -129,6 +134,11 @@ function aggregateDocuments(callback) {
 }
 
 function replaceUserEmail(makes, email, callback) {
+  if (cache[host][email]) {
+    aggregatedRedactedMakes[cache[host][email]] = makes;
+    return process.nextTick(callback);
+  }
+
   async.retry(
     async.apply(loginServerGetRequest, { url: '/user/email/' + email})
   , function(error, response) {
@@ -206,6 +216,7 @@ function connectionReady(error) {
     replaceEmails,
     outputToS3,
     function() {
+      require('fs').writeFileSync('userlookupcache.json', JSON.stringify(cache));
       console.info('Export completed!');
       process.exit();
     }
