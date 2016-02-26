@@ -6,57 +6,29 @@
 
 var TWO_WEEKS = 1000*60*60*24*14;
 
-var habitat = require( "habitat" ),
-    async = require( "async" ),
-    mongoose,
-    env;
+var async = require( "async" );
 
-habitat.load();
-
-env = new habitat();
-
-dbh = require( "../lib/mongoose" )( env, function( err ) {
+dbh = require( "../lib/mongoose" )( function( err ) {
   if ( err ) {
     console.log( err );
     process.exit( 1 );
   }
 
-  var Make = require( "../lib/models/make" )( env, dbh.mongoInstance() ),
+  var Make = require( "../lib/models/make" )( dbh.mongoInstance() ),
       numDeleted = 0,
       queue;
 
-  Make.find({
+  Make.remove({
     deletedAt: {
       "$ne": null,
       "$lt": Date.now() - TWO_WEEKS
     }
-  }, function( err, makes ) {
-    if ( err || !makes ) {
+  }, function( err ) {
+    if ( err ) {
       console.error( "Error: ", err || "Makes array is null" );
       process.exit( 1 )
     }
 
-    if ( !makes.length ) {
-      console.log( "No Makes to Delete" );
-      process.exit( 0 );
-    }
-
-    queue = async.queue(function( make, callback ) {
-      make.remove(function( err ) {
-        callback( err || null );
-      });
-    }, 1 );
-
-    queue.drain = function() {
-      console.log( numDeleted + " Makes deleted successfully." );
-      process.exit( 0 );
-    };
-
-    queue.push( makes, function( err ) {
-      if ( err ) {
-        return console.error( "Error Deleting Make: ", err );
-      }
-      numDeleted++;
-    });
+    process.exit( 0 );
   });
 });
