@@ -38,7 +38,7 @@ Make.aggregate([
     throw error;
   }
 
-  q.push(results.map((e) => e._id));
+  q.push(results.map(function(e) { return e._id; }));
 });
 
 var q = async.queue(function(email, callback) {
