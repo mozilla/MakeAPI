@@ -6,6 +6,11 @@ var env = require('../lib/environment');
 var mongoose = require( '../lib/mongoose' )(connectionReady);
 var Make = require( '../lib/models/make' )( mongoose.mongoInstance() );
 
+if (!env.get('S3_EXPORT_BUCKET') || !env.get('AWS_S3_EXPORT_ACCESS_KEY') || !env.get('AWS_S3_EXPORT_SECRET_ACCESS_KEY')) {
+  console.error('You must define S3_EXPORT_BUCKET, AWS_S3_EXPORT_ACCESS_KEY, and AWS_S3_EXPORT_SECRET_ACCESS_KEY in your config');
+  process.exit(1);
+}
+
 var documentCount;
 var aggregatedMakes = {};
 var aggregatedRedactedMakes = {};
