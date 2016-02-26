@@ -27,7 +27,7 @@
     "makeapi-client": "0.5.28",
     "messina": "0.1.1",
     "mongoosastic": "0.2.2",
-    "mongoose": "3.5.2",
+    "mongoose": "3.5.16",
     "mongoose-validator": "0.2.1",
     "newrelic": "1.5.5",
     "node-statsd": "0.0.7",
