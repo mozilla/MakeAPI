@@ -1,4 +1,5 @@
 var async = require('async');
+var Gauge = require('gauge');
 var request = require('request');
 var url = require('url');
 var AWS = require('aws-sdk');
@@ -37,7 +38,6 @@ function handleError(error) {
   process.exit(1);
 }
 
-
 function getDocumentCount(callback) {
   Make.count({
     deletedAt: null
@@ -46,7 +46,7 @@ function getDocumentCount(callback) {
       return handleError(err);
     }
 
-    documentCount = count
+    documentCount = count;
     console.info("Found " + documentCount + " documents to aggregate and export.");
     callback();
   });
@@ -111,19 +111,22 @@ function fetchAggregatedSet(callback) {
   });
 }
 
+var gauge = new Gauge();
+
 function canFetchMore() {
+  gauge.show("Fetching data: " + currentSkipValue, currentSkipValue / documentCount);
+
   currentSkipValue += aggregationLimit;
   return currentSkipValue < documentCount;
 }
 
 function aggregateDocuments(callback) {
-  console.info("Aggregating makes by email address... go get some coffee, this could take a while.");
-  console.time("fetch documents");
+  console.time("Fetching data");
   async.doWhilst(
     fetchAggregatedSet,
     canFetchMore,
     function(error) {
-      console.timeEnd("fetch documents");
+      console.timeEnd("Fetching data");
       if (error) {
         return handleError(error);
       }
@@ -134,6 +137,9 @@ function aggregateDocuments(callback) {
 }
 
 function replaceUserEmail(makes, email, callback) {
+  gauge.show("Replacing emails: " + replaced_emails, replaced_emails / total_emails);
+  replaced_emails++;
+
   if (cache[host][email]) {
     aggregatedRedactedMakes[cache[host][email]] = makes;
     return process.nextTick(callback);
@@ -156,11 +162,14 @@ function replaceUserEmail(makes, email, callback) {
   });
 }
 
+var total_emails = 0;
+var replaced_emails = 0;
+
 function replaceEmails(callback) {
-  console.time("replace emails");
-  console.info("Redacting user emails and replacing them with usernames. This will also take a while.");
+  console.time("Replacing emails");
+  total_emails = Object.keys(aggregatedMakes).length;
   async.forEachOfLimit(aggregatedMakes, 20, replaceUserEmail, function(error) {
-    console.timeEnd("replace emails");
+    console.timeEnd("Replacing emails");
     if (error) {
       return handleError(error);
     }
@@ -169,7 +178,6 @@ function replaceEmails(callback) {
 }
 
 function outputToS3(callback) {
-  console.info('Writing json files to S3... how about another cup of coffee?');
   var s3 = new AWS.S3({
     accessKeyId: env.get('AWS_S3_EXPORT_ACCESS_KEY'),
     secretAccessKey: env.get('AWS_S3_EXPORT_SECRET_ACCESS_KEY'),
@@ -177,8 +185,14 @@ function outputToS3(callback) {
     sslEnabled: true
   });
   var bucket = env.get('S3_EXPORT_BUCKET');
+  var files_written = 0;
+  var total_files = Object.keys(aggregatedRedactedMakes).length;
+
+  console.log('Writing ' + total_files + ' json files to S3\n');
 
   function putJSON(makes, username, callback) {
+    gauge.show("Putting files: " + files_written++, files_written / total_files);
+
     s3.putObject({
       Bucket: bucket,
       Key: username + '/makes.json',
@@ -188,14 +202,14 @@ function outputToS3(callback) {
     }, callback);
   }
 
-  console.time("export to s3");
+  console.time("Putting files");
 
   async.forEachOfLimit(
     aggregatedRedactedMakes,
     5,
     putJSON,
     function(error) {
-      console.timeEnd("export to s3");
+      console.timeEnd("Putting files");
       if (error) {
         return handleError(error);
       }
@@ -217,7 +231,7 @@ function connectionReady(error) {
     replaceEmails,
     outputToS3,
     function() {
-      require('fs').writeFileSync('userlookupcache.json', JSON.stringify(cache));
+      require('fs').writeFileSync(__dirname + '/userlookupcache.json', JSON.stringify(cache));
       console.info('Export completed!');
       process.exit();
     }

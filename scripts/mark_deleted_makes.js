@@ -78,5 +78,5 @@ var q = async.queue(function(email, callback) {
 
 q.drain = function() {
   Mongoose.disconnect();
-  require('fs').writeFileSync('userlookupcache.json', JSON.stringify(cache));
+  require('fs').writeFileSync(__dirname + '/userlookupcache.json', JSON.stringify(cache));
 };
