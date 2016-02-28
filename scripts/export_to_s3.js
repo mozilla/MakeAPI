@@ -47,7 +47,6 @@ function getDocumentCount(callback) {
     }
 
     documentCount = count;
-    console.info("Found " + documentCount + " documents to aggregate and export.");
     callback();
   });
 }
@@ -126,11 +125,14 @@ function aggregateDocuments(callback) {
     fetchAggregatedSet,
     canFetchMore,
     function(error) {
+      console.log("");
       console.timeEnd("Fetching data");
       if (error) {
         return handleError(error);
       }
-      console.info("Finished aggregation, found makes by ", Object.keys(aggregatedMakes).length, "users");
+
+      mongoose.mongoInstance().disconnect();
+
       callback();
     }
   )
@@ -169,6 +171,8 @@ function replaceEmails(callback) {
   console.time("Replacing emails");
   total_emails = Object.keys(aggregatedMakes).length;
   async.forEachOfLimit(aggregatedMakes, 20, replaceUserEmail, function(error) {
+    gauge.show("Replacing emails: " + replaced_emails, replaced_emails / total_emails);
+    console.log("");
     console.timeEnd("Replacing emails");
     if (error) {
       return handleError(error);
@@ -188,18 +192,16 @@ function outputToS3(callback) {
   var files_written = 0;
   var total_files = Object.keys(aggregatedRedactedMakes).length;
 
-  console.log('Writing ' + total_files + ' json files to S3\n');
-
   function putJSON(makes, username, callback) {
     gauge.show("Putting files: " + files_written++, files_written / total_files);
 
-    s3.putObject({
+    async.retry(async.apply(s3.putObject.bind(s3), {
       Bucket: bucket,
       Key: username + '/makes.json',
       Body: new Buffer(JSON.stringify(makes), 'utf8'),
       ContentType: 'application/json; charset=utf-8',
       CacheControl: 'public, max-age=86400'
-    }, callback);
+    }), callback);
   }
 
   console.time("Putting files");
@@ -209,6 +211,8 @@ function outputToS3(callback) {
     5,
     putJSON,
     function(error) {
+      gauge.show("Putting files: " + files_written, files_written / total_files);
+      console.log("");
       console.timeEnd("Putting files");
       if (error) {
         return handleError(error);
@@ -230,10 +234,15 @@ function connectionReady(error) {
     aggregateDocuments,
     replaceEmails,
     outputToS3,
-    function() {
+    function(waterfall_error) {
       require('fs').writeFileSync(__dirname + '/userlookupcache.json', JSON.stringify(cache));
+
+      if (waterfall_error) {
+        return handleError(waterfall_error);
+      }
+
       console.info('Export completed!');
-      process.exit();
+      process.exit(0);
     }
   ]);
 }
