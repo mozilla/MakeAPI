@@ -186,7 +186,9 @@ function outputToS3(callback) {
     accessKeyId: env.get('AWS_S3_EXPORT_ACCESS_KEY'),
     secretAccessKey: env.get('AWS_S3_EXPORT_SECRET_ACCESS_KEY'),
     region: 'us-east-1',
-    sslEnabled: true
+    httpOptions: {
+      timeout: 5000
+    }
   });
   var bucket = env.get('S3_EXPORT_BUCKET');
   var files_written = 0;
@@ -208,7 +210,7 @@ function outputToS3(callback) {
 
   async.forEachOfLimit(
     aggregatedRedactedMakes,
-    5,
+    4,
     putJSON,
     function(error) {
       gauge.show("Putting files: " + files_written, files_written / total_files);
