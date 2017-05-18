@@ -1,3 +1,5 @@
+##### This project is no longer under active development
+
 [![Build Status](https://travis-ci.org/mozilla/webmaker.org.png)](https://travis-ci.org/mozilla/MakeAPI)
 [![Dependency Status](https://gemnasium.com/mozilla/webmaker.org.png)](https://gemnasium.com/mozilla/MakeAPI)
 
