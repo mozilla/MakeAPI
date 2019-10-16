@@ -72,7 +72,7 @@ We use a combination of technologies to "lint" and test our CSS and JavaScript c
 When a pull request is made to the Mozilla repository, it is automatically scheduled for testing on the [Travis-CI continuous-integration platform](https://travis-ci.org/). This verifies that the code passes linting requirements as well as all of its unit tests. You can see the status of these tests on the Github page for the pull request, and on the <a href="https://travis-ci.org/mozilla/MakeAPI/pull_requests">MakeAPI travisCI page</a>.
 
 ### Updating tests
-Most developers won't need to update the tests, but changes to certain parts of the MakeAPI require that the tests be revised. Keeping these tests accurate is essential for easy maintenence of this code base, and pull requests that change these parts will be rejected without proper unit tests.
+Most developers won't need to update the tests, but changes to certain parts of the MakeAPI require that the tests be revised. Keeping these tests accurate is essential for easy maintenance of this code base, and pull requests that change these parts will be rejected without proper unit tests.
 
 If you need help understanding the unit tests, hop on the #webmaker IRC channel and we'll be happy to help! No idea what IRC is? Check out our [IRC guide](https://wiki.mozilla.org/IRC).
 
